@@ -9,7 +9,7 @@ function Navbar() {
 
   return (
     <div className="w-full h-20 flex items-center justify-between px-10 
-     bg-gradient-to-br from-[#E8E3DA] via-[#E8E3DA] to-[#a38c62] relative">
+     bg-gradient-to-br from-[#4d4d4a] to-[#000000] relative">
 
       {/* Logo */}
       <div className="text-[#A89A84] text-3xl italic font-bold">
@@ -19,7 +19,7 @@ function Navbar() {
       {/* Nav Links */}
       <div className="flex items-center gap-10 relative font-bold">
 
-        <a href="#" className="text-[#000000] hover:text-gray-600">
+        <a href="#" className="text-[#A89A84] hover:text-gray-600">
           Home
         </a>
 
@@ -27,7 +27,7 @@ function Navbar() {
         <div className="relative">
           <button
             onClick={() => toggleMenu("analyze")}
-            className="flex items-center gap-1 text-[#000000] hover:text-gray-600"
+            className="flex items-center gap-1 text-[#A89A84] hover:text-gray-600"
           >
             Analyze News
             <span
@@ -63,7 +63,7 @@ function Navbar() {
         <div className="relative">
           <button
             onClick={() => toggleMenu("insights")}
-            className="flex items-center gap-1 text-[#000000] hover:text-gray-600"
+            className="flex items-center gap-1 text-[#A89A84] hover:text-gray-600"
           >
             Bias Insights
             <span
@@ -92,15 +92,15 @@ function Navbar() {
           )}
         </div>
 
-        <a href="#" className="text-[#000000] hover:text-gray-600">
+        <a href="#" className="text-[#A89A84] hover:text-gray-600">
           How It Works
         </a>
 
-        <a href="#" className="text-[#000000] hover:text-gray-600">
+        <a href="#" className="text-[#A89A84] hover:text-gray-600">
           About
         </a>
 
-        <a href="#" className="text-[#000000] hover:text-gray-600">
+        <a href="#" className="text-[#A89A84] hover:text-gray-600">
           Journal
         </a>
 

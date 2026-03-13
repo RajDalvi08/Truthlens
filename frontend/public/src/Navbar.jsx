@@ -82,6 +82,7 @@ function Navbar() {
                     { name: "Dashboard", path: "/dashboard" }, 
                     { name: "Bias Analyzer", path: "/bias-analyzer" }, 
                     { name: "Source Comparison", path: "/compare" }, 
+                    { name: "Event Comparison", path: "/event" }, 
                     { name: "Dataset Manager", path: "/datasets" }
                   ].map((item) => (
                     <Link key={item.name} to={item.path} onClick={() => setOpenMenu(null)}>

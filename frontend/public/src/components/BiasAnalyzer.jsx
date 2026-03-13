@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navigation from "./Navigation";
+import { analyzeArticle } from "../services/api";
 
-const SAMPLE_ARTICLES = [
-  "Controversial new policy sparks outrage among progressive groups as conservatives celebrate the sweeping reforms that promise to reshape the economic landscape.",
-  "The president's radical agenda has been met with fierce resistance from both sides of the aisle, with critics calling the proposed legislation a dangerous overreach of executive power.",
+const SAMPLE_URLS = [
+  "https://www.bbc.com/news/world-us-canada-66801944",
+  "https://www.nytimes.com/2025/01/01/world/europe/sample-article.html",
 ];
 
 export default function BiasAnalyzer() {
   const [inputText, setInputText] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [results, setResults] = useState(null);
+  const [error, setError] = useState("");
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -22,27 +24,22 @@ export default function BiasAnalyzer() {
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
   };
 
-  const handleAnalyze = () => {
-    if (!inputText.trim()) return;
+  const handleAnalyze = async () => {
+    const url = inputText.trim();
+    if (!url) return;
+
     setIsAnalyzing(true);
     setResults(null);
+    setError("");
 
-    setTimeout(() => {
-      const wordCount = inputText.split(/\s+/).length;
-      const biasScore = +(Math.random() * 1.6 - 0.8).toFixed(2);
-      const sentimentScore = +(Math.random() * 2 - 1).toFixed(2);
-
-      const keyPhrases = [
-        { phrase: "controversial", impact: 0.85, type: "Loaded Language" },
-        { phrase: "radical agenda", impact: 0.92, type: "Emotional Framing" },
-        { phrase: "fierce resistance", impact: 0.78, type: "Conflict Amplification" },
-        { phrase: "dangerous overreach", impact: 0.88, type: "Fear Appeal" },
-        { phrase: "sweeping reforms", impact: 0.65, type: "Hyperbolic Modifier" },
-      ].filter(() => Math.random() > 0.3);
-
-      setResults({ biasScore, sentimentScore, wordCount, keyPhrases });
+    try {
+      const response = await analyzeArticle(url);
+      setResults(response);
+    } catch (err) {
+      setError(err?.message || "Failed to analyze the article. Please check the URL and try again.");
+    } finally {
       setIsAnalyzing(false);
-    }, 2500);
+    }
   };
 
   const getBiasLabel = (score) => {
@@ -51,12 +48,6 @@ export default function BiasAnalyzer() {
     if (score > -0.2) return { label: "Relatively Neutral", color: "text-cyan-400" };
     if (score > -0.5) return { label: "Moderate Left Bias", color: "text-indigo-400" };
     return { label: "Strong Left Bias", color: "text-indigo-500" };
-  };
-
-  const getSentimentLabel = (score) => {
-    if (score > 0.3) return { label: "Positive", color: "text-emerald-400" };
-    if (score > -0.3) return { label: "Neutral", color: "text-gray-400" };
-    return { label: "Negative", color: "text-red-400" };
   };
 
   return (
@@ -94,8 +85,8 @@ export default function BiasAnalyzer() {
                 <textarea
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
-                  placeholder="Paste a news article or URL here to analyze for bias..."
-                  rows={6}
+                  placeholder="Paste a news article URL here to analyze for bias..."
+                  rows={3}
                   className="w-full bg-black/40 border border-cyan-500/20 rounded-2xl p-5 text-white text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all placeholder-gray-600 resize-none font-light leading-relaxed"
                 />
 
@@ -118,7 +109,7 @@ export default function BiasAnalyzer() {
                   </motion.button>
 
                   <div className="flex gap-2">
-                    {SAMPLE_ARTICLES.map((sample, i) => (
+                    {SAMPLE_URLS.map((sample, i) => (
                       <button
                         key={i}
                         onClick={() => setInputText(sample)}
@@ -135,6 +126,18 @@ export default function BiasAnalyzer() {
 
           {/* Results Panel */}
           <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ type: "spring", stiffness: 120 }}
+                className="bg-[var(--bg-secondary)] border border-red-400/20 rounded-3xl p-6"
+              >
+                <p className="text-sm font-semibold text-red-200">Error: {error}</p>
+              </motion.div>
+            )}
+
             {results && (
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -143,23 +146,29 @@ export default function BiasAnalyzer() {
                 transition={{ type: "spring", stiffness: 100 }}
                 className="space-y-6"
               >
+                {/* Article Header */}
+                <div className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6">
+                  <p className="text-sm font-mono uppercase tracking-widest text-gray-500">Headline</p>
+                  <h2 className="mt-2 text-2xl font-black text-white leading-tight">{results.headline || "(No headline found)"}</h2>
+                </div>
+
                 {/* Score Cards Row */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Bias Score */}
                   <div className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 blur-2xl rounded-full"></div>
                     <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">Bias Score</p>
-                    <p className={`text-4xl font-black ${getBiasLabel(results.biasScore).color}`}>
-                      {results.biasScore > 0 ? "+" : ""}{results.biasScore}
+                    <p className={`text-4xl font-black ${getBiasLabel(results.bias_score).color}`}>
+                      {results.bias_score > 0 ? "+" : ""}{results.bias_score}
                     </p>
-                    <p className={`text-sm font-bold mt-2 ${getBiasLabel(results.biasScore).color}`}>
-                      {getBiasLabel(results.biasScore).label}
+                    <p className={`text-sm font-bold mt-2 ${getBiasLabel(results.bias_score).color}`}>
+                      {getBiasLabel(results.bias_score).label}
                     </p>
                     {/* Visual Gauge */}
                     <div className="mt-4 h-2 bg-white/5 rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${((results.biasScore + 1) / 2) * 100}%` }}
+                        animate={{ width: `${((results.bias_score + 1) / 2) * 100}%` }}
                         transition={{ duration: 1, ease: "easeOut" }}
                         className="h-full bg-gradient-to-r from-indigo-500 via-cyan-500 to-purple-500 rounded-full"
                       />
@@ -171,86 +180,31 @@ export default function BiasAnalyzer() {
                     </div>
                   </div>
 
-                  {/* Sentiment Score */}
-                  <div className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 blur-2xl rounded-full"></div>
-                    <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">Sentiment</p>
-                    <p className={`text-4xl font-black ${getSentimentLabel(results.sentimentScore).color}`}>
-                      {results.sentimentScore > 0 ? "+" : ""}{results.sentimentScore}
-                    </p>
-                    <p className={`text-sm font-bold mt-2 ${getSentimentLabel(results.sentimentScore).color}`}>
-                      {getSentimentLabel(results.sentimentScore).label}
-                    </p>
-                    <div className="mt-4 h-2 bg-white/5 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${((results.sentimentScore + 1) / 2) * 100}%` }}
-                        transition={{ duration: 1, ease: "easeOut" }}
-                        className="h-full bg-gradient-to-r from-red-500 via-gray-500 to-emerald-500 rounded-full"
-                      />
-                    </div>
-                    <div className="flex justify-between mt-1">
-                      <span className="text-[8px] text-gray-600 font-mono">NEGATIVE</span>
-                      <span className="text-[8px] text-gray-600 font-mono">NEUTRAL</span>
-                      <span className="text-[8px] text-gray-600 font-mono">POSITIVE</span>
+                  {/* Breakdown Scores */}
+                  <div className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6">
+                    <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">Bias Breakdown</p>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-300">Linguistic</span>
+                        <span className="text-sm font-bold text-cyan-300">{results.linguistic_bias}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-300">Framing</span>
+                        <span className="text-sm font-bold text-cyan-300">{results.framing_bias}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-300">Entity</span>
+                        <span className="text-sm font-bold text-cyan-300">{results.entity_bias}</span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Word Stats */}
-                  <div className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/10 blur-2xl rounded-full"></div>
-                    <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">Text Metrics</p>
-                    <p className="text-4xl font-black text-cyan-400">{results.wordCount}</p>
-                    <p className="text-sm font-bold mt-2 text-gray-400">Words Analyzed</p>
-                    <div className="mt-4 space-y-2">
-                      <div className="flex justify-between text-[10px] font-mono">
-                        <span className="text-gray-600">CONFIDENCE</span>
-                        <span className="text-cyan-400 font-bold">{(92 + Math.random() * 6).toFixed(1)}%</span>
-                      </div>
-                      <div className="flex justify-between text-[10px] font-mono">
-                        <span className="text-gray-600">MODEL</span>
-                        <span className="text-gray-400">TruthLens v4.2</span>
-                      </div>
-                    </div>
+                  {/* Source Info */}
+                  <div className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6">
+                    <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">Source</p>
+                    <p className="text-sm font-semibold text-gray-200 break-words">{results.source || "N/A"}</p>
                   </div>
                 </div>
-
-                {/* Key Phrases */}
-                {results.keyPhrases.length > 0 && (
-                  <div className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6">
-                    <h3 className="text-xs font-black uppercase tracking-[0.3em] text-gray-500 mb-6 flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-fuchsia-500"></span>
-                      Key Bias Indicators
-                    </h3>
-                    <div className="space-y-3">
-                      {results.keyPhrases.map((kp, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: i * 0.1 }}
-                          className="flex items-center justify-between bg-white/[0.02] border border-white/5 rounded-xl px-5 py-3 hover:bg-white/[0.04] transition-colors"
-                        >
-                          <div className="flex items-center gap-4">
-                            <span className="text-fuchsia-400 font-bold text-sm italic">"{kp.phrase}"</span>
-                            <span className="px-2 py-0.5 bg-white/5 rounded-lg text-[9px] font-mono text-gray-500 border border-white/5">{kp.type}</span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="w-20 h-1.5 bg-white/5 rounded-full overflow-hidden">
-                              <motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: `${kp.impact * 100}%` }}
-                                transition={{ duration: 0.8, delay: i * 0.1 }}
-                                className="h-full bg-gradient-to-r from-fuchsia-500 to-purple-500 rounded-full"
-                              />
-                            </div>
-                            <span className="text-xs font-mono text-fuchsia-400 font-bold w-10 text-right">{(kp.impact * 100).toFixed(0)}%</span>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </motion.div>
             )}
           </AnimatePresence>

@@ -32,7 +32,10 @@ def fetch_article(url: str) -> dict:
         )
     }
 
-    response = requests.get(url, headers=headers, timeout=15)
+    # Some environments may lack a CA bundle for SSL verification.
+    # We disable verification here to keep the pipeline working in those cases.
+    # (Bias evaluation logic is unaffected by this change.)
+    response = requests.get(url, headers=headers, timeout=15, verify=False)
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")

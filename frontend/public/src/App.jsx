@@ -16,6 +16,7 @@ import Register from "./components/Register.jsx";
 import BiasAnalyzer from "./components/BiasAnalyzer.jsx";
 import DatasetManager from "./components/DatasetManager.jsx";
 import SourceComparison from "./components/SourceComparison.jsx";
+import EventComparison from "./components/EventComparison.jsx";
 import Reports from "./components/Reports.jsx";
 import Settings from "./components/Settings.jsx";
 import Journal from "./components/Journal.jsx";
@@ -45,6 +46,7 @@ function App() {
               <Route path="/bias-analyzer" element={<BiasAnalyzer />} />
               <Route path="/datasets" element={<DatasetManager />} />
               <Route path="/compare" element={<SourceComparison />} />
+              <Route path="/event" element={<EventComparison />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/message" element={<Message />} />

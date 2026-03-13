@@ -54,10 +54,10 @@ python -m venv .venv
 pip install -r backend/requirements.txt
 ```
 
-3. Run the backend API:
+3. Run the backend API (from the repo root):
 
 ```powershell
-python backend/main.py
+uvicorn backend.main:app --reload --port 8000
 ```
 
 The backend should start on `http://127.0.0.1:8000` by default.
@@ -90,8 +90,8 @@ The frontend calls the backend at `http://127.0.0.1:8000` by default. If you nee
 
 ### Primary endpoints
 
-- `POST /analyze` – Analyze text for bias, framing, and linguistic signals.
-- `POST /compare` – Compare two pieces of text and compute differences (used by the UI compare view).
+- `POST /analyze` – Analyze text for bias, framing, and linguistic signals (accepts either a URL or raw article text).
+- `POST /compare` – Compare two pieces of text and compute differences (used by the UI compare view, accepts URLs or raw text inputs).
 - `POST /event` – Extract and score events from text.
 
 > Use `backend/routers/` to inspect or extend endpoints.
@@ -172,6 +172,7 @@ python -m pytest backend
 
 - **Backend fails to start / model load errors**: Ensure model directories exist and required files (e.g., `model.safetensors`) are present.
 - **Frontend can’t reach backend**: Confirm backend is running and check the base URL in `frontend/src/services/api.js`.
+- **Article fetch fails with 403/blocked**: Some news sites block automated scrapers. The backend retries with browser-like headers and falls back to a public proxy, but not all sites will load. Try another source or paste the text directly if the site is blocked.
 - **Linting / formatting**: Frontend uses ESLint config under `frontend/public/lint-*` (legacy) and standard Vite tooling.
 
 ---

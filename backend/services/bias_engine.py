@@ -81,4 +81,5 @@ def analyze_bias(article: dict) -> dict:
         "linguistic_bias": final_linguistic,
         "framing_bias": final_framing,
         "entity_bias": final_entity,
+        "source": article.get("source", ""),
     }

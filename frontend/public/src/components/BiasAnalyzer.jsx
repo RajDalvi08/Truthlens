@@ -5,7 +5,7 @@ import { analyzeArticle } from "../services/api";
 
 const SAMPLE_URLS = [
   "https://www.bbc.com/news/world-us-canada-66801944",
-  "https://www.nytimes.com/2025/01/01/world/europe/sample-article.html",
+  "The city council voted unanimously to approve the new climate policy, while residents expressed mixed reactions about the potential economic impact.",
 ];
 
 export default function BiasAnalyzer() {
@@ -85,7 +85,7 @@ export default function BiasAnalyzer() {
                 <textarea
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
-                  placeholder="Paste a news article URL here to analyze for bias..."
+                  placeholder="Paste a news article URL or text here to analyze for bias..."
                   rows={3}
                   className="w-full bg-black/40 border border-cyan-500/20 rounded-2xl p-5 text-white text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all placeholder-gray-600 resize-none font-light leading-relaxed"
                 />
@@ -119,6 +119,9 @@ export default function BiasAnalyzer() {
                       </button>
                     ))}
                   </div>
+                  <p className="text-xs text-gray-400 mt-2">
+                    Tip: If a URL doesn’t load, paste the full article text instead.
+                  </p>
                 </div>
               </div>
             </div>

@@ -5,7 +5,8 @@ POST /analyze — analyse a single news article for bias.
 """
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, root_validator
+from typing import Optional
 
 from services.article_fetcher import fetch_article
 from services.preprocessing import clean_article
@@ -18,7 +19,14 @@ router = APIRouter(prefix="/analyze", tags=["Analysis"])
 # Request / Response schemas
 # -------------------------
 class AnalyzeRequest(BaseModel):
-    url: HttpUrl
+    url: Optional[HttpUrl] = None
+    text: Optional[str] = None
+
+    @root_validator
+    def require_url_or_text(cls, values):
+        if not values.get("url") and not values.get("text"):
+            raise ValueError("Either 'url' or 'text' must be provided.")
+        return values
 
 
 class AnalyzeResponse(BaseModel):
@@ -28,6 +36,7 @@ class AnalyzeResponse(BaseModel):
     linguistic_bias: float
     framing_bias: float
     entity_bias: float
+    source: str
 
 
 # -------------------------
@@ -35,20 +44,23 @@ class AnalyzeResponse(BaseModel):
 # -------------------------
 @router.post("/", response_model=AnalyzeResponse)
 def analyze_article(payload: AnalyzeRequest):
-    """
-    Fetch an article by URL, extract text and headline, run it through all 
-    three bias models, and return the combined bias analysis.
-    """
-    url_str = str(payload.url)
+    """Fetch an article by URL or analyze raw text, then return bias analysis."""
 
-    # 1. Fetch article
-    try:
-        raw_article = fetch_article(url_str)
-    except Exception as exc:
-        raise HTTPException(
-            status_code=422,
-            detail=f"Failed to fetch article: {exc}",
-        )
+    # 1. Acquire raw article data
+    if payload.url:
+        try:
+            raw_article = fetch_article(str(payload.url))
+        except Exception as exc:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Failed to fetch article: {exc}",
+            )
+    else:
+        raw_article = {
+            "headline": "",
+            "text": payload.text or "",
+            "source": "manual",
+        }
 
     # 2. Preprocess
     cleaned_article = clean_article(raw_article)

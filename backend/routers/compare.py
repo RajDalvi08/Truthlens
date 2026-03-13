@@ -5,7 +5,8 @@ POST /compare — compare bias between two news articles.
 """
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, root_validator
+from typing import Optional
 
 from services.article_fetcher import fetch_article
 from services.preprocessing import clean_article
@@ -18,8 +19,18 @@ router = APIRouter(prefix="/compare", tags=["Comparison"])
 # Request / Response schemas
 # -------------------------
 class CompareRequest(BaseModel):
-    url1: HttpUrl
-    url2: HttpUrl
+    url1: Optional[HttpUrl] = None
+    url2: Optional[HttpUrl] = None
+    text1: Optional[str] = None
+    text2: Optional[str] = None
+
+    @root_validator
+    def require_urls_or_texts(cls, values):
+        if not (values.get("url1") or values.get("text1")):
+            raise ValueError("Provide either url1 or text1 for article 1.")
+        if not (values.get("url2") or values.get("text2")):
+            raise ValueError("Provide either url2 or text2 for article 2.")
+        return values
 
 
 class BiasResult(BaseModel):
@@ -46,25 +57,38 @@ def compare_two_articles(payload: CompareRequest):
     Fetch two articles, extract and clean their text, analyse each for bias, 
     and return a side-by-side comparison including the absolute difference.
     """
-    url1_str = str(payload.url1)
-    url2_str = str(payload.url2)
+    # 1. Acquire raw article data (URL fetch or direct text)
+    if payload.url1:
+        url1_str = str(payload.url1)
+        try:
+            raw1 = fetch_article(url1_str)
+        except Exception as exc:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Failed to fetch article 1 ({url1_str}): {exc}",
+            )
+    else:
+        raw1 = {
+            "headline": "",
+            "text": payload.text1 or "",
+            "source": "manual",
+        }
 
-    # 1. Fetch both articles
-    try:
-        raw1 = fetch_article(url1_str)
-    except Exception as exc:
-        raise HTTPException(
-            status_code=422,
-            detail=f"Failed to fetch article 1 ({url1_str}): {exc}",
-        )
-
-    try:
-        raw2 = fetch_article(url2_str)
-    except Exception as exc:
-        raise HTTPException(
-            status_code=422,
-            detail=f"Failed to fetch article 2 ({url2_str}): {exc}",
-        )
+    if payload.url2:
+        url2_str = str(payload.url2)
+        try:
+            raw2 = fetch_article(url2_str)
+        except Exception as exc:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Failed to fetch article 2 ({url2_str}): {exc}",
+            )
+    else:
+        raw2 = {
+            "headline": "",
+            "text": payload.text2 or "",
+            "source": "manual",
+        }
 
     # 2. Preprocess
     cleaned1 = clean_article(raw1)

@@ -13,21 +13,39 @@ async function handleResponse(response) {
   return isJson ? response.json() : null;
 }
 
-export async function analyzeArticle(url) {
+const isUrl = (value) => {
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export async function analyzeArticle(input) {
+  const payload = isUrl(input)
+    ? { url: input }
+    : { text: input };
+
   const response = await fetch(`${API_BASE}/analyze`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url }),
+    body: JSON.stringify(payload),
   });
 
   return handleResponse(response);
 }
 
-export async function compareArticles(url1, url2) {
+export async function compareArticles(input1, input2) {
+  const payload = {
+    ...(isUrl(input1) ? { url1: input1 } : { text1: input1 }),
+    ...(isUrl(input2) ? { url2: input2 } : { text2: input2 }),
+  };
+
   const response = await fetch(`${API_BASE}/compare`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url1, url2 }),
+    body: JSON.stringify(payload),
   });
 
   return handleResponse(response);

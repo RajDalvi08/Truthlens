@@ -506,7 +506,8 @@ function SimplePieChart({ data }) {
   const total = data.reduce((sum, d) => sum + d.value, 0)
   let currentAngle = -90
 
-  const paths = data.map((item) => {
+  const paths = []
+  for (const item of data) {
     const angle = (item.value / total) * 360
     const startAngle = currentAngle
     const endAngle = currentAngle + angle
@@ -522,13 +523,13 @@ function SimplePieChart({ data }) {
 
     const largeArc = angle > 180 ? 1 : 0
 
-    return {
+    paths.push({
       path: `M 100 100 L ${x1} ${y1} A 70 70 0 ${largeArc} 1 ${x2} ${y2} Z`,
       color: item.color,
       name: item.name,
       value: item.value,
-    }
-  })
+    })
+  }
 
   return (
     <div className="flex items-center gap-6">
@@ -617,8 +618,8 @@ function SimpleWorldMap({ markers }) {
 function Demo() {
 
   const [searchQuery, setSearchQuery] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [selectedBias, setSelectedBias] = useState("All")
+  const [currentPage] = useState(1)
+  const [selectedBias] = useState("All")
 
   const pageSize = 6
 
@@ -638,37 +639,11 @@ function Demo() {
     })
   }, [searchQuery, selectedBias])
 
-  // PAGINATION
-  const totalPages = Math.ceil(filteredArticles.length / pageSize)
-
   const paginatedArticles = useMemo(() => {
     const start = (currentPage - 1) * pageSize
     return filteredArticles.slice(start, start + pageSize)
   }, [filteredArticles, currentPage])
 
-  // DYNAMIC STATS
-  const dynamicStats = useMemo(() => {
-
-    const total = filteredArticles.length
-    const left = filteredArticles.filter(a => a.bias.includes("Left")).length
-    const right = filteredArticles.filter(a => a.bias.includes("Right")).length
-    const center = filteredArticles.filter(a => a.bias === "Center").length
-
-    const avgConfidence =
-      Math.round(
-        filteredArticles.reduce((acc, a) => acc + a.confidence, 0) /
-        filteredArticles.length
-      ) || 0
-
-    return {
-      total,
-      left,
-      right,
-      center,
-      avgConfidence
-    }
-
-  }, [filteredArticles])
 
   // SIMULATE NEW ANALYSIS
   function handleNewAnalysis() {
@@ -690,21 +665,21 @@ function Demo() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-[#4d4d4a] to-[#000000] text-[#FDEBD0]">
+    <div className="flex min-h-screen bg-[var(--bg-primary)] text-[#FDEBD0]">
       {/* Sidebar */}
       <Navigation />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Navbar */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-800 bg-gradient-to-br from-[#4d4d4a] to-[#000000] backdrop-blur px-6">
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-800 bg-[var(--bg-primary)] backdrop-blur px-6">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 text-sm">
               <span className="text-gray-500">Dashboard</span>
               <span className="text-gray-600">/</span>
               <span className="font-medium text-white">Overview</span>
             </div>
-            <div className="flex items-center gap-1.5 rounded-md border border-gray-800 bg-gradient-to-br from-[#4d4d4a] to-[#000000] px-2.5 py-1.5 text-xs">
+            <div className="flex items-center gap-1.5 rounded-md border border-gray-800 bg-[var(--bg-primary)] px-2.5 py-1.5 text-xs">
               <span className="text-gray-500">Last</span>
               <button className="flex items-center gap-1 font-medium text-white hover:text-blue-400 transition-colors">
                 24 hours
@@ -721,7 +696,7 @@ function Demo() {
                  placeholder="Search articles, sources..."
                  value={searchQuery}
                  onChange={(e)=>setSearchQuery(e.target.value)}
-                className="h-8 w-56 pl-8 pr-10 text-xs bg-gradient-to-br from-[#4d4d4a] to-[#000000] border border-gray-800 rounded-md text-white placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="h-8 w-56 pl-8 pr-10 text-xs bg-[var(--bg-primary)] border border-gray-800 rounded-md text-white placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
               <kbd className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-gray-700 bg-gray-800 px-1.5 font-mono text-[10px] font-medium text-gray-500">
                 <span className="text-[10px]">&#8984;</span>K
@@ -771,7 +746,7 @@ function Demo() {
               return (
                 <div
                   key={stat.label}
-                  className="bg-gradient-to-br from-[#4d4d4a] to-[#000000] border-gray-800 rounded-lg overflow-hidden"
+                  className="bg-[var(--bg-primary)] border-gray-800 rounded-lg overflow-hidden"
                 >
                   <div className="p-4">
                     <div className="flex items-start justify-between">
@@ -816,7 +791,7 @@ function Demo() {
           {/* Charts Row */}
           <div className="grid gap-4 lg:grid-cols-3">
             {/* Area Chart */}
-            <div className="lg:col-span-2 bg-gradient-to-br from-[#4d4d4a] to-[#000000] border border-gray-800 rounded-lg">
+            <div className="lg:col-span-2 bg-[var(--bg-primary)] border border-gray-800 rounded-lg">
               <div className="flex items-center justify-between p-4 pb-2">
                 <div>
                   <h3 className="text-sm font-medium text-white">Bias Detection Trends</h3>
@@ -854,7 +829,7 @@ function Demo() {
             </div>
 
             {/* Pie Chart */}
-            <div className="bg-gradient-to-br from-[#4d4d4a] to-[#000000] border border-gray-800 rounded-lg">
+            <div className="bg-[var(--bg-primary)] border border-gray-800 rounded-lg">
               <div className="flex items-center justify-between p-4 pb-2">
                 <div>
                   <h3 className="text-sm font-medium text-white">Source Credibility</h3>
@@ -873,7 +848,7 @@ function Demo() {
           </div>
 
           {/* Bar Chart */}
-          <div className="bg-gradient-to-br from-[#4d4d4a] to-[#000000] border border-gray-800 rounded-lg">
+          <div className="bg-[var(--bg-primary)] border border-gray-800 rounded-lg">
             <div className="flex items-center justify-between p-4 pb-2">
               <div>
                 <h3 className="text-sm font-medium text-white">Bias by Source Type</h3>
@@ -908,7 +883,7 @@ function Demo() {
           </div>
 
           {/* Articles Table */}
-          <div className="bg-gradient-to-br from-[#4d4d4a] to-[#000000] border border-gray-800 rounded-lg">
+          <div className="bg-[var(--bg-primary)] border border-gray-800 rounded-lg">
             <div className="flex items-center justify-between p-4 border-b border-gray-800">
               <div>
                 <h3 className="text-sm font-medium text-white">Recent Articles</h3>
@@ -1051,7 +1026,7 @@ function Demo() {
 
           {/* World Map */}
           <div className="grid gap-4 lg:grid-cols-4">
-            <div className="lg:col-span-3 bg-gradient-to-br from-[#4d4d4a] to-[#000000] border border-gray-800 rounded-lg">
+            <div className="lg:col-span-3 bg-[var(--bg-primary)] border border-gray-800 rounded-lg">
               <div className="flex items-center justify-between p-4 border-b border-gray-800">
                 <div className="flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-600/10">
@@ -1077,7 +1052,7 @@ function Demo() {
             </div>
 
             {/* Region Stats */}
-            <div className="bg-gradient-to-br from-[#4d4d4a] to-[#000000] border border-gray-800 rounded-lg">
+            <div className="bg-[var(--bg-primary)] border border-gray-800 rounded-lg">
               <div className="p-4 border-b border-gray-800">
                 <h3 className="text-sm font-medium text-white">Regional Breakdown</h3>
                 <p className="text-xs text-gray-500 mt-0.5">Articles by region</p>

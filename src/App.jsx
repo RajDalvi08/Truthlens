@@ -19,6 +19,7 @@ import SourceComparison from "./components/SourceComparison.jsx";
 import Reports from "./components/Reports.jsx";
 import Settings from "./components/Settings.jsx";
 import Journal from "./components/Journal.jsx";
+import GlobePage from "./components/GlobePage.jsx";
 import { AuthProvider } from "./AuthContext";
 import { ThemeContext } from "./ThemeContext";
 
@@ -55,6 +56,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/journal" element={<Journal />} />
+              <Route path="/globe" element={<GlobePage />} />
             </Routes>
           </AnimatePresence>
         </div>

@@ -126,6 +126,7 @@ function Navbar() {
                   {[
                     { name: "Analytics", path: "/analytics" }, 
                     { name: "Reports", path: "/reports" }, 
+                    { name: "Globe Map", path: "/globe" },
                     { name: "Case Studies", path: "/case-studies" },
                     { name: "Methodology", path: "/methodology" }
                   ].map((item) => (

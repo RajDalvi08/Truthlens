@@ -110,6 +110,48 @@ Each model uses the weights stored under `Models/` (e.g., `Models/BEAD Entity Bi
 
 ---
 
+## 🧪 Evaluation & Scoring System (How Bias is Measured)
+
+### 1) Per-model Bias Probabilities
+- **Linguistic bias model** (`backend/models/linguistic_model.py`) predicts bias probability based on wording, tone, and linguistic cues.
+- **Framing bias model** (`backend/models/framing_model.py`) evaluates narrative framing signals.
+- **Entity bias model (BEAD)** (`backend/models/bead_model.py`) focuses on entity-centric bias using the BEAD dataset.
+
+Each model returns a probability in **[0, 1]** for the “biased” class. A temperature scaling factor (T=2.0) is applied to logits before softmax to calibrate the output distribution.
+
+### 2) Chunking + Hybrid Scoring (Long Articles)
+- Articles longer than ~1500 characters are split into chunks (approx. 512 tokens) using `backend/services/nlp_utils.py`.
+- Each chunk is scored independently by all three models.
+- The engine then computes a **hybrid score** per model using:
+  - **70% average score across chunks**
+  - **30% peak (max) score across chunks**
+
+This helps capture both general bias level and local “hot spots” of bias.
+
+### 3) Entity Awareness (Soft Filtering)
+- The engine checks if the text contains named entities using `backend/services/nlp_utils.py`.
+- If no entities are found, the **entity bias score is halved** (soft reduction) to avoid spurious entity-bias positives.
+
+### 4) Combined Bias Score & Bias Level
+- Scores are combined using weighted averaging in `backend/services/bias_score.py`:
+  - **Linguistic:** 40%
+  - **Framing:** 35%
+  - **Entity (BEAD):** 25%
+- The combined score is scaled to **0–100** and rounded to two decimals.
+
+#### Bias Level Bands
+- **Low Bias:** score < 40
+- **Moderate Bias:** 40 ≤ score < 70
+- **High Bias:** score ≥ 70
+
+### 5) Evaluation & Demo Scripts
+The repository includes quick scripts to exercise the evaluation system:
+- `backend/sanity_test.py` — Runs each model on a few example sentences.
+- `backend/test_engine.py` — Runs full analysis (chunking + hybrid scoring + combined score) on example articles.
+- `backend/test_models.py` — Demonstrates how the three model outputs are combined via `combine_scores()`.
+
+---
+
 ## ✅ Testing
 
 The backend includes unit tests under `backend/`:

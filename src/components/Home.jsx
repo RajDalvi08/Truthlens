@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import Navbar from "../Navbar.jsx";
+import React, { Suspense } from "react";
+
+const NeuralParticles = React.lazy(() => import("./three/NeuralParticles"));
 
 function Home() {
   const navigate = useNavigate();
 
-  // Function to handle "View Demo" button click
   const handleViewDemo = () => {
     navigate("/dashboard");
   };
@@ -37,11 +38,18 @@ function Home() {
     >
       {/* HERO SECTION */}
       <section className="relative w-full h-screen overflow-hidden flex items-center">
-        {/* Animated Background Gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-fuchsia-900/20 via-[var(--bg-primary)] to-[var(--bg-primary)] z-0"></div>
+        {/* Three.js Particle Background */}
+        <Suspense fallback={
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-fuchsia-900/20 via-[var(--bg-primary)] to-[var(--bg-primary)] z-0"></div>
+        }>
+          <NeuralParticles />
+        </Suspense>
+
+        {/* Gradient overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-primary)]/40 via-transparent to-[var(--bg-primary)]/80 z-[1] pointer-events-none"></div>
         
         {/* Subtle grid pattern overlay */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgMGgyMHYyMEgwVTB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTAgMTlMMjAgMTlNMCAwTDIwIDAiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZD0iTTE5IDBMMTkgMjBNMCAwTDAgMjAiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] z-0 opacity-50 block items-center justify-center"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgMGgyMHYyMEgwVTB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTAgMTlMMjAgMTlNMCAwTDIwIDAiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZD0iTTE5IDBMMTkgMjBNMCAwTDAgMjAiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] z-[2] opacity-50 pointer-events-none"></div>
 
         {/* Content */}
         <div className="relative z-10 w-full px-6 md:px-16 lg:px-24">
@@ -51,14 +59,14 @@ function Home() {
             animate="visible"
             className="max-w-4xl space-y-8"
           >
-            <motion.h2 
-              variants={itemVariants}
-              className="text-xs md:text-sm tracking-[0.4em] uppercase font-bold 
+            <motion.div variants={itemVariants} className="flex items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.8)]"></div>
+              <h2 className="text-xs md:text-sm tracking-[0.4em] uppercase font-bold 
               bg-gradient-to-r from-cyan-400 to-blue-500 
-              bg-clip-text text-transparent inline-block drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]"
-            >
-              INITIALIZING TRUTH PROTOCOL
-            </motion.h2>
+              bg-clip-text text-transparent inline-block drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]">
+                INITIALIZING TRUTH PROTOCOL
+              </h2>
+            </motion.div>
 
             <motion.h1 
               variants={itemVariants}
@@ -74,7 +82,7 @@ function Home() {
               variants={itemVariants}
               className="text-lg md:text-xl text-gray-400 max-w-2xl leading-relaxed font-light border-l-4 border-cyan-500 pl-4"
             >
-              Advanced neural networks instantly analyze news articles, exposing subtle biases, political leanings, and factual accuracy in real-time.
+              AI-powered platform for detecting bias in global news coverage. Advanced neural networks expose subtle biases, political leanings, and factual accuracy in real-time.
             </motion.p>
 
             <motion.div 
@@ -87,7 +95,7 @@ function Home() {
                 whileTap={{ scale: 0.95 }}
                 className="px-8 py-4 bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white font-bold rounded-xl shadow-lg relative overflow-hidden group"
               >
-                <span className="relative z-10">Start Analysis</span>
+                <span className="relative z-10">Analyze Article</span>
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />
               </motion.button>
               
@@ -97,8 +105,22 @@ function Home() {
                 whileTap={{ scale: 0.95 }}
                 className="px-8 py-4 bg-transparent text-cyan-400 font-bold border-2 border-cyan-500/50 rounded-xl hover:border-cyan-400 transition-colors shadow-[0_0_15px_rgba(6,182,212,0.2)]"
               >
-                Access Dashboard
+                Explore Analytics
               </motion.button>
+            </motion.div>
+
+            {/* Live status ticker */}
+            <motion.div variants={itemVariants} className="flex items-center gap-6 mt-6">
+              {[
+                { label: "Live Sources", value: "2,400+" },
+                { label: "Articles/Day", value: "142K" },
+                { label: "Model Accuracy", value: "99.2%" },
+              ].map((stat, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono text-gray-600 uppercase">{stat.label}:</span>
+                  <span className="text-sm font-bold text-cyan-400">{stat.value}</span>
+                </div>
+              ))}
             </motion.div>
           </motion.div>
         </div>

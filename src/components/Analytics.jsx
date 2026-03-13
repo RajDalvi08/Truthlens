@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useMemo, useEffect } from "react"
+import React, { useState, useMemo, useEffect, Suspense } from "react"
 import Navigation from "./Navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -8,6 +8,8 @@ import {
   LineChart, Line, ScatterChart, Scatter, ZAxis,
   ComposedChart, Area
 } from 'recharts'
+
+const BiasNetwork = React.lazy(() => import("./three/BiasNetwork"));
 
 // ==================== MOCK DATA ====================
 
@@ -230,6 +232,18 @@ function Analytics() {
             <MetricCard label="Max Bias Source" value="Fox News" sub="Right Score: 0.88" trend="" color="fuchsia" />
             <MetricCard label="Highest Bias Topic" value="Politics" sub="Impact: 0.92" trend="" color="purple" />
           </div>
+
+          {/* 3D Bias Relationship Network */}
+          <Suspense fallback={
+            <div className="w-full h-[500px] rounded-3xl bg-white/[0.02] border border-white/10 flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-sm text-gray-500 font-mono">Loading 3D Network...</p>
+              </div>
+            </div>
+          }>
+            <BiasNetwork />
+          </Suspense>
 
           {/* AI Insight & Heatmap Row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

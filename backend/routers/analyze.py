@@ -5,7 +5,7 @@ POST /analyze — analyse a single news article for bias.
 """
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, HttpUrl, root_validator
+from pydantic import BaseModel, HttpUrl, model_validator
 from typing import Optional
 
 from services.article_fetcher import fetch_article
@@ -20,9 +20,11 @@ router = APIRouter(prefix="/analyze", tags=["Analysis"])
 # -------------------------
 class AnalyzeRequest(BaseModel):
     url: Optional[HttpUrl] = None
+    headline: Optional[str] = None
     text: Optional[str] = None
 
-    @root_validator
+    @model_validator(mode='before')
+    @classmethod
     def require_url_or_text(cls, values):
         if not values.get("url") and not values.get("text"):
             raise ValueError("Either 'url' or 'text' must be provided.")
@@ -30,7 +32,7 @@ class AnalyzeRequest(BaseModel):
 
 
 class AnalyzeResponse(BaseModel):
-    headline: str
+    headline: Optional[str] = None
     bias_score: float
     bias_level: str
     linguistic_bias: float
@@ -57,7 +59,7 @@ def analyze_article(payload: AnalyzeRequest):
             )
     else:
         raw_article = {
-            "headline": "",
+            "headline": payload.headline or None,
             "text": payload.text or "",
             "source": "manual",
         }
@@ -73,6 +75,8 @@ def analyze_article(payload: AnalyzeRequest):
     # 3. Bias analysis
     try:
         result = analyze_bias(cleaned_article)
+        # Restore original headline from raw_article to preserve case in the response
+        result["headline"] = raw_article.get("headline")
     except Exception as exc:
         raise HTTPException(
             status_code=500,

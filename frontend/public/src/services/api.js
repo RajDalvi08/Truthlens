@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8001";
 
 async function handleResponse(response) {
   const contentType = response.headers.get("content-type");
@@ -22,12 +22,19 @@ const isUrl = (value) => {
   }
 };
 
-export async function analyzeArticle(input) {
-  const payload = isUrl(input)
-    ? { url: input }
-    : { text: input };
+export async function analyzeArticle({ url, headline, text }) {
+  let payload;
 
-  const response = await fetch(`${API_BASE}/analyze`, {
+  if (url && url.trim().length > 0) {
+    payload = { url };
+  } else {
+    payload = {
+      headline: headline || null,
+      text: text,
+    };
+  }
+
+  const response = await fetch(`${API_BASE}/analyze/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -42,7 +49,7 @@ export async function compareArticles(input1, input2) {
     ...(isUrl(input2) ? { url2: input2 } : { text2: input2 }),
   };
 
-  const response = await fetch(`${API_BASE}/compare`, {
+  const response = await fetch(`${API_BASE}/compare/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -52,7 +59,7 @@ export async function compareArticles(input1, input2) {
 }
 
 export async function compareEvent(url) {
-  const response = await fetch(`${API_BASE}/compare_event`, {
+  const response = await fetch(`${API_BASE}/compare_event/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ url }),

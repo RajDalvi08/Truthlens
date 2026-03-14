@@ -1,8 +1,8 @@
 Models/
 __pycache__/
 *.pyc
-venv/
-.env
+.venv/
+env/
 
 # Logs
 logs
@@ -31,3 +31,5 @@ dist-ssr
 
 backend/models/
 Models/
+
+.venv/

@@ -5,7 +5,7 @@ POST /compare — compare bias between two news articles.
 """
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, HttpUrl, root_validator
+from pydantic import BaseModel, HttpUrl, model_validator
 from typing import Optional
 
 from services.article_fetcher import fetch_article
@@ -24,7 +24,8 @@ class CompareRequest(BaseModel):
     text1: Optional[str] = None
     text2: Optional[str] = None
 
-    @root_validator
+    @model_validator(mode='before')
+    @classmethod
     def require_urls_or_texts(cls, values):
         if not (values.get("url1") or values.get("text1")):
             raise ValueError("Provide either url1 or text1 for article 1.")

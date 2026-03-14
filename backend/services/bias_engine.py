@@ -1,10 +1,5 @@
-"""
-Bias Engine Service
-====================
-Orchestrates all three bias models and produces a combined analysis result.
-Supports long article chunking, hybrid scoring, and soft entity filtering.
-"""
-
+import re
+from typing import List
 from models.linguistic_model import predict as predict_linguistic
 from models.framing_model import predict as predict_framing
 from models.bead_model import predict as predict_entity
@@ -12,25 +7,59 @@ from services.bias_score import combine_scores
 from services.nlp_utils import split_text, has_named_entities
 
 
+def _check_reporting_tone(text: str) -> float:
+    """
+    Analyzes the text for objective reporting markers vs subjective/emotional language.
+    Returns a dampening factor (0.0 to 1.0). 1.0 means highly subjective, 
+    0.5 means neutral, <0.4 means very objective/descriptive.
+    """
+    text = text.lower()
+    
+    # Objective markers: Attribute statements, official references, research
+    objective_markers = [
+        r"according to", r"stated that", r"reported by", r"officials said",
+        r"press release", r"spokesperson", r"in a statement", r"research shows",
+        r"data indicates", r"confirmed that", r"previously", r"during a"
+    ]
+    
+    # Subjective/Emotional markers: Adjectives and framing words
+    subjective_markers = [
+        r"staggering", r"outrageous", r"shocking", r"brave", r"cowardly",
+        r"tyrant", r"heroic", r"disastrous", r"unbelievable", r"obviously",
+        r"clearly", r"everyone knows", r"radical", r"extreme", r"unjust"
+    ]
+    
+    obj_count = sum(1 for m in objective_markers if re.search(m, text))
+    sub_count = sum(1 for m in subjective_markers if re.search(m, text))
+    
+    # Base dampener
+    dampener = 0.8  # Start at slightly reduced
+    
+    if obj_count > sub_count:
+        # High density of reporting markers relative to emotional language
+        dampener -= 0.3 * (obj_count / (obj_count + sub_count + 1))
+    elif sub_count > obj_count:
+        # Emotional language dominates
+        dampener += 0.2
+        
+    return max(0.4, min(1.0, dampener))
+
+
 def analyze_bias(article: dict) -> dict:
     """
     Run all three bias models on the given article dict and return a combined result.
-    Splits long articles into chunks and uses hybrid (avg/max) scoring.
-
-    Args:
-        article: Dict containing 'headline' and 'text'.
-
-    Returns:
-        Dictionary containing headline, combined bias score, and individual scores.
+    Splits long articles into chunks and uses a balanced average aggregation.
     """
     headline = article.get("headline", "").strip()
     text = article.get("text", "").strip()
     
-    # Combine headline + text for general context
     if headline:
         full_text = f"{headline} {text}".strip()
     else:
         full_text = text
+
+    # Calculate neutrality dampener for the whole text
+    neutrality_dampener = _check_reporting_tone(full_text)
 
     # Handle long articles by splitting into chunks (approx 512 tokens / 1500 chars)
     chunks = split_text(full_text, max_chars=1500)
@@ -45,8 +74,9 @@ def analyze_bias(article: dict) -> dict:
     text_has_entities = has_named_entities(full_text)
 
     for chunk in chunks:
-        # 1. Linguistic Bias
-        lin_scores.append(predict_linguistic(chunk))
+        # 1. Linguistic Bias (Scaled by neutrality)
+        l_score = predict_linguistic(chunk) * neutrality_dampener
+        lin_scores.append(l_score)
         
         # 2. Framing Bias
         fra_scores.append(predict_framing(chunk))
@@ -54,22 +84,25 @@ def analyze_bias(article: dict) -> dict:
         # 3. Entity Bias (BEAD)
         e_prob = predict_entity(chunk)
         if not text_has_entities:
-            # Apply soft reduction if no major entities found
-            e_prob *= 0.5
+            e_prob *= 0.4  # Stronger reduction for no entities
+        else:
+            # Even with entities, if context is neutral, reduce weight
+            e_prob *= neutrality_dampener
         ent_scores.append(e_prob)
 
-    def calculate_hybrid(scores):
+    def calculate_aggregation(scores: List[float]) -> float:
         if not scores:
             return 0.0
-        avg_score = sum(scores) / len(scores)
-        max_score = max(scores)
-        # Hybrid formula: 70% average + 30% max peak
-        return 0.7 * avg_score + 0.3 * max_score
+        # More conservative aggregation: 90% average, 10% max peak
+        # This prevents a single 'hot' sentence from ruining a neutral article.
+        avg_score = float(sum(scores) / len(scores))
+        max_score = float(max(scores))
+        return 0.9 * avg_score + 0.1 * max_score
 
     # Compute final probabilities across chunks
-    final_linguistic = round(calculate_hybrid(lin_scores), 4)
-    final_framing = round(calculate_hybrid(fra_scores), 4)
-    final_entity = round(calculate_hybrid(ent_scores), 4)
+    final_linguistic = round(float(calculate_aggregation(lin_scores)), 4)
+    final_framing = round(float(calculate_aggregation(fra_scores)), 4)
+    final_entity = round(float(calculate_aggregation(ent_scores)), 4)
 
     # Combine into final score
     score_data = combine_scores(final_linguistic, final_framing, final_entity)

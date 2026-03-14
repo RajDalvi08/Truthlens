@@ -65,12 +65,15 @@ def _build_headers(url: str) -> dict:
     }
 
 
+from newspaper import Article
+
+
 def _get_page(session: requests.Session, url: str) -> requests.Response:
-    """Fetch the page HTML, with a fast fail for blocked sources."""
+    """Fetch the page HTML, with a fallback to proxy for blocked sources."""
     headers = _build_headers(url)
 
     # Use a shorter timeout so the UI doesn't hang for too long on blocked URLs.
-    timeout = (3, 6)  # (connect, read)
+    timeout = (5, 10)  # (connect, read)
 
     try:
         response = session.get(url, headers=headers, timeout=timeout, verify=False)
@@ -78,19 +81,22 @@ def _get_page(session: requests.Session, url: str) -> requests.Response:
         return response
     except requests.HTTPError as exc:
         status = getattr(exc.response, "status_code", None)
-        if status == 403:
-            # Many sites block scraping; prompt user to provide raw text instead.
-            raise requests.HTTPError(
-                "Remote site returned 403 Forbidden (likely blocking scrapers). "
-                "Please paste the article text instead of a URL."
-            )
-
-        if status in (429, 500, 502, 503, 504):
+        
+        # If blocked (403) or rate-limited (429) or server error, try the proxy fallback
+        if status in (403, 429, 500, 502, 503, 504):
             logging.debug("Received %s from %s; retrying via proxy", status, url)
-            proxy_url = ALL_ORIGINS_PROXY + urllib.parse.quote(url, safe="")
-            response = session.get(proxy_url, headers=headers, timeout=timeout, verify=False)
-            response.raise_for_status()
-            return response
+            try:
+                proxy_url = ALL_ORIGINS_PROXY + urllib.parse.quote(url, safe="")
+                response = session.get(proxy_url, headers=headers, timeout=timeout, verify=False)
+                response.raise_for_status()
+                return response
+            except Exception as proxy_exc:
+                if status == 403:
+                    raise requests.HTTPError(
+                        f"Remote site returned 403 Forbidden and proxy fallback failed. "
+                        f"The site is actively blocking scrapers. Error: {proxy_exc}"
+                    )
+                raise proxy_exc
 
         raise
     except requests.RequestException as exc:
@@ -103,37 +109,55 @@ def _get_page(session: requests.Session, url: str) -> requests.Response:
 
 
 def fetch_article(url: str) -> dict:
-    """Download a webpage and extract the headline and article text."""
+    """Download a webpage and extract the headline and article text using newspaper3k."""
     session = _create_session()
 
     response = _get_page(session, url)
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    # 1. Extract headline
-    h1 = soup.find("h1")
-    headline = h1.get_text(strip=True) if h1 else ""
-
-    # 2. Extract article text using fallback selectors
-    article_text = ""
-    selectors = [
-        "p",
-        "article",
-        "div.article-body",
-        "div[data-component='text-block']"
-    ]
+    html_content = response.text
     
-    for selector in selectors:
-        elements = soup.select(selector)
-        if elements:
-            # Combine text from all elements found by this selector
-            text_blocks = [el.get_text(strip=True) for el in elements]
-            text = " ".join(t for t in text_blocks if t)
-            if text.strip():
-                article_text = text
-                break
+    # Use newspaper3k for robust extraction
+    try:
+        newspaper_article = Article(url)
+        newspaper_article.download(input_html=html_content)
+        newspaper_article.parse()
+        
+        headline = newspaper_article.title
+        article_text = newspaper_article.text
+    except Exception as exc:
+        logging.error("newspaper3k extraction failed: %s. Falling back to BeautifulSoup.", exc)
+        headline = ""
+        article_text = ""
+
+    # Fallback to BeautifulSoup if newspaper3k fails or returns empty text
+    if not article_text.strip():
+        soup = BeautifulSoup(html_content, "html.parser")
+
+        # 1. Extract headline
+        if not headline:
+            h1 = soup.find("h1")
+            headline = h1.get_text(strip=True) if h1 else ""
+
+        # 2. Extract article text using fallback selectors
+        selectors = [
+            "article",
+            "div.article-body",
+            "div.article__body",
+            "div.story-body",
+            "p",
+        ]
+        
+        for selector in selectors:
+            elements = soup.select(selector)
+            if elements:
+                # Combine text from all elements found by this selector
+                text_blocks = [el.get_text(strip=True) for el in elements]
+                text = "\n\n".join(t for t in text_blocks if len(t) > 40) # Filter out short snippets
+                if text.strip():
+                    article_text = text
+                    break
 
     if not article_text.strip():
-        raise ValueError(f"No article text could be extracted from {url}")
+        raise ValueError(f"No article text could be extracted from {url}. The page might be empty or content is loaded via JavaScript.")
 
     # Extract source domain for tracking purposes
     parsed_url = urllib.parse.urlparse(url)

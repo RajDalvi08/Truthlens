@@ -19,8 +19,8 @@ router = APIRouter(prefix="/compare", tags=["Comparison"])
 # Request / Response schemas
 # -------------------------
 class CompareRequest(BaseModel):
-    url1: Optional[HttpUrl] = None
-    url2: Optional[HttpUrl] = None
+    url1: Optional[str] = None
+    url2: Optional[str] = None
     text1: Optional[str] = None
     text2: Optional[str] = None
 
@@ -41,6 +41,8 @@ class BiasResult(BaseModel):
     linguistic_bias: float
     framing_bias: float
     entity_bias: float
+    bias_visual: str
+    source: str
 
 
 class CompareResponse(BaseModel):

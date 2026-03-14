@@ -59,12 +59,8 @@ def compare_event(main_url: str) -> Dict:
             # Skip articles that fail to fetch
             continue
 
-    # 5. Sort by bias_score descending
+    # 6. Sort by bias_score descending
     all_results.sort(key=lambda x: x["bias_score"], reverse=True)
-
-    # 6. Generate visualizations for sorted results
-    for article in all_results:
-        article["bias_visual"] = generate_bias_bar(article["bias_score"])
 
     return {
         "event": headline,

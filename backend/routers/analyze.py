@@ -19,7 +19,7 @@ router = APIRouter(prefix="/analyze", tags=["Analysis"])
 # Request / Response schemas
 # -------------------------
 class AnalyzeRequest(BaseModel):
-    url: Optional[HttpUrl] = None
+    url: Optional[str] = None
     headline: Optional[str] = None
     text: Optional[str] = None
 
@@ -38,6 +38,7 @@ class AnalyzeResponse(BaseModel):
     linguistic_bias: float
     framing_bias: float
     entity_bias: float
+    bias_visual: str
     source: str
 
 

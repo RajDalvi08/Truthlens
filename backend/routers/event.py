@@ -12,7 +12,7 @@ from typing import List
 router = APIRouter(prefix="/compare_event", tags=["Event Comparison"])
 
 class EventRequest(BaseModel):
-    url: HttpUrl
+    url: str
 
 class ArticleResult(BaseModel):
     source: str

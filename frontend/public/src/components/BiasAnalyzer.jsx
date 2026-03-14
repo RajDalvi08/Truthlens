@@ -248,7 +248,7 @@ export default function BiasAnalyzer() {
                     <div className="mt-4 h-2 bg-white/5 rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${((results.bias_score + 1) / 2) * 100}%` }}
+                        animate={{ width: `${results.bias_score}%` }}
                         transition={{ duration: 1, ease: "easeOut" }}
                         className="h-full bg-gradient-to-r from-indigo-500 via-cyan-500 to-purple-500 rounded-full"
                       />

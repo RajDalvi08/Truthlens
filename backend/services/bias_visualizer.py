@@ -14,15 +14,12 @@ def generate_bias_bar(score: float) -> str:
     Returns:
         Formatted ASCII string representing the bias spectrum.
     """
-    # Clamp score for safety (should already be in range)
+    # Clamp score for safety
     val = max(0, min(100, score))
     
-    # Normalize to 10 blocks
-    blocks = int(round(val / 10))
-    
-    # Ensure at least 1 block for visibility if val > 0, 
-    # but strictly follow logic for demos
-    filled = "█" * blocks
-    empty = "░" * (10 - blocks)
-    
-    return filled + empty
+    # Return a styled HTML bar
+    return f"""
+    <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 99px; overflow: hidden; margin-top: 8px;">
+        <div style="width: {val}%; height: 100%; background: linear-gradient(90deg, #6366f1, #06b6d4, #a855f7); box-shadow: 0 0 8px rgba(6,182,212,0.4);"></div>
+    </div>
+    """

@@ -5,6 +5,7 @@ from models.framing_model import predict as predict_framing
 from models.bead_model import predict as predict_entity
 from services.bias_score import combine_scores
 from services.nlp_utils import split_text, has_named_entities
+from services.bias_visualizer import generate_bias_bar
 
 
 def _check_reporting_tone(text: str) -> float:
@@ -114,5 +115,6 @@ def analyze_bias(article: dict) -> dict:
         "linguistic_bias": final_linguistic,
         "framing_bias": final_framing,
         "entity_bias": final_entity,
+        "bias_visual": generate_bias_bar(score_data["score"]),
         "source": article.get("source", ""),
     }

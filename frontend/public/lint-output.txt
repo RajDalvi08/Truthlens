@@ -1,0 +1,27 @@
+﻿
+C:\Users\Raj\Downloads\news-bias-detection-ui\news-bias\src\Navbar.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u               no-unused-vars
+  8:9   error  'toggleMenu' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Raj\Downloads\news-bias-detection-ui\news-bias\src\components\Demo.jsx
+  513:5   error  Error: Cannot reassign variable after render completes
+
+Reassigning `currentAngle` after render has completed can cause inconsistent behavior on subsequent renders. Consider using state instead.
+
+  511 |     const startAngle = currentAngle
+  512 |     const endAngle = currentAngle + angle
+> 513 |     currentAngle = endAngle
+      |     ^^^^^^^^^^^^ Cannot reassign `currentAngle` after render completes
+  514 |
+  515 |     const startRad = (startAngle * Math.PI) / 180
+  516 |     const endRad = (endAngle * Math.PI) / 180  react-hooks/immutability
+  620:23  error  'setCurrentPage' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+  621:24  error  'setSelectedBias' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
+  642:9   error  'totalPages' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                    no-unused-vars
+  650:9   error  'dynamicStats' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+
+C:\Users\Raj\Downloads\news-bias-detection-ui\news-bias\src\components\Home.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+Γ£û 8 problems (8 errors, 0 warnings)
+

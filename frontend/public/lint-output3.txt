@@ -1,0 +1,9 @@
+﻿
+C:\Users\Raj\Downloads\news-bias-detection-ui\news-bias\src\components\CaseStudies.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Raj\Downloads\news-bias-detection-ui\news-bias\src\components\Methodology.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+Γ£û 2 problems (2 errors, 0 warnings)
+

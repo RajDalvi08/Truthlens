@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+torch
+transformers
+beautifulsoup4
+requests
+pydantic
+spacy
+feedparser
+newspaper3k
+lxml_html_clean

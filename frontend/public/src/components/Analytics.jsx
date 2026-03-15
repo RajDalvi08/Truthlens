@@ -153,10 +153,10 @@ export default function Analytics() {
                 <div className="w-16 h-16 bg-[#fdf8f5] text-[#1a0f0a] rounded-none flex items-center justify-center mx-auto mb-8 shadow-[0_0_25px_rgba(253,248,245,0.1)]">
                     <HiOutlinePresentationChartBar className="w-8 h-8" />
                 </div>
-                <h3 className="text-2xl font-black text-[#fdf8f5] mb-4 uppercase italic tracking-tighter">Ingestion Velocity</h3>
-                <div className="flex items-end justify-center gap-3">
-                    <span className="text-6xl font-black text-[#fdf8f5] italic tracking-tighter tabular-nums">142</span>
-                    <span className="text-[11px] font-black text-[#8d7b68] mb-3 uppercase tracking-[0.25em] italic">ARTICLES / HR</span>
+                <h3 className="text-xl font-black text-[#fdf8f5] mb-2 uppercase italic tracking-tighter">Ingestion Velocity</h3>
+                <div className="flex items-end justify-center gap-2 mt-4">
+                    <span className="text-5xl font-black text-[#fdf8f5] italic tracking-tighter tabular-nums">142</span>
+                    <span className="text-[10px] font-black text-[#8d7b68] mb-2 uppercase tracking-[0.2em] italic">ARTICLES / HR</span>
                 </div>
             </motion.div>
         </div>
@@ -221,42 +221,42 @@ export default function Analytics() {
           <div className="overflow-x-auto">
              <table className="w-full text-left">
                 <thead>
-                   <tr className="bg-[#fdf8f5]/[0.03] text-[10px] font-black uppercase tracking-[0.35em] text-[#8d7b68] italic">
-                      <th className="px-12 py-8">Intel Fragment</th>
-                      <th className="px-12 py-8">Source Vector</th>
-                      <th className="px-12 py-8">Sentiment</th>
-                      <th className="px-12 py-8">Leaning Flux</th>
-                      <th className="px-12 py-8">Timestamp</th>
+                   <tr className="bg-[#fdf8f5]/[0.03] text-[9px] font-black uppercase tracking-[0.3em] text-[#8d7b68] italic">
+                      <th className="px-8 py-5">Intel Fragment</th>
+                      <th className="px-8 py-5">Source Vector</th>
+                      <th className="px-8 py-5">Sentiment</th>
+                      <th className="px-8 py-5">Leaning Flux</th>
+                      <th className="px-8 py-5">Timestamp</th>
                    </tr>
                 </thead>
                 <tbody className="divide-y divide-[#fdf8f5]/5 bg-[#fdf8f5]/[0.01]">
                    {filteredAnalyses.map((item) => (
                       <tr key={item.id} className="group hover:bg-[#fdf8f5]/[0.05] cursor-pointer transition-all duration-400">
-                         <td className="px-12 py-8">
-                            <p className="text-sm font-black text-[#d6c2b8] group-hover:text-[#fdf8f5] group-hover:italic transition-all leading-relaxed max-w-lg uppercase tracking-tight">
+                         <td className="px-8 py-6">
+                            <p className="text-[13px] font-black text-[#d6c2b8] group-hover:text-[#fdf8f5] group-hover:italic transition-all leading-tight max-w-lg uppercase tracking-tight">
                                {item.title}
                             </p>
                          </td>
-                         <td className="px-12 py-8">
-                            <span className="text-[11px] font-black text-[#8d7b68] group-hover:text-[#fdf8f5] uppercase tracking-[0.2em] italic transition-colors">{item.source}</span>
+                         <td className="px-8 py-6">
+                            <span className="text-[10px] font-black text-[#8d7b68] group-hover:text-[#fdf8f5] uppercase tracking-[0.2em] italic transition-colors">{item.source}</span>
                          </td>
-                         <td className="px-12 py-8">
-                            <span className={`px-4 py-1.5 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[10px] font-black uppercase tracking-[0.25em] italic transition-all ${
+                         <td className="px-8 py-6">
+                            <span className={`px-3 py-1 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[9px] font-black uppercase tracking-[0.2em] italic transition-all ${
                                 item.sentiment === 'Positive' ? 'text-[#fdf8f5] group-hover:bg-[#fdf8f5]/10' : 
                                 item.sentiment === 'Negative' ? 'text-[#8d7b68]' : 'text-[#d6c2b8]'
                             }`}>
                                {item.sentiment}
                             </span>
                          </td>
-                         <td className="px-12 py-8">
-                            <div className="flex items-center gap-5">
-                               <div className="flex-1 w-24 h-1.5 bg-[#fdf8f5]/5 rounded-none overflow-hidden border border-[#fdf8f5]/5">
+                         <td className="px-8 py-6">
+                            <div className="flex items-center gap-4">
+                               <div className="flex-1 w-20 h-1 bg-[#fdf8f5]/5 rounded-none overflow-hidden border border-[#fdf8f5]/5">
                                   <div className="h-full bg-[#fdf8f5] shadow-[0_0_12px_rgba(253,248,245,0.5)]" style={{ width: `${Math.abs(item.bias_score)}%` }} />
                                 </div>
-                               <span className="text-[11px] font-black text-[#fdf8f5] tabular-nums tracking-tighter italic">{item.bias_score > 0 ? `+${item.bias_score.toFixed(1)}` : item.bias_score.toFixed(1)}</span>
+                               <span className="text-[10px] font-black text-[#fdf8f5] tabular-nums tracking-tighter italic">{item.bias_score > 0 ? `+${item.bias_score.toFixed(1)}` : item.bias_score.toFixed(1)}</span>
                             </div>
                          </td>
-                         <td className="px-12 py-8 text-[11px] font-black text-[#4d3c2e] group-hover:text-[#8d7b68] uppercase tabular-nums tracking-[0.25em] transition-colors">{item.date}</td>
+                         <td className="px-8 py-6 text-[10px] font-black text-[#4d3c2e] group-hover:text-[#8d7b68] uppercase tabular-nums tracking-[0.2em] transition-colors">{item.date}</td>
                       </tr>
                    ))}
                 </tbody>

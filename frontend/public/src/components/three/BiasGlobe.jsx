@@ -118,13 +118,6 @@ export default function BiasGlobe({ compact = false }) {
 
   return (
     <div className={`w-full ${compact ? "h-[450px]" : "h-[650px]"} rounded-none overflow-hidden border border-[#fdf8f5]/10 bg-[#1a0f0a]/60 relative group shadow-2xl`}>
-      <div className="absolute top-8 left-10 z-10 pointer-events-none">
-        <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-[#fdf8f5] flex items-center gap-4 italic">
-          <span className="w-2.5 h-2.5 rounded-none bg-[#fdf8f5] animate-pulse shadow-[0_0_15px_rgba(253,248,245,0.6)]" />
-          Neural Bias Meridian
-        </h3>
-        <p className="text-[9px] text-[#8d7b68] mt-3 font-black uppercase tracking-[0.3em] italic opacity-60">Hover regions to decode narrative intensity.</p>
-      </div>
 
       <Canvas camera={{ position: [0, 0, 6.5], fov: 40 }} dpr={[1, 1.5]}>
         <ambientLight intensity={0.4} />
@@ -147,19 +140,6 @@ export default function BiasGlobe({ compact = false }) {
         />
       </Canvas>
 
-      {/* Bottom Legend */}
-      <div className="absolute bottom-8 right-10 z-10 flex gap-8 pointer-events-none border-t border-[#fdf8f5]/5 pt-6 bg-gradient-to-l from-[#1a0f0a]/40 to-transparent pl-10">
-        {[
-          { label: "Vector Alpha", color: "bg-[#fdf8f5]" },
-          { label: "Neutral Node", color: "bg-[#d6c2b8]" },
-          { label: "Vector Beta", color: "bg-[#8d7b68]" },
-          { label: "Root Origin", color: "bg-[#4d3c2e]" },
-        ].map((l) => (
-          <div key={l.label} className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.3em] text-[#8d7b68] italic group-hover:text-[#fdf8f5] transition-colors">
-            <div className={`w-2.5 h-2.5 rounded-none shadow-xl ${l.color}`} /> {l.label}
-          </div>
-        ))}
-      </div>
       
       <div className="absolute inset-0 border-[20px] border-[#1a0f0a]/10 pointer-events-none z-0" />
     </div>

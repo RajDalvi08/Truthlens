@@ -130,9 +130,9 @@ export default function SourceComparison() {
                         <h3 className="text-3xl font-black text-[#fdf8f5] uppercase tracking-tighter italic">Narrative Divergence Score</h3>
                         <p className="text-[10px] text-[#8d7b68] mt-3 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10">Cross-source misalignment magnitude.</p>
                     </div>
-                    <div className="flex items-end gap-5">
-                        <span className="text-8xl font-black text-[#fdf8f5] italic tracking-tighter tabular-nums leading-none">{results.bias_difference}</span>
-                        <span className="text-[11px] font-black text-[#8d7b68] mb-4 uppercase tracking-[0.3em] italic">Absolute Delta Index</span>
+                    <div className="flex flex-col items-end gap-2">
+                        <span className="text-7xl font-black text-[#fdf8f5] italic tracking-tighter tabular-nums leading-tight">{results.bias_difference}</span>
+                        <span className="text-[9px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic">Absolute Delta Index</span>
                     </div>
                </div>
 
@@ -156,8 +156,8 @@ export default function SourceComparison() {
                             </h2>
                         </div>
                         <div className="text-right ml-6">
-                            <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] leading-none mb-3 italic">Index</p>
-                            <p className="text-5xl font-black text-[#fdf8f5] tabular-nums italic tracking-tighter shadow-2xl">
+                            <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.2em] leading-none mb-2 italic">Index</p>
+                            <p className="text-4xl font-black text-[#fdf8f5] tabular-nums italic tracking-tighter shadow-2xl">
                                 {item.data.bias_score > 0 ? "+" : ""}{item.data.bias_score}
                             </p>
                         </div>

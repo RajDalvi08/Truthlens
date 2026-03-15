@@ -105,13 +105,6 @@ export default function BiasNetwork() {
 
   return (
     <div className="w-full h-[550px] rounded-none overflow-hidden border border-[#fdf8f5]/10 bg-[#1a0f0a]/60 relative shadow-2xl group">
-      <div className="absolute top-8 left-10 z-10 pointer-events-none">
-        <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-[#fdf8f5] flex items-center gap-4 italic leading-none">
-          <span className="w-2.5 h-2.5 rounded-none bg-[#fdf8f5] shadow-[0_0_15px_rgba(253,248,245,0.4)]" />
-          Narrative Topology Matrix
-        </h3>
-        <p className="text-[9px] text-[#8d7b68] mt-3 font-black uppercase tracking-[0.3em] italic opacity-60">Navigate the 3D nexus of source inter-relationships.</p>
-      </div>
 
       {hoveredSource && (
         <div className="absolute bottom-10 left-10 z-10 bg-[#1a0f0a]/90 backdrop-blur-3xl border border-[#fdf8f5]/10 rounded-none px-6 py-4 pointer-events-none shadow-2xl border-l-4 border-l-[#fdf8f5]">
@@ -142,18 +135,6 @@ export default function BiasNetwork() {
         />
       </Canvas>
 
-      {/* Legend */}
-      <div className="absolute bottom-10 right-10 z-10 flex gap-8 pointer-events-none bg-gradient-to-l from-[#1a0f0a]/40 to-transparent pl-12 py-4">
-        {[
-          { label: "Vector Alpha", color: "bg-[#fdf8f5]" },
-          { label: "Neural Flux", color: "bg-[#d6c2b8]" },
-          { label: "Vector Beta", color: "bg-[#8d7b68]" },
-        ].map((l) => (
-          <div key={l.label} className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.3em] text-[#8d7b68] italic group-hover:text-[#fdf8f5] transition-colors">
-            <div className={`w-3 h-3 rounded-none shadow-2xl ${l.color}`} /> {l.label}
-          </div>
-        ))}
-      </div>
       
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#fdf8f5]/20 to-transparent" />
     </div>

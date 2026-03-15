@@ -180,44 +180,44 @@ export default function Dashboard() {
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-[#fdf8f5]/[0.03] text-[10px] font-black uppercase tracking-[0.3em] text-[#8d7b68] italic">
-                <th className="px-10 py-6">Intel Package</th>
-                <th className="px-10 py-6">Origin</th>
-                <th className="px-10 py-6">Topic</th>
-                <th className="px-10 py-6">Bias Flux</th>
-                <th className="px-10 py-6">Status</th>
+              <tr className="bg-[#fdf8f5]/[0.03] text-[9px] font-black uppercase tracking-[0.3em] text-[#8d7b68] italic border-b border-[#fdf8f5]/10">
+                <th className="px-8 py-4 border-r border-[#fdf8f5]/5">Intel Package</th>
+                <th className="px-8 py-4 border-r border-[#fdf8f5]/5">Origin</th>
+                <th className="px-8 py-4 border-r border-[#fdf8f5]/5">Topic</th>
+                <th className="px-8 py-4 border-r border-[#fdf8f5]/5">Bias Flux</th>
+                <th className="px-8 py-4">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#fdf8f5]/5">
               {recentAnalyses.map((item) => (
                 <tr key={item.id} className="group hover:bg-[#fdf8f5]/[0.04] transition-all duration-300 cursor-pointer">
-                  <td className="px-10 py-6">
-                    <p className="text-sm font-black text-[#d6c2b8] group-hover:text-[#fdf8f5] group-hover:italic transition-all leading-snug max-w-md uppercase tracking-tight">
+                  <td className="px-8 py-5 border-r border-[#fdf8f5]/5">
+                    <p className="text-[13px] font-black text-[#d6c2b8] group-hover:text-[#fdf8f5] group-hover:italic transition-all leading-tight max-w-md uppercase tracking-tight">
                       {item.title}
                     </p>
                   </td>
-                  <td className="px-10 py-6">
-                    <span className="px-4 py-1.5 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[10px] font-black text-[#8d7b68] group-hover:text-[#fdf8f5] group-hover:border-[#fdf8f5]/30 transition-all uppercase tracking-widest italic">
+                  <td className="px-8 py-5 border-r border-[#fdf8f5]/5">
+                    <span className="px-3 py-1 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[9px] font-black text-[#8d7b68] group-hover:text-[#fdf8f5] group-hover:border-[#fdf8f5]/30 transition-all uppercase tracking-widest italic">
                       {item.source}
                     </span>
                   </td>
-                  <td className="px-10 py-6">
-                     <span className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic group-hover:text-[#d6c2b8] transition-colors">{item.topic}</span>
+                  <td className="px-8 py-5 border-r border-[#fdf8f5]/5">
+                     <span className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic group-hover:text-[#d6c2b8] transition-colors">{item.topic}</span>
                   </td>
-                  <td className="px-10 py-6">
+                  <td className="px-8 py-5 border-r border-[#fdf8f5]/5">
                     <div className="flex items-center gap-4">
-                      <div className="flex-1 h-1.5 w-24 bg-[#fdf8f5]/5 rounded-none overflow-hidden">
+                      <div className="flex-1 h-1 w-20 bg-[#fdf8f5]/5 rounded-none overflow-hidden">
                         <div 
                           className="h-full bg-[#fdf8f5] shadow-[0_0_10px_rgba(253,248,245,0.4)]" 
                           style={{ width: `${Math.abs(item.biasScore * 100)}%` }} 
                         />
                       </div>
-                      <span className="text-[11px] font-black text-[#fdf8f5] tabular-nums italic">{item.biasScore > 0 ? `+${item.biasScore.toFixed(1)}` : item.biasScore.toFixed(1)}</span>
+                      <span className="text-[10px] font-black text-[#fdf8f5] tabular-nums italic">{item.biasScore > 0 ? `+${item.biasScore.toFixed(2)}` : item.biasScore.toFixed(2)}</span>
                     </div>
                   </td>
-                  <td className="px-10 py-6">
-                    <span className="flex items-center gap-2 text-[9px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic border border-[#fdf8f5]/10 px-3 py-1.5 rounded-none bg-[#fdf8f5]/[0.03]">
-                      <div className="w-2 h-2 rounded-full bg-[#fdf8f5] animate-pulse shadow-[0_0_8px_rgba(253,248,245,0.8)]" />
+                  <td className="px-8 py-5">
+                    <span className="flex items-center gap-2 text-[8px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic border border-[#fdf8f5]/10 px-2 py-1 rounded-none bg-[#fdf8f5]/[0.03]">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#fdf8f5] animate-pulse shadow-[0_0_8px_rgba(253,248,245,0.8)]" />
                       Analyzed
                     </span>
                   </td>

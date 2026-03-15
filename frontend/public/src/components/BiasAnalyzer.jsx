@@ -198,12 +198,12 @@ export default function BiasAnalyzer() {
                         >
                             {/* Result Stats - Left Cluster */}
                             <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <div className="glass-card p-10 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 group rounded-none shadow-2xl relative overflow-hidden">
+                                <div className="glass-card p-8 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 group rounded-none shadow-2xl relative overflow-hidden">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#fdf8f5]/5 blur-[60px]" />
-                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">Sentiment Polarity</p>
-                                    <div className="text-7xl font-black text-[#fdf8f5] mb-4 italic tracking-tighter tabular-nums leading-none">{results.bias_score}</div>
-                                    <div className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.3em] mb-10 italic opacity-80">{results.bias_level}</div>
-                                    <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden relative border border-[#fdf8f5]/5 shadow-inner">
+                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-4 italic underline decoration-[#fdf8f5]/10">Sentiment Polarity</p>
+                                    <div className="text-6xl font-black text-[#fdf8f5] mb-2 italic tracking-tighter tabular-nums leading-none">{results.bias_score}</div>
+                                    <div className="text-[10px] font-black text-[#fdf8f5] uppercase tracking-[0.25em] mb-8 italic opacity-80">{results.bias_level}</div>
+                                    <div className="h-2 w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden relative border border-[#fdf8f5]/5 shadow-inner">
                                         <motion.div 
                                             initial={{ width: 0 }}
                                             animate={{ width: `${Math.abs(results.bias_score)}%` }}
@@ -211,27 +211,27 @@ export default function BiasAnalyzer() {
                                             transition={{ duration: 2, ease: "easeOut" }}
                                         />
                                     </div>
-                                    <div className="flex justify-between mt-5 text-[8px] font-black text-[#4d3c2e] tracking-[0.4em] uppercase">
+                                    <div className="flex justify-between mt-4 text-[8px] font-black text-[#4d3c2e] tracking-[0.3em] uppercase">
                                         <span>Left Vector</span>
                                         <span>Right Vector</span>
                                     </div>
                                 </div>
 
-                                <div className="glass-card p-10 md:col-span-2 flex flex-col justify-between bg-[#1a0f0a]/40 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden">
+                                <div className="glass-card p-8 md:col-span-2 flex flex-col justify-between bg-[#1a0f0a]/40 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden">
                                      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-[#fdf8f5]/10" />
-                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-10 italic underline decoration-[#fdf8f5]/10">Neural Decomposition Protocols</p>
-                                    <div className="space-y-10">
+                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">Neural Decomposition Protocols</p>
+                                    <div className="space-y-6">
                                         {[
                                             { label: "Linguistic Framing", value: results.linguistic_bias, color: "bg-[#0EA5E9]", shadow: "shadow-[0_0_12px_rgba(14,165,233,0.4)]" },
                                             { label: "Predictive Weighting", value: results.framing_bias, color: "#8B5CF6", shadow: "shadow-[0_0_12px_rgba(139,92,246,0.3)]" },
                                             { label: "Entity Salience", value: results.entity_bias, color: "bg-[#10B981]", shadow: "shadow-[0_0_12px_rgba(16,185,129,0.3)]" },
                                         ].map((metric, i) => (
-                                            <div key={i} className="space-y-4 group/metric">
-                                                <div className="flex justify-between items-center text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic group-hover/metric:text-[#fdf8f5] transition-colors">
+                                            <div key={i} className="space-y-3 group/metric">
+                                                <div className="flex justify-between items-center text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic group-hover/metric:text-[#fdf8f5] transition-colors">
                                                     <span>{metric.label}</span>
                                                     <span className="text-[#fdf8f5] tabular-nums tracking-widest">{metric.value}</span>
                                                 </div>
-                                                <div className="h-[2px] w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden relative">
+                                                <div className="h-[1px] w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden relative">
                                                     <motion.div 
                                                         initial={{ width: 0 }}
                                                         animate={{ width: `${(parseInt(metric.value)||50)}%` }}
@@ -246,24 +246,24 @@ export default function BiasAnalyzer() {
                             </div>
 
                             {/* Metadata Pane - Right Cluster */}
-                            <div className="lg:col-span-4 space-y-8">
-                                <div className="glass-card p-10 h-full flex flex-col justify-between bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-none shadow-2xl relative group">
+                            <div className="lg:col-span-4 space-y-6">
+                                <div className="glass-card p-8 h-full flex flex-col justify-between bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-none shadow-2xl relative group">
                                     <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                                     <div>
-                                        <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-8 italic underline decoration-[#fdf8f5]/10">Source Pulse Signature</p>
-                                        <div className="p-6 bg-[#1a0f0a] rounded-none border border-[#fdf8f5]/10 shadow-2xl relative z-10">
-                                            <p className="text-base font-black text-[#fdf8f5] break-words italic tracking-tighter uppercase leading-[0.9]">
+                                        <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">Source Pulse Signature</p>
+                                        <div className="p-4 bg-[#1a0f0a] rounded-none border border-[#fdf8f5]/10 shadow-2xl relative z-10">
+                                            <p className="text-sm font-black text-[#fdf8f5] break-words italic tracking-tighter uppercase leading-tight">
                                                 {results.source || "SYNTHETIC_TEXT_AGENT"}
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex flex-col gap-6 pt-10 relative z-10">
-                                        <div className="flex items-center gap-4 text-[9px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic">
-                                            <HiOutlineCubeTransparent className="w-6 h-6 text-[#fdf8f5]/20" />
+                                    <div className="flex flex-col gap-4 pt-8 relative z-10">
+                                        <div className="flex items-center gap-4 text-[8px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic">
+                                            <HiOutlineCubeTransparent className="w-5 h-5 text-[#fdf8f5]/20" />
                                             RSA_HASH: <span className="text-[#8d7b68]">_OK_0x4F12</span>
                                         </div>
-                                        <div className="flex items-center gap-4 text-[9px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic">
-                                            <HiOutlineChartSquareBar className="w-6 h-6 text-[#fdf8f5]/20" />
+                                        <div className="flex items-center gap-4 text-[8px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic">
+                                            <HiOutlineChartSquareBar className="w-5 h-5 text-[#fdf8f5]/20" />
                                             LATENCY: <span className="text-[#8d7b68]">42ms</span>
                                         </div>
                                     </div>

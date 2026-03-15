@@ -50,7 +50,7 @@ export default function Sidebar({ isCollapsed, onToggle }) {
       <div className={`border-b border-[#fdf8f5]/10 flex transition-all duration-300 ${isCollapsed ? 'flex-col items-center p-4 gap-4' : 'items-center justify-between p-8'}`}>
         <Link to="/home" className="flex items-center gap-4 overflow-hidden group">
           <div className="w-10 h-10 min-w-[40px] rounded-none bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-xl shrink-0 italic shadow-[0_0_20px_rgba(253,248,245,0.2)] group-hover:scale-110 transition-transform">TL</div>
-          {!isCollapsed && <span className="text-2xl font-black tracking-tighter uppercase italic whitespace-nowrap">TruthLens</span>}
+          {!isCollapsed && <span className="text-xl font-black tracking-tighter uppercase italic whitespace-nowrap">TruthLens</span>}
         </Link>
         <button 
           onClick={onToggle}

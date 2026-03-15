@@ -1,7 +1,8 @@
+"use client"
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import Navigation from "./Navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { compareArticles } from "../services/api";
+import { HiOutlineScale, HiOutlineLink, HiOutlineExclamationCircle, HiOutlineArrowRight } from "react-icons/hi";
 
 export default function SourceComparison() {
   const [url1, setUrl1] = useState("");
@@ -9,16 +10,6 @@ export default function SourceComparison() {
   const [results, setResults] = useState(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
-  };
 
   const handleCompare = async () => {
     if (!url1.trim() || !url2.trim()) {
@@ -41,128 +32,164 @@ export default function SourceComparison() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)] text-[#FDEBD0]">
-      <Navigation />
+    <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-24 mesh-bg">
+      
+      {/* Header */}
+      <div className="border-b border-[#fdf8f5]/10 pb-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div>
+            <h2 className="text-5xl font-black tracking-tighter text-[#fdf8f5] flex items-center gap-5 uppercase italic">
+              <HiOutlineScale className="w-12 h-12 text-[#fdf8f5] shadow-2xl" />
+              Source Delta Analysis
+            </h2>
+            <p className="text-[#8d7b68] text-[10px] mt-4 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10">Quantify narrative divergence between distinct news entities.</p>
+          </div>
+          <div className="flex gap-4">
+             <span className="px-6 py-2.5 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[#d6c2b8] text-[10px] font-black uppercase tracking-[0.3em] italic">0xDelta Mode</span>
+          </div>
+      </div>
 
-      <main className="flex-1 overflow-auto p-8 relative">
-        {/* Ambient Dark Tech Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-yellow-900/10 via-[var(--bg-primary)] to-[var(--bg-primary)] z-0 pointer-events-none"></div>
+      {/* Control Card */}
+       <motion.div 
+          className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 relative overflow-hidden rounded-none shadow-2xl group"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+       >
+          <div className="absolute top-0 left-0 w-full h-[3px] bg-[#fdf8f5] shadow-[0_0_20px_rgba(253,248,245,0.4)]" />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="space-y-4">
+                  <label className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">Target Vector Alpha</label>
+                  <div className="relative group/input">
+                      <HiOutlineLink className="absolute left-5 top-1/2 -translate-y-1/2 text-[#4d3c2e] group-focus-within/input:text-[#fdf8f5] transition-colors" />
+                      <input
+                        value={url1}
+                        onChange={(e) => setUrl1(e.target.value)}
+                        placeholder="PRIMARY ARTICLE URL..."
+                        className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+                      />
+                  </div>
+              </div>
+              <div className="space-y-4">
+                  <label className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">Target Vector Beta</label>
+                  <div className="relative group/input">
+                      <HiOutlineLink className="absolute left-5 top-1/2 -translate-y-1/2 text-[#4d3c2e] group-focus-within/input:text-[#fdf8f5] transition-colors" />
+                      <input
+                        value={url2}
+                        onChange={(e) => setUrl2(e.target.value)}
+                        placeholder="COMPARISON ARTICLE URL..."
+                        className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+                      />
+                  </div>
+              </div>
+          </div>
 
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="max-w-5xl mx-auto space-y-8 relative z-10"
-        >
-          {/* Header Card */}
-          <motion.div 
-            variants={itemVariants}
-            className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-8 relative overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)]"
-          >
-            <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-600/10 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div>
-              <h1 className="text-4xl font-black text-white tracking-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                Source Comparison
-              </h1>
-              <p className="text-yellow-400 font-mono uppercase tracking-widest mt-2 text-sm">Cross-Network Narrative Alignments</p>
-              <p className="text-gray-400 mt-4 max-w-2xl leading-relaxed">
-                Compare coverage of the identical event across differing news outlets. Identify framing gaps, bias disparities, and key narrative differences.
+          <div className="mt-12 flex flex-col sm:flex-row items-center gap-10 pt-12 border-t border-[#fdf8f5]/5">
+              <button
+                onClick={handleCompare}
+                disabled={isLoading}
+                className="btn-primary px-12 py-5 gap-4 w-full sm:w-auto shadow-2xl flex items-center justify-center italic"
+              >
+                {isLoading ? (
+                    <>
+                        <span className="w-5 h-5 border-3 border-[#1a0f0a]/30 border-t-[#1a0f0a] rounded-none animate-spin" />
+                        SYNCHRONIZING...
+                    </>
+                ) : (
+                    <>RUN COMPARATIVE AUDIT <HiOutlineArrowRight className="w-5 h-5" /></>
+                )}
+              </button>
+              <p className="text-[10px] font-black text-[#8d7b68] uppercase max-w-xs text-center sm:text-left leading-relaxed italic underline decoration-[#fdf8f5]/10">
+                  Calculates absolute bias delta and linguistic framing divergence across multiple neural layers.
               </p>
-            </div>
+          </div>
+       </motion.div>
 
-            <div className="mt-8 flex flex-col gap-4 max-w-3xl">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                  value={url1}
-                  onChange={(e) => setUrl1(e.target.value)}
-                  placeholder="Article URL #1"
-                  className="w-full bg-[var(--bg-primary)] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500/50"
-                />
-                <input
-                  value={url2}
-                  onChange={(e) => setUrl2(e.target.value)}
-                  placeholder="Article URL #2"
-                  className="w-full bg-[var(--bg-primary)] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500/50"
-                />
-              </div>
-
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={handleCompare}
-                  disabled={isLoading}
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-600 font-bold text-sm text-white shadow-lg hover:scale-105 transition-transform disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? "Comparing…" : "Compare"}
-                </button>
-                {error && <p className="text-sm text-red-300">{error}</p>}
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Results */}
-          {results && (
-            <motion.div
-              variants={itemVariants}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+       {/* Results Display */}
+       <AnimatePresence>
+          {error && (
+            <motion.div 
+               initial={{ opacity: 0, y: 15 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="p-8 glass-card bg-[#fdf8f5]/5 border border-[#fdf8f5]/20 text-[#fdf8f5] flex items-center gap-6 rounded-none shadow-2xl"
             >
-              {[
-                { label: "Article A", data: results.article_1 },
-                { label: "Article B", data: results.article_2 },
-              ].map((item, idx) => (
-                <div
-                  key={idx}
-                  className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest">
-                        {item.label}
-                      </p>
-                      <h2 className="mt-2 text-lg font-black text-white leading-snug">
-                        {item.data.headline || "(No headline)"}
-                      </h2>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs text-gray-400 uppercase">Bias</p>
-                      <p className="text-2xl font-black text-cyan-300">
-                        {item.data.bias_score > 0 ? "+" : ""}{item.data.bias_score}
-                      </p>
-                      <p className="text-xs font-semibold text-gray-400">
-                        {item.data.bias_level}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 grid grid-cols-1 gap-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-400">Linguistic</span>
-                      <span className="text-sm font-semibold text-white">{item.data.linguistic_bias}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-400">Framing</span>
-                      <span className="text-sm font-semibold text-white">{item.data.framing_bias}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-400">Entity</span>
-                      <span className="text-sm font-semibold text-white">{item.data.entity_bias}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              <div className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6">
-                <p className="text-sm font-mono uppercase tracking-widest text-gray-500">Bias Difference</p>
-                <p className="mt-2 text-4xl font-black text-cyan-300">
-                  {results.bias_difference > 0 ? "+" : ""}{results.bias_difference}
-                </p>
-                <p className="text-xs text-gray-400 mt-1">Absolute difference between the two sources.</p>
-              </div>
+               <HiOutlineExclamationCircle className="w-10 h-10 text-[#fdf8f5] animate-pulse" />
+               <span className="font-black text-[11px] tracking-[0.2em] uppercase italic">TERMINAL_FAULT: {error}</span>
             </motion.div>
           )}
 
-        </motion.div>
-      </main>
+          {results && (
+            <motion.div 
+               initial={{ opacity: 0, y: 30 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="grid grid-cols-1 lg:grid-cols-12 gap-10"
+            >
+               {/* Delta summary - Top Wide Bento */}
+               <div className="lg:col-span-12 glass-card p-12 flex flex-col md:flex-row md:items-center justify-between gap-10 bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 shadow-2xl rounded-none relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-[#fdf8f5]/5 blur-[80px] group-hover:bg-[#fdf8f5]/10 transition-all duration-1000" />
+                    <div>
+                        <h3 className="text-3xl font-black text-[#fdf8f5] uppercase tracking-tighter italic">Narrative Divergence Score</h3>
+                        <p className="text-[10px] text-[#8d7b68] mt-3 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10">Cross-source misalignment magnitude.</p>
+                    </div>
+                    <div className="flex items-end gap-5">
+                        <span className="text-8xl font-black text-[#fdf8f5] italic tracking-tighter tabular-nums leading-none">{results.bias_difference}</span>
+                        <span className="text-[11px] font-black text-[#8d7b68] mb-4 uppercase tracking-[0.3em] italic">Absolute Delta Index</span>
+                    </div>
+               </div>
+
+               {[
+                 { label: "VECTOR_ALPHA", data: results.article_1, side: "left" },
+                 { label: "VECTOR_BETA", data: results.article_2, side: "right" },
+               ].map((item, idx) => (
+                 <motion.div
+                   key={idx}
+                   className="lg:col-span-6 saas-card p-10 group hover:border-[#fdf8f5]/30 transition-all bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden"
+                   initial={{ opacity: 0, x: item.side === "left" ? -30 : 30 }}
+                   animate={{ opacity: 1, x: 0 }}
+                   transition={{ delay: 0.2 + (idx * 0.1) }}
+                 >
+                    <div className="absolute top-0 left-0 w-2 h-full bg-[#fdf8f5]/5 group-hover:bg-[#fdf8f5]/20 transition-all" />
+                    <div className="flex justify-between items-start mb-10">
+                        <div className="flex-1">
+                            <span className="px-5 py-1.5 bg-[#fdf8f5]/5 text-[#fdf8f5] border border-[#fdf8f5]/10 text-[9px] font-black uppercase tracking-[0.3em] italic">{item.label}</span>
+                            <h2 className="mt-8 text-2xl font-black text-[#fdf8f5] group-hover:italic transition-all leading-[0.95] uppercase tracking-tighter">
+                                {item.data.headline || "Untitled Intelligence Fragment"}
+                            </h2>
+                        </div>
+                        <div className="text-right ml-6">
+                            <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] leading-none mb-3 italic">Index</p>
+                            <p className="text-5xl font-black text-[#fdf8f5] tabular-nums italic tracking-tighter shadow-2xl">
+                                {item.data.bias_score > 0 ? "+" : ""}{item.data.bias_score}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-6 pt-10 border-t border-[#fdf8f5]/5">
+                        {[
+                          { l: "Linguistic Divergence", v: item.data.linguistic_bias },
+                          { l: "Framing Protocol", v: item.data.framing_bias },
+                          { l: "Entity Salience", v: item.data.entity_bias },
+                        ].map((stat, i) => (
+                          <div key={i} className="flex items-center justify-between group/stat">
+                             <span className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/5 group-hover/stat:text-[#d6c2b8] transition-colors">{stat.l}</span>
+                             <span className="text-sm font-black text-[#fdf8f5] tabular-nums tracking-widest group-hover/stat:scale-110 transition-transform origin-right">{stat.v}</span>
+                          </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-10 h-2 w-full bg-[#fdf8f5]/5 overflow-hidden border border-[#fdf8f5]/5">
+                        <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${Math.abs(item.data.bias_score)}%` }}
+                            className={`h-full ${item.side === 'left' ? 'bg-gradient-to-r from-[#0EA5E9] to-[#3b82f6]' : 'bg-gradient-to-r from-[#f59e0b] to-[#F97316]'} shadow-[0_0_15px_rgba(253,248,245,0.4)]`}
+                            transition={{ delay: 1, duration: 1.5 }}
+                        />
+                    </div>
+                 </motion.div>
+               ))}
+            </motion.div>
+          )}
+       </AnimatePresence>
+
     </div>
   );
 }

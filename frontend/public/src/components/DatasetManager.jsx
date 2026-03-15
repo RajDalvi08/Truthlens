@@ -1,76 +1,76 @@
+"use client"
 import React from "react";
 import { motion } from "framer-motion";
-import Navigation from "./Navigation";
+import { HiOutlineDatabase, HiOutlineCloudUpload, HiOutlineCog, HiOutlineShare } from "react-icons/hi";
 
 export default function DatasetManager() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
-  };
-
   return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)] text-[#FDEBD0]">
-      <Navigation />
+    <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-24 mesh-bg">
+      
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-[#fdf8f5]/10 pb-12">
+        <div>
+          <h2 className="text-5xl font-black tracking-tighter text-[#fdf8f5] flex items-center gap-6 uppercase italic">
+            <HiOutlineDatabase className="w-12 h-12 text-[#fdf8f5] shadow-2xl" />
+            Dataset Management
+          </h2>
+          <p className="text-[#8d7b68] text-[10px] mt-4 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10 leading-relaxed">Curate foundational training sets and linguistic corpus fragments across the neural network.</p>
+        </div>
+        <button className="btn-primary flex items-center justify-center gap-4 px-10 py-5 text-[11px] shadow-2xl transition-all italic">
+          <HiOutlineCloudUpload className="w-6 h-6" />
+          Ingest New Corpus
+        </button>
+      </div>
 
-      <main className="flex-1 overflow-auto p-8 relative">
-        {/* Ambient Dark Tech Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-fuchsia-900/10 via-[var(--bg-primary)] to-[var(--bg-primary)] z-0 pointer-events-none"></div>
-
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="max-w-5xl mx-auto space-y-8 relative z-10"
-        >
-          {/* Header Card */}
+      {/* Grid of Datasets */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        {[1, 2, 3, 4].map((i) => (
           <motion.div 
-            variants={itemVariants}
-            className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-8 relative overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)]"
+            key={i}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.1 }}
+            className="saas-card group relative overflow-hidden flex flex-col justify-between bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl"
           >
-            <div className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-600/10 rounded-full blur-3xl pointer-events-none"></div>
+             <div className="absolute top-0 right-0 w-48 h-48 bg-[#fdf8f5]/5 blur-[80px] group-hover:bg-[#fdf8f5]/10 transition-all duration-1000 pointer-events-none" />
+             
+             <div className="p-10">
+                <div className="flex justify-between items-start mb-10">
+                    <div className="w-16 h-16 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-none flex items-center justify-center text-[#fdf8f5] group-hover:bg-[#fdf8f5] group-hover:text-[#1a0f0a] transition-all">
+                        <HiOutlineDatabase className="w-8 h-8" />
+                    </div>
+                    <span className="px-5 py-2 bg-[#fdf8f5]/5 text-[#fdf8f5] border border-[#fdf8f5]/20 text-[9px] font-black uppercase tracking-[0.3em] italic">ACTIVE_NODE_Q4</span>
+                </div>
+                
+                <h3 className="text-3xl font-black text-[#fdf8f5] mb-4 uppercase italic tracking-tighter">Corpus Bundle 2026.Q{i}</h3>
+                <p className="text-[11px] text-[#d6c2b8] font-black uppercase tracking-tight mb-10 leading-snug opacity-80 italic">Foundational corpus containing 2.4 million verified news fragments across global nodes. Optimized for framing detection.</p>
+                
+                <div className="flex items-center gap-10 text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">
+                    <div className="flex items-center gap-4">
+                        <div className="w-1.5 h-1.5 bg-[#fdf8f5] opacity-50" />
+                        84 GB STORAGE
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <div className="w-1.5 h-1.5 bg-[#fdf8f5] opacity-50" />
+                        v2.4 Neural Pack
+                    </div>
+                </div>
+             </div>
 
-            <div>
-              <h1 className="text-4xl font-black text-white tracking-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                Dataset Manager
-              </h1>
-              <p className="text-fuchsia-400 font-mono uppercase tracking-widest mt-2 text-sm">Corpus Management & Training Data</p>
-              <p className="text-gray-400 mt-4 max-w-2xl leading-relaxed">
-                Manage foundational Truth-Sets. Upload new training data, modify existing classification weights, and curate unbiased baseline sets.
-              </p>
-            </div>
+             <div className="p-6 bg-[#fdf8f5]/[0.02] border-t border-[#fdf8f5]/5 grid grid-cols-2 gap-6 relative z-10">
+                <button className="flex items-center justify-center gap-4 py-4 text-[10px] font-black uppercase tracking-[0.25em] italic bg-[#1a0f0a] border border-[#fdf8f5]/10 text-[#8d7b68] hover:text-[#fdf8f5] hover:border-[#fdf8f5] transition-all rounded-none shadow-xl">
+                    <HiOutlineCog className="w-5 h-5" />
+                    Configure
+                </button>
+                <button className="flex items-center justify-center gap-4 py-4 text-[10px] font-black uppercase tracking-[0.25em] italic bg-[#1a0f0a] border border-[#fdf8f5]/10 text-[#8d7b68] hover:text-[#fdf8f5] hover:border-[#fdf8f5] transition-all rounded-none shadow-xl">
+                    <HiOutlineShare className="w-5 h-5" />
+                    Synchronize
+                </button>
+             </div>
           </motion.div>
+        ))}
+      </div>
 
-           {/* Placeholder Grid */}
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[1, 2, 3, 4].map((i) => (
-                <motion.div 
-                  key={i}
-                  variants={itemVariants}
-                  whileHover={{ y: -5, borderColor: "rgba(217, 70, 239, 0.4)" }}
-                  className="bg-[var(--bg-elevated)] border border-white/5 rounded-2xl p-6 relative overflow-hidden group transition-all duration-300"
-                >
-                   <div className="flex justify-between items-start mb-4 border-b border-white/10 pb-4">
-                      <div>
-                        <h3 className="text-lg font-bold text-white">Dataset Bundle 2024.Q{i}</h3>
-                        <p className="text-xs text-gray-500 font-mono mt-1">2.4m Articles • English</p>
-                      </div>
-                      <span className="px-3 py-1 bg-fuchsia-500/10 text-fuchsia-400 border border-fuchsia-500/30 rounded-full text-xs font-bold uppercase">Active</span>
-                   </div>
-                   <div className="flex gap-4">
-                        <button className="flex-1 py-2 rounded-xl border border-white/20 bg-transparent font-bold text-sm text-white hover:bg-white/5 transition-colors">Configure</button>
-                        <button className="flex-1 py-2 rounded-xl bg-gradient-to-r from-fuchsia-500 to-purple-600 font-bold text-sm text-white shadow-lg opacity-80 hover:opacity-100">Export</button>
-                   </div>
-                </motion.div>
-              ))}
-            </div>
-
-        </motion.div>
-      </main>
     </div>
   );
 }

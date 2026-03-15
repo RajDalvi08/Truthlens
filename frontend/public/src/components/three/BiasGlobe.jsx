@@ -33,29 +33,29 @@ function Globe() {
 
   useFrame(() => {
     if (globeRef.current) {
-      globeRef.current.rotation.y += 0.001;
+      globeRef.current.rotation.y += 0.0008;
     }
   });
 
   const wireframeGeo = useMemo(() => {
-    return new THREE.SphereGeometry(2.5, 36, 24);
+    return new THREE.SphereGeometry(2.5, 48, 36);
   }, []);
 
   return (
     <group ref={globeRef}>
-      {/* Solid inner sphere */}
+      {/* Solid inner sphere - Espresso */}
       <mesh>
         <sphereGeometry args={[2.48, 64, 48]} />
-        <meshStandardMaterial color="#0a0a1a" roughness={0.9} metalness={0.1} />
+        <meshStandardMaterial color="#1a0f0a" roughness={0.7} metalness={0.2} />
       </mesh>
-      {/* Wireframe shell */}
+      {/* Wireframe shell - Brown */}
       <mesh geometry={wireframeGeo}>
-        <meshBasicMaterial color="#1e1b4b" wireframe transparent opacity={0.3} />
+        <meshBasicMaterial color="#8d7b68" wireframe transparent opacity={0.15} />
       </mesh>
-      {/* Atmospheric glow */}
+      {/* Atmospheric glow - Skin */}
       <mesh>
-        <sphereGeometry args={[2.65, 64, 48]} />
-        <meshBasicMaterial color="#4f46e5" transparent opacity={0.04} side={THREE.BackSide} />
+        <sphereGeometry args={[2.7, 64, 48]} />
+        <meshBasicMaterial color="#fdf8f5" transparent opacity={0.03} side={THREE.BackSide} />
       </mesh>
     </group>
   );
@@ -67,16 +67,16 @@ function RegionMarker({ region, onHover }) {
   const pos = useMemo(() => latLonToVec3(region.lat, region.lon, 2.55), [region]);
 
   const markerColor = useMemo(() => {
-    if (region.bias > 0.5) return "#ef4444";
-    if (region.bias > 0.2) return "#a855f7";
-    if (region.bias > -0.2) return "#06b6d4";
-    return "#4f46e5";
+    if (region.bias > 0.5) return "#8d7b68"; // Deep Brown
+    if (region.bias > 0.2) return "#d6c2b8"; // Light Brown
+    if (region.bias > -0.2) return "#fdf8f5"; // Skin/Off-white
+    return "#f5ebe0";
   }, [region.bias]);
 
   useFrame((state) => {
     if (markerRef.current) {
-      const scale = 1 + Math.sin(state.clock.getElapsedTime() * 2 + region.lat) * 0.2;
-      markerRef.current.scale.setScalar(hovered ? 1.5 : scale);
+      const scale = 1 + Math.sin(state.clock.getElapsedTime() * 1.5 + region.lat) * 0.15;
+      markerRef.current.scale.setScalar(hovered ? 2 : scale);
     }
   });
 
@@ -88,21 +88,21 @@ function RegionMarker({ region, onHover }) {
         onPointerOver={(e) => { e.stopPropagation(); setHovered(true); onHover(region); }}
         onPointerOut={() => { setHovered(false); onHover(null); }}
       >
-        <sphereGeometry args={[0.06, 16, 16]} />
+        <sphereGeometry args={[0.07, 32, 32]} />
         <meshBasicMaterial color={markerColor} />
       </mesh>
       {/* Pulse ring */}
       <mesh position={pos}>
-        <ringGeometry args={[0.08, 0.12, 32]} />
-        <meshBasicMaterial color={markerColor} transparent opacity={hovered ? 0.6 : 0.2} side={THREE.DoubleSide} />
+        <ringGeometry args={[0.09, 0.14, 32]} />
+        <meshBasicMaterial color={markerColor} transparent opacity={hovered ? 0.8 : 0.1} side={THREE.DoubleSide} />
       </mesh>
       {hovered && (
-        <Html position={[pos.x * 1.15, pos.y * 1.15, pos.z * 1.15]} center>
-          <div className="bg-black/95 backdrop-blur-xl border border-white/20 rounded-xl px-4 py-3 text-center whitespace-nowrap pointer-events-none shadow-2xl">
-            <p className="text-white text-sm font-bold">{region.name}</p>
-            <p className="text-[10px] text-gray-400 font-mono mt-1">{region.articles} articles · {region.trend}</p>
-            <p className="text-xs font-mono mt-1">
-              Bias: <span className={region.bias > 0 ? "text-purple-400" : "text-cyan-400"}>
+        <Html position={[pos.x * 1.25, pos.y * 1.25, pos.z * 1.25]} center>
+          <div className="bg-[#1a0f0a]/95 backdrop-blur-3xl border border-[#fdf8f5]/20 rounded-none px-6 py-4 text-center whitespace-nowrap pointer-events-none shadow-2xl">
+            <p className="text-[#fdf8f5] text-base font-black uppercase italic tracking-tighter">{region.name}</p>
+            <p className="text-[10px] text-[#8d7b68] font-black mt-2 uppercase tracking-[0.2em] italic underline decoration-[#fdf8f5]/10">{region.articles} articles · {region.trend}</p>
+            <p className="text-xs font-black mt-3 uppercase tracking-widest text-[#fdf8f5]">
+              BIAS_DELTA: <span className="underline decoration-[#fdf8f5]/30">
                 {region.bias > 0 ? "+" : ""}{region.bias.toFixed(2)}
               </span>
             </p>
@@ -117,19 +117,20 @@ export default function BiasGlobe({ compact = false }) {
   const [hoveredRegion, setHoveredRegion] = useState(null);
 
   return (
-    <div className={`w-full ${compact ? "h-[400px]" : "h-[600px]"} rounded-3xl overflow-hidden border border-white/10 bg-black/40 relative`}>
-      <div className="absolute top-4 left-6 z-10 pointer-events-none">
-        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-gray-500 flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-          Global Bias Intensity Map
+    <div className={`w-full ${compact ? "h-[450px]" : "h-[650px]"} rounded-none overflow-hidden border border-[#fdf8f5]/10 bg-[#1a0f0a]/60 relative group shadow-2xl`}>
+      <div className="absolute top-8 left-10 z-10 pointer-events-none">
+        <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-[#fdf8f5] flex items-center gap-4 italic">
+          <span className="w-2.5 h-2.5 rounded-none bg-[#fdf8f5] animate-pulse shadow-[0_0_15px_rgba(253,248,245,0.6)]" />
+          Neural Bias Meridian
         </h3>
-        <p className="text-[10px] text-gray-600 mt-1 font-mono">HOVER REGIONS · DRAG TO ROTATE</p>
+        <p className="text-[9px] text-[#8d7b68] mt-3 font-black uppercase tracking-[0.3em] italic opacity-60">Hover regions to decode narrative intensity.</p>
       </div>
 
-      <Canvas camera={{ position: [0, 0, 6], fov: 45 }} dpr={[1, 1.5]}>
-        <ambientLight intensity={0.3} />
-        <pointLight position={[10, 5, 10]} intensity={0.6} color="#ffffff" />
-        <pointLight position={[-5, -5, -5]} intensity={0.3} color="#4f46e5" />
+      <Canvas camera={{ position: [0, 0, 6.5], fov: 40 }} dpr={[1, 1.5]}>
+        <ambientLight intensity={0.4} />
+        <pointLight position={[10, 5, 10]} intensity={0.8} color="#fdf8f5" />
+        <pointLight position={[-10, -5, -10]} intensity={0.5} color="#8d7b68" />
+        <spotLight position={[0, 10, 0]} intensity={0.5} color="#fdf8f5" />
 
         <Globe />
         {REGION_DATA.map((region, i) => (
@@ -140,25 +141,27 @@ export default function BiasGlobe({ compact = false }) {
           enablePan={false}
           enableZoom={true}
           minDistance={4}
-          maxDistance={10}
+          maxDistance={12}
           autoRotate
-          autoRotateSpeed={0.3}
+          autoRotateSpeed={0.4}
         />
       </Canvas>
 
       {/* Bottom Legend */}
-      <div className="absolute bottom-4 right-6 z-10 flex gap-4 pointer-events-none">
+      <div className="absolute bottom-8 right-10 z-10 flex gap-8 pointer-events-none border-t border-[#fdf8f5]/5 pt-6 bg-gradient-to-l from-[#1a0f0a]/40 to-transparent pl-10">
         {[
-          { label: "Left", color: "bg-indigo-500" },
-          { label: "Neutral", color: "bg-cyan-500" },
-          { label: "Right", color: "bg-purple-500" },
-          { label: "State", color: "bg-red-500" },
+          { label: "Vector Alpha", color: "bg-[#fdf8f5]" },
+          { label: "Neutral Node", color: "bg-[#d6c2b8]" },
+          { label: "Vector Beta", color: "bg-[#8d7b68]" },
+          { label: "Root Origin", color: "bg-[#4d3c2e]" },
         ].map((l) => (
-          <div key={l.label} className="flex items-center gap-1.5 text-[9px] font-mono text-gray-500">
-            <div className={`w-2 h-2 rounded-full ${l.color}`} /> {l.label}
+          <div key={l.label} className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.3em] text-[#8d7b68] italic group-hover:text-[#fdf8f5] transition-colors">
+            <div className={`w-2.5 h-2.5 rounded-none shadow-xl ${l.color}`} /> {l.label}
           </div>
         ))}
       </div>
+      
+      <div className="absolute inset-0 border-[20px] border-[#1a0f0a]/10 pointer-events-none z-0" />
     </div>
   );
 }

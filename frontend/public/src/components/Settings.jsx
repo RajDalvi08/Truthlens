@@ -1,101 +1,139 @@
+"use client"
 import React from "react";
 import { motion } from "framer-motion";
-import Navigation from "./Navigation";
+import { HiOutlineCog, HiOutlineAdjustments, HiOutlineShieldCheck, HiOutlineMail, HiOutlineChip } from "react-icons/hi";
 
 export default function Settings() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
-  };
-
   return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)] text-[#FDEBD0]">
-      <Navigation />
+    <div className="max-w-4xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-24 mesh-bg">
+      
+      {/* Header */}
+      <div className="border-b border-[#fdf8f5]/10 pb-12 flex items-end justify-between">
+        <div>
+          <h2 className="text-5xl font-black tracking-tighter text-[#fdf8f5] flex items-center gap-6 uppercase italic">
+            <HiOutlineCog className="w-12 h-12 text-[#fdf8f5] shadow-2xl" />
+            Core Configuration
+          </h2>
+          <p className="text-[#8d7b68] text-[10px] mt-4 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10">Fine-tune the neural engine parameters and interface protocols.</p>
+        </div>
+        <div className="hidden md:flex flex-col items-end">
+            <span className="text-[9px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic">Engine_v4.2</span>
+            <span className="text-[9px] font-black text-[#fdf8f5] uppercase tracking-[0.3em] italic opacity-50">SYNC_SECURE</span>
+        </div>
+      </div>
 
-      <main className="flex-1 overflow-auto p-8 relative">
-        {/* Ambient Dark Tech Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-900/40 via-[var(--bg-primary)] to-[var(--bg-primary)] z-0 pointer-events-none"></div>
-
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="max-w-4xl mx-auto space-y-8 relative z-10"
-        >
-          {/* Header Component */}
-          <motion.div variants={itemVariants}>
-              <h1 className="text-4xl font-black text-white tracking-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                System Settings
-              </h1>
-              <p className="text-gray-500 font-mono mt-2 text-sm">Configure Preferences & API Access</p>
-          </motion.div>
-
-          {/* Settings Sections */}
+      <div className="space-y-10">
+          
+          {/* General Section */}
           <motion.div 
-            variants={itemVariants}
-            className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-8 relative overflow-hidden space-y-8 shadow-[0_10px_40px_rgba(0,0,0,0.5)]"
+            className="saas-card overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
           >
-             
-             {/* General Settings */}
-             <div className="border-b border-white/10 pb-8">
-                 <h2 className="text-lg font-bold text-white mb-6 flexItems-center gap-2">
-                     <span className="w-2 h-2 rounded-full bg-cyan-500 inline-block shrink-0"></span> General Application Settings
-                 </h2>
-                 <div className="space-y-4 max-w-2xl">
-                     <div className="flex justify-between items-center bg-[var(--bg-elevated)] p-4 rounded-xl border border-white/5">
-                         <div>
-                            <p className="text-sm font-bold text-white">Dark Mode Navigation</p>
-                            <p className="text-xs text-gray-500 mt-1">Force dark mode for primary console viewing</p>
-                         </div>
-                         <div className="w-12 h-6 bg-cyan-500 rounded-full relative cursor-pointer">
-                             <div className="w-4 h-4 bg-white rounded-full absolute top-1 right-1 shadow-md"></div>
-                         </div>
-                     </div>
-                     <div className="flex justify-between items-center bg-[var(--bg-elevated)] p-4 rounded-xl border border-white/5">
-                         <div>
-                            <p className="text-sm font-bold text-white">Daily Summary Emails</p>
-                            <p className="text-xs text-gray-500 mt-1">Receive automated bias analytics reports</p>
-                         </div>
-                         <div className="w-12 h-6 bg-gray-700 rounded-full relative cursor-pointer">
-                             <div className="w-4 h-4 bg-gray-400 rounded-full absolute top-1 left-1 shadow-md"></div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-             
-             {/* Engine Settings */}
-             <div>
-                 <h2 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                     <span className="w-2 h-2 rounded-full bg-fuchsia-500 inline-block shrink-0"></span> Engine Parameters
-                 </h2>
-                 <div className="space-y-6 max-w-2xl">
-                     <div>
-                        <label className="text-sm font-bold text-gray-400 block mb-2">Default Base Model</label>
-                        <select className="w-full bg-[var(--bg-primary)] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500/50 appearance-none">
-                            <option>Gemini 1.5 Pro - Primary Analytics</option>
-                            <option>Gemini 1.5 Flash - Fast Parsing</option>
-                            <option>Gemma 2 - Local Classification</option>
-                        </select>
-                     </div>
-                     <div>
-                         <label className="text-sm font-bold text-gray-400 block mb-2">Bias Sensitivity Threshold</label>
-                         <input type="range" className="w-full accent-fuchsia-500" />
-                         <div className="flex justify-between text-xs text-gray-500 font-mono mt-1">
-                             <span>Lenient (0.2)</span>
-                             <span>Strict (0.8)</span>
-                         </div>
-                     </div>
-                 </div>
-             </div>
+              <div className="p-10 border-b border-[#fdf8f5]/5 bg-[#fdf8f5]/[0.01] flex items-center gap-4 text-[#fdf8f5]">
+                  <HiOutlineAdjustments className="w-6 h-6" />
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.4em] italic underline decoration-[#fdf8f5]/10">Interface Parameters // Node OS</h3>
+              </div>
+              <div className="p-10 space-y-8">
+                  <div className="flex items-center justify-between p-8 glass-card bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/5 rounded-none shadow-xl hover:border-[#fdf8f5]/20 transition-all group">
+                      <div>
+                          <p className="text-lg font-black text-[#fdf8f5] uppercase italic tracking-tighter group-hover:translate-x-2 transition-transform">High-Fidelity Rendering</p>
+                          <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.2em] italic mt-2">Enable advanced backdrop blurs and neural mesh gradients.</p>
+                      </div>
+                      <div className="w-16 h-8 bg-[#fdf8f5] rounded-none relative cursor-pointer shadow-[0_0_20px_rgba(253,248,245,0.4)]">
+                          <div className="w-6 h-6 bg-[#1a0f0a] rounded-none absolute top-1 right-1" />
+                      </div>
+                  </div>
 
+                  <div className="flex items-center justify-between p-8 glass-card bg-[#fdf8f5]/[0.01] border-[#fdf8f5]/5 rounded-none opacity-40 grayscale group">
+                      <div>
+                          <p className="text-lg font-black text-[#fdf8f5] uppercase italic tracking-tighter">Live Ingestion Ticker</p>
+                          <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.2em] italic mt-2">Display real-time news fragment streams in global footer.</p>
+                      </div>
+                      <div className="w-16 h-8 bg-[#fdf8f5]/10 rounded-none relative cursor-not-allowed border border-[#fdf8f5]/5">
+                          <div className="w-6 h-6 bg-[#fdf8f5]/20 rounded-none absolute top-1 left-1" />
+                      </div>
+                  </div>
+              </div>
           </motion.div>
-        </motion.div>
-      </main>
+
+          {/* Engine Parameters Section */}
+          <motion.div 
+            className="saas-card overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+              <div className="p-10 border-b border-[#fdf8f5]/5 bg-[#fdf8f5]/[0.01] flex items-center gap-4 text-[#fdf8f5]">
+                  <HiOutlineChip className="w-6 h-6" />
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.4em] italic underline decoration-[#fdf8f5]/10">Neural Logic Protocols</h3>
+              </div>
+              <div className="p-10 space-y-12">
+                  <div className="space-y-6">
+                      <label className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">Primary Intelligence Model Integration</label>
+                      <div className="relative group">
+                        <select className="w-full appearance-none bg-[#1a0f0a] border border-[#fdf8f5]/10 text-[#fdf8f5] px-8 py-5 text-xs font-black uppercase tracking-[0.25em] italic rounded-none outline-none focus:border-[#fdf8f5] transition-all cursor-pointer shadow-xl">
+                            <option>Neural Core v4.2 // Default</option>
+                            <option>GPT-4o Protocol // Native</option>
+                            <option>Claude 3.5 Sonnet // Analytical</option>
+                        </select>
+                        <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#8d7b68] group-hover:text-[#fdf8f5] transition-colors">
+                            ▼
+                        </div>
+                      </div>
+                  </div>
+
+                  <div className="space-y-8">
+                      <div className="flex justify-between items-end">
+                         <label className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">Bias Sensitivity Threshold Audit</label>
+                         <span className="text-[11px] font-black text-[#fdf8f5] bg-[#fdf8f5]/10 border border-[#fdf8f5]/20 px-4 py-2 italic uppercase tracking-[0.25em] shadow-xl">0.78 / STRICT_MODE</span>
+                      </div>
+                      <div className="h-10 flex items-center group/range">
+                          <input type="range" className="w-full h-1 bg-[#fdf8f5]/10 rounded-none appearance-none cursor-pointer accent-[#fdf8f5] group-hover/range:bg-[#fdf8f5]/20 transition-all" />
+                      </div>
+                  </div>
+              </div>
+          </motion.div>
+
+          {/* Security & Notifications */}
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 gap-10"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+              <div className="saas-card p-12 flex flex-col justify-between bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none group hover:border-[#fdf8f5]/40 transition-all shadow-2xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#fdf8f5]/5 blur-[60px]" />
+                  <div className="flex items-center gap-8 mb-10 relative z-10">
+                      <div className="w-16 h-16 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-none flex items-center justify-center text-[#fdf8f5] group-hover:bg-[#fdf8f5] group-hover:text-[#1a0f0a] transition-all shadow-xl">
+                          <HiOutlineShieldCheck className="w-8 h-8" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Neural Guard</h3>
+                        <p className="text-[10px] text-[#d6c2b8] font-black uppercase tracking-[0.25em] mt-2 italic opacity-60">Status: PROTECTED</p>
+                      </div>
+                  </div>
+                  <p className="text-[11px] text-[#8d7b68] font-black uppercase tracking-tight italic mb-12 opacity-80 leading-relaxed">Automated Multi-Factor credentials and analytical session management protocols.</p>
+                  <button className="w-full py-5 text-[10px] font-black uppercase tracking-[0.3em] bg-[#1a0f0a] border border-[#fdf8f5]/10 text-[#8d7b68] hover:text-[#fdf8f5] hover:border-[#fdf8f5] hover:bg-[#fdf8f5]/10 transition-all rounded-none italic shadow-xl">Review Encryption Keys</button>
+              </div>
+
+              <div className="saas-card p-12 flex flex-col justify-between bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none group hover:border-[#fdf8f5]/40 transition-all shadow-2xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#fdf8f5]/5 blur-[60px]" />
+                  <div className="flex items-center gap-8 mb-10 relative z-10">
+                      <div className="w-16 h-16 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-none flex items-center justify-center text-[#fdf8f5] group-hover:bg-[#fdf8f5] group-hover:text-[#1a0f0a] transition-all shadow-xl">
+                          <HiOutlineMail className="w-8 h-8" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Intel Dispatch</h3>
+                        <p className="text-[10px] text-[#d6c2b8] font-black uppercase tracking-[0.25em] mt-2 italic opacity-60">Cadence: DIURNAL</p>
+                      </div>
+                  </div>
+                  <p className="text-[11px] text-[#8d7b68] font-black uppercase tracking-tight italic mb-12 opacity-80 leading-relaxed">Configure diurnal automated summaries and critical delta alerts directly to your node.</p>
+                  <button className="w-full py-5 text-[10px] font-black uppercase tracking-[0.3em] bg-[#1a0f0a] border border-[#fdf8f5]/10 text-[#8d7b68] hover:text-[#fdf8f5] hover:border-[#fdf8f5] hover:bg-[#fdf8f5]/10 transition-all rounded-none italic shadow-xl">Protocol Frequency</button>
+              </div>
+          </motion.div>
+      </div>
+
     </div>
   );
 }

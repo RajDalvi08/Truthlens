@@ -1,5 +1,14 @@
-/* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged,
+  signInWithPopup,
+  updateProfile
+} from "firebase/auth";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { auth, db, googleProvider } from "./firebase";
 
 const AuthContext = createContext(null);
 
@@ -7,82 +16,74 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-function getStoredUser() {
-  try {
-    const stored = localStorage.getItem("nbd_user");
-    return stored ? JSON.parse(stored) : null;
-  } catch {
-    localStorage.removeItem("nbd_user");
-    return null;
-  }
-}
-
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(getStoredUser);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (email, password) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (email && password) {
-          const newUser = {
-            username: email.split("@")[0],
-            email,
-            avatar: email.split("@")[0].substring(0, 2).toUpperCase(),
-          };
-          setUser(newUser);
-          localStorage.setItem("nbd_user", JSON.stringify(newUser));
-          resolve(newUser);
-        } else {
-          reject(new Error("Invalid credentials"));
-        }
-      }, 800);
-    });
-  };
-
-  const register = (fullName, email, password) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (fullName && email && password) {
-          const newUser = {
-            username: fullName,
-            email,
-            avatar: fullName.substring(0, 2).toUpperCase(),
-          };
-          setUser(newUser);
-          localStorage.setItem("nbd_user", JSON.stringify(newUser));
-          resolve(newUser);
-        } else {
-          reject(new Error("All fields are required"));
-        }
-      }, 800);
-    });
-  };
-
-  const loginWithGoogle = () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const newUser = {
-          username: "Google User",
-          email: "user@gmail.com",
-          avatar: "GU",
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // Get extra data from Firestore if exists
+        const userRef = doc(db, "users", firebaseUser.uid);
+        const userSnap = await getDoc(userRef);
+        
+        const userData = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          username: firebaseUser.displayName || firebaseUser.email.split("@")[0],
+          avatar: (firebaseUser.displayName || "U").substring(0, 2).toUpperCase(),
+          ...(userSnap.exists() ? userSnap.data() : {})
         };
-        setUser(newUser);
-        localStorage.setItem("nbd_user", JSON.stringify(newUser));
-        resolve(newUser);
-      }, 1000);
+        setUser(userData);
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
     });
+
+    return () => unsubscribe();
+  }, []);
+
+  const saveUserToFirestore = async (firebaseUser, extraData = {}) => {
+    const userRef = doc(db, "users", firebaseUser.uid);
+    await setDoc(userRef, {
+      email: firebaseUser.email,
+      username: extraData.fullName || firebaseUser.displayName || firebaseUser.email.split("@")[0],
+      avatar: (extraData.fullName || firebaseUser.displayName || "U").substring(0, 2).toUpperCase(),
+      lastLogin: serverTimestamp(),
+      createdAt: serverTimestamp(),
+      ...extraData
+    }, { merge: true });
+  };
+
+  const login = async (email, password) => {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    await saveUserToFirestore(result.user);
+    return result.user;
+  };
+
+  const register = async (fullName, email, password) => {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(result.user, { displayName: fullName });
+    await saveUserToFirestore(result.user, { fullName });
+    return result.user;
+  };
+
+  const loginWithGoogle = async () => {
+    const result = await signInWithPopup(auth, googleProvider);
+    await saveUserToFirestore(result.user);
+    return result.user;
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem("nbd_user");
+    return signOut(auth);
   };
 
-  const value = { user, login, register, loginWithGoogle, logout };
+  const value = { user, login, register, loginWithGoogle, logout, loading };
 
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 }

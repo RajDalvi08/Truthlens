@@ -1,75 +1,63 @@
+"use client"
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { HiOutlineBookOpen, HiOutlineSearch, HiOutlineNewspaper, HiOutlineLightningBolt, HiOutlineMail, HiOutlineExternalLink } from "react-icons/hi";
+
+const categories = [
+  "All Categories",
+  "Media Bias Studies",
+  "Political Coverage Analysis",
+  "AI Model Research",
+  "Misinformation Detection",
+  "Data Methodology"
+];
+
+const recentArticles = [
+  {
+    id: 1,
+    title: "The Subtle Shift: How Economic Vocabulary Varies Across Partisan Lines",
+    abstract: "An analysis of 500k+ articles reveals distinct divergence in terminology when reporting identical inflation metrics.",
+    author: "Dr. Elena Rostova",
+    date: "Oct 12, 2026",
+    readTime: "8 min read",
+    tag: "Political Coverage Analysis",
+    image: "https://images.unsplash.com/photo-1555529902-52611e03dc92?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    id: 2,
+    title: "Algorithmic Echo Chambers in Automated News Synthesis",
+    abstract: "Evaluating the tendency of generative models to reinforce pre-existing biases when synthesizing complex geopolitical events.",
+    author: "James T. Faraday",
+    date: "Oct 10, 2026",
+    readTime: "12 min read",
+    tag: "AI Model Research",
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200"
+  },
+  {
+    id: 3,
+    title: "Source Omission as a Framing Tactic in Conflict Reporting",
+    abstract: "A quantitative look at how the exclusion of specific local sources alters the perceived reality of international conflicts.",
+    author: "Sarah Chen, PhD",
+    date: "Oct 08, 2026",
+    readTime: "15 min read",
+    tag: "Media Bias Studies",
+    image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1200"
+  },
+];
 
 export default function Journal() {
   const [activeTab, setActiveTab] = useState("All Categories");
   const [searchQuery, setSearchQuery] = useState("");
   const [email, setEmail] = useState("");
-  const [subStatus, setSubStatus] = useState("idle"); // idle, loading, success
-
-  const categories = [
-    "All Categories",
-    "Media Bias Studies",
-    "Political Coverage Analysis",
-    "AI Model Research",
-    "Misinformation Detection",
-    "Data Methodology"
-  ];
-
-  const recentArticles = [
-    {
-      id: 1,
-      title: "The Subtle Shift: How Economic Vocabulary Varies Across Partisan Lines",
-      abstract: "An analysis of 500k+ articles reveals distinct divergence in terminology when reporting identical inflation metrics.",
-      author: "Dr. Elena Rostova",
-      date: "Oct 12, 2026",
-      readTime: "8 min read",
-      tag: "Political Coverage Analysis"
-    },
-    {
-      id: 2,
-      title: "Algorithmic Echo Chambers in Automated News Synthesis",
-      abstract: "Evaluating the tendency of generative models to reinforce pre-existing biases when synthesizing complex geopolitical events.",
-      author: "James T. Faraday",
-      date: "Oct 10, 2026",
-      readTime: "12 min read",
-      tag: "AI Model Research"
-    },
-    {
-      id: 3,
-      title: "Source Omission as a Framing Tactic in Conflict Reporting",
-      abstract: "A quantitative look at how the exclusion of specific local sources alters the perceived reality of international conflicts.",
-      author: "Sarah Chen, PhD",
-      date: "Oct 08, 2026",
-      readTime: "15 min read",
-      tag: "Media Bias Studies"
-    },
-    {
-      id: 4,
-      title: "TruthLens NLP v4 Architecture: Improving Sarcasm Detection",
-      abstract: "Technical breakdown of our recent methodology upgrades to better identify non-literal framing in opinion pieces.",
-      author: "TruthLens Eng Team",
-      date: "Oct 05, 2026",
-      readTime: "6 min read",
-      tag: "Data Methodology"
-    }
-  ];
-
-  const caseStudies = [
-    { title: "2024 Election News Coverage Bias", type: "National Event" },
-    { title: "International Conflict Reporting Disparities", type: "Geopolitics" },
-    { title: "Economic Policy Narrative Shifts", type: "Market Analysis" }
-  ];
+  const [subStatus, setSubStatus] = useState("idle");
 
   const filteredArticles = recentArticles.filter((article) => {
     const matchesCategory = activeTab === "All Categories" || article.tag === activeTab;
     const searchLower = searchQuery.toLowerCase();
-    const matchesSearch = 
+    return matchesCategory && (
       article.title.toLowerCase().includes(searchLower) || 
-      article.abstract.toLowerCase().includes(searchLower) ||
-      article.tag.toLowerCase().includes(searchLower);
-    
-    return matchesCategory && matchesSearch;
+      article.abstract.toLowerCase().includes(searchLower)
+    );
   });
 
   const handleSubscribe = (e) => {
@@ -83,310 +71,185 @@ export default function Journal() {
     }, 1500);
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 100 } },
-    exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } }
-  };
-
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] text-gray-300 font-sans selection:bg-cyan-500/30 overflow-x-hidden pt-24 pb-12 px-6">
-      {/* Ambient Dark Tech Background Setup */}
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-indigo-900/10 via-[var(--bg-primary)] to-[var(--bg-primary)] z-0 pointer-events-none"></div>
-      <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgMGgyMHYyMEgwVTB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTAgMTlMMjAgMTlNMCAwTDIwIDAiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZD0iTTE5IDBMMTkgMjBNMCAwTDAgMjAiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] opacity-30 pointer-events-none z-0"></div>
+    <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-24 mesh-bg">
+      
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b border-[#fdf8f5]/10 pb-12">
+        <div>
+          <h1 className="text-5xl font-black tracking-tighter text-[#fdf8f5] flex items-center gap-5 uppercase italic">
+            <HiOutlineBookOpen className="w-12 h-12 text-[#fdf8f5] shadow-[0_0_20px_rgba(253,248,245,0.2)]" />
+            Intelligence Journal
+          </h1>
+          <p className="text-[#8d7b68] text-[10px] mt-4 font-black max-w-xl uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10 leading-relaxed">
+            Deep-dive research and analytical insights into global news bias and narrative formatting protocols.
+          </p>
+        </div>
+        <div className="relative w-full md:w-96">
+           <HiOutlineSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-[#8d7b68] w-6 h-6" />
+           <input 
+             type="text" 
+             value={searchQuery}
+             onChange={(e) => setSearchQuery(e.target.value)}
+             placeholder="QUERY RESEARCH ARCHIVE..." 
+             className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 pl-16 pr-8 py-5 text-[11px] font-black uppercase tracking-[0.25em] rounded-none outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+           />
+        </div>
+      </div>
 
+      {/* Featured Insight - Large Bento */}
       <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="max-w-7xl mx-auto relative z-10 space-y-16"
+        className="glass-card shadow-2xl overflow-hidden group cursor-pointer bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none"
+        whileHover={{ y: -8, borderColor: 'rgba(253,248,245,0.3)' }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
       >
-        {/* 1. Header Section */}
-        <motion.header variants={itemVariants} className="flex flex-col md:flex-row justify-between items-end gap-8 border-b border-white/10 pb-10">
-          <div>
-            <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] font-serif italic mb-4">
-              TruthLens <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500 not-italic">Journal</span>
-            </h1>
-            <p className="text-xl text-gray-400 max-w-2xl font-light border-l-2 border-cyan-500 pl-4 py-1">
-              Research insights and analysis on global news bias and media narratives.
-            </p>
-          </div>
-          <div className="w-full md:w-auto flex flex-col sm:flex-row gap-4">
-            <div className="relative group">
-              <input 
-                type="text" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search research..." 
-                className="w-full sm:w-64 bg-[var(--bg-secondary)] border border-white/10 rounded-full px-5 py-3 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors pl-10"
-              />
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400">🔍</span>
+        <div className="flex flex-col lg:flex-row">
+            <div className="lg:w-1/2 h-80 lg:h-auto overflow-hidden relative">
+                <img 
+                    src={recentArticles[0].image}
+                    className="w-full h-full object-cover transition-transform duration-1500 group-hover:scale-110 grayscale group-hover:grayscale-0 saturate-50"
+                    alt="Featured"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1a0f0a] via-transparent to-transparent opacity-80" />
+                <span className="absolute top-8 left-8 bg-[#fdf8f5] text-[#1a0f0a] px-6 py-2.5 font-black uppercase italic tracking-[0.3em] text-[10px] shadow-2xl">FEATURED ANALYSIS</span>
             </div>
-          </div>
-        </motion.header>
-
-        {/* 2. Featured Article Section */}
-        <motion.section variants={itemVariants} className="relative group cursor-pointer" onClick={() => alert("Loading full analysis...")}>
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-3xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
-          <div className="bg-[var(--bg-secondary)] border border-white/10 rounded-3xl p-8 md:p-12 relative overflow-hidden backdrop-blur-xl flex flex-col md:flex-row gap-8 items-center shadow-2xl">
-            {/* Image Placeholder */}
-            <div className="w-full md:w-1/2 overflow-hidden rounded-2xl relative">
-              <img 
-                src="https://images.unsplash.com/photo-1555529902-52611e03dc92?q=80&w=1200&auto=format&fit=crop" 
-                alt="Featured Research" 
-                className="w-full h-[300px] object-cover mix-blend-luminosity opacity-80 group-hover:scale-105 transition-transform duration-700 group-hover:opacity-100"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
-            </div>
-            
-            <div className="w-full md:w-1/2 space-y-6">
-              <div className="flex gap-4 items-center">
-                <span className="px-3 py-1 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-full text-[10px] font-bold uppercase tracking-widest">
-                  Featured Research
-                </span>
-                <span className="text-gray-500 text-xs font-mono">Oct 15, 2026</span>
-              </div>
-              <h2 className="text-3xl md:text-5xl font-black text-white leading-tight font-serif group-hover:text-cyan-200 transition-colors">
-                Bias Patterns in Global Political News Networking
-              </h2>
-              <p className="text-gray-400 leading-relaxed text-lg font-light">
-                An extensive algorithmic review of 2,400 global publications detailing how selective context omission shapes public political sentiment faster than direct misinformation.
-              </p>
-              
-              <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
-                    MV
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-white">Dr. Marcus Vance</p>
-                    <p className="text-xs text-gray-500 font-mono">Lead Data Scientist</p>
-                  </div>
+            <div className="lg:w-1/2 p-12 lg:p-20 flex flex-col justify-between">
+                <div>
+                    <div className="flex items-center gap-6 text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-8 italic underline decoration-[#fdf8f5]/10">
+                        <span>{recentArticles[0].tag}</span>
+                        <span className="text-[#fdf8f5]/20">•</span>
+                        <span>{recentArticles[0].readTime}</span>
+                    </div>
+                    <h2 className="text-4xl lg:text-5xl font-black text-[#fdf8f5] leading-[0.9] mb-8 uppercase tracking-tighter italic group-hover:text-[#fdf8f5]/90 transition-colors">
+                        {recentArticles[0].title}
+                    </h2>
+                    <p className="text-[#d6c2b8] leading-relaxed font-black uppercase tracking-tight mb-12 opacity-80">
+                        {recentArticles[0].abstract}
+                    </p>
                 </div>
-                <button className="flex items-center gap-2 text-cyan-400 font-bold hover:text-cyan-300 transition-colors group/btn">
-                  Read Full Analysis <span className="group-hover/btn:translate-x-1 transition-transform">→</span>
-                </button>
-              </div>
+                <div className="flex items-center justify-between pt-10 border-t border-[#fdf8f5]/10">
+                    <div className="flex items-center gap-5">
+                        <div className="w-14 h-14 rounded-none bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center text-sm font-black italic shadow-xl">ER</div>
+                        <div>
+                            <p className="text-sm font-black text-[#fdf8f5] uppercase italic tracking-tighter">{recentArticles[0].author}</p>
+                            <p className="text-[10px] text-[#4d3c2e] font-black uppercase tracking-[0.25em] mt-1">{recentArticles[0].date}</p>
+                        </div>
+                    </div>
+                    <HiOutlineExternalLink className="w-8 h-8 text-[#8d7b68] group-hover:text-[#fdf8f5] group-hover:rotate-45 transition-all duration-500" />
+                </div>
             </div>
-          </div>
-        </motion.section>
+        </div>
+      </motion.div>
 
-        {/* 3. Research Categories */}
-        <motion.section variants={itemVariants}>
-          <div className="flex flex-wrap gap-3 border-b border-white/5 pb-6">
-            {categories.map(cat => (
+      {/* Categories Ticker */}
+      <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar border-b border-[#fdf8f5]/10">
+          {categories.map(cat => (
               <button 
                 key={cat}
                 onClick={() => setActiveTab(cat)}
-                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
-                  activeTab === cat 
-                    ? "bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.4)]" 
-                    : "bg-[var(--bg-elevated)] text-gray-400 border border-white/5 hover:border-white/20 hover:text-white"
+                className={`whitespace-nowrap px-8 py-3.5 rounded-none text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-300 relative overflow-hidden group/btn ${
+                    activeTab === cat 
+                    ? "bg-[#fdf8f5] text-[#1a0f0a] italic shadow-2xl" 
+                    : "bg-[#fdf8f5]/5 text-[#8d7b68] border border-[#fdf8f5]/10 hover:border-[#fdf8f5]/40"
                 }`}
               >
-                {cat}
+                <span className="relative z-10">{cat}</span>
               </button>
-            ))}
-          </div>
-        </motion.section>
+          ))}
+      </div>
 
-        {/* Grid & Sidebar Structure */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      {/* Article Grid & Sidebar Bento */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           
-          {/* Main Column: 4. Journal Article Grid */}
-          <div className="lg:col-span-2 space-y-8">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-2xl font-black text-white font-serif italic">
-                {searchQuery ? "Search Results" : "Recent Publications"}
-              </h3>
-              <span className="text-sm text-gray-500 hover:text-white cursor-pointer transition-colors" onClick={() => { setActiveTab("All Categories"); setSearchQuery(""); }}>
-                Clear Filters
-              </span>
-            </div>
-
-            <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <AnimatePresence>
-                {filteredArticles.length > 0 ? (
-                  filteredArticles.map((article) => (
+          {/* Main Feed */}
+          <div className="lg:col-span-8 space-y-10">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                {filteredArticles.slice(1).map((article, i) => (
                     <motion.article 
-                      layout
-                      key={article.id}
-                      variants={itemVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                      whileHover={{ y: -5 }}
-                      onClick={() => alert(`Opening article: ${article.title}`)}
-                      className="bg-[var(--bg-secondary)] border border-white/5 rounded-2xl p-6 group cursor-pointer hover:border-white/20 transition-all flex flex-col justify-between"
+                        key={article.id}
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.1 }}
+                        className="saas-card group hover:border-[#fdf8f5]/40 transition-all cursor-pointer flex flex-col bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-xl"
                     >
-                      <div>
-                        <div className="flex justify-between items-start mb-4">
-                          <span className="text-indigo-400 text-xs font-bold uppercase tracking-wider">{article.tag}</span>
-                          <span className="text-gray-600 text-xs font-mono">{article.readTime}</span>
+                        <div className="h-60 overflow-hidden relative">
+                            <img src={article.image} className="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-105" alt={article.title} />
+                            <div className="absolute inset-0 bg-[#1a0f0a]/60 group-hover:bg-[#1a0f0a]/20 transition-all duration-700" />
                         </div>
-                        <h4 className="text-xl font-bold text-white leading-tight mb-3 group-hover:text-cyan-300 transition-colors">
-                          {article.title}
-                        </h4>
-                        <p className="text-gray-400 text-sm leading-relaxed mb-6 font-light overflow-hidden display-webkit-box WebkitLineClamp-3 WebkitBoxOrient-vertical">
-                          {article.abstract}
-                        </p>
-                      </div>
-                      
-                      <div className="flex items-center justify-between pt-4 border-t border-white/5 mt-auto">
-                        <div>
-                          <p className="text-xs font-bold text-gray-300">{article.author}</p>
-                          <p className="text-[10px] text-gray-600 font-mono mt-0.5">{article.date}</p>
+                        <div className="p-10 flex-1 flex flex-col justify-between bg-[#fdf8f5]/[0.02]">
+                            <div>
+                                <span className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-4 block italic underline decoration-[#fdf8f5]/10 transition-colors group-hover:text-[#fdf8f5]">{article.tag}</span>
+                                <h3 className="text-2xl font-black text-[#fdf8f5] leading-[0.95] group-hover:italic transition-all mb-6 uppercase tracking-tighter">
+                                    {article.title}
+                                </h3>
+                                <p className="text-[11px] text-[#d6c2b8] line-clamp-3 font-black uppercase tracking-tight mb-8 opacity-80 leading-snug italic">
+                                    {article.abstract}
+                                </p>
+                            </div>
+                            <div className="flex items-center justify-between pt-8 border-t border-[#fdf8f5]/10">
+                                <span className="text-[10px] font-black text-[#4d3c2e] uppercase tracking-[0.25em] italic">{article.date}</span>
+                                <span className="text-[10px] font-black text-[#4d3c2e] uppercase tracking-[0.25em] italic">{article.readTime}</span>
+                            </div>
                         </div>
-                        <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-cyan-500/20 group-hover:text-cyan-400 transition-colors">
-                          <span className="rotate-45 block">↗</span>
-                        </div>
-                      </div>
                     </motion.article>
-                  ))
-                ) : (
-                  <motion.div 
-                    initial={{ opacity: 0 }} 
-                    animate={{ opacity: 1 }} 
-                    className="col-span-full py-12 text-center text-gray-500 border border-dashed border-white/10 rounded-2xl"
-                  >
-                    No articles found matching your filters.
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
+                ))}
+             </div>
+          </div>
 
-            {/* Pagination Placeholder */}
-            {filteredArticles.length > 0 && (
-              <div className="flex justify-center pt-8">
-                  <button onClick={() => alert("Loading more data from server...")} className="px-8 py-3 rounded-full border border-white/10 hover:bg-white/5 text-sm font-bold transition-colors">
-                    Load Older Entries
-                  </button>
+          {/* Side Panels */}
+          <div className="lg:col-span-4 space-y-10">
+              <div className="saas-card p-10 bg-[#1a0f0a]/80 text-[#fdf8f5] relative overflow-hidden border-[#fdf8f5]/10 rounded-none shadow-2xl">
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-[#fdf8f5]/5 blur-[100px]" />
+                  <div className="relative z-10">
+                      <h3 className="text-2xl font-black mb-10 flex items-center gap-4 uppercase italic tracking-tighter border-b border-[#fdf8f5]/10 pb-6">
+                          <HiOutlineLightningBolt className="text-[#fdf8f5] w-7 h-7" />
+                          Trending Metrics
+                      </h3>
+                      <div className="space-y-10">
+                         {[
+                            { label: "High Bias Network", val: "Global Syndicate", sub: "12k articles" },
+                            { label: "Narrative Shift", val: "Resource Scarcity", sub: "45% increase" },
+                            { label: "Strict Mode Filter", val: "Healthcare Policy", sub: "0.68 deviation" },
+                         ].map((item, i) => (
+                            <div key={i} className="group cursor-default">
+                                <p className="text-[9px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] mb-2 italic">{item.label}</p>
+                                <p className="text-lg font-black text-[#fdf8f5] group-hover:italic group-hover:translate-x-2 transition-all uppercase tracking-tighter">{item.val}</p>
+                                <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-widest mt-1 opacity-60 underline decoration-[#fdf8f5]/10">{item.sub}</p>
+                            </div>
+                         ))}
+                      </div>
+                  </div>
               </div>
-            )}
+
+              <div className="glass-card p-12 text-center bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-none relative overflow-hidden shadow-2xl group">
+                  <div className="absolute inset-0 bg-gradient-to-b from-[#fdf8f5]/5 to-transparent pointer-events-none" />
+                  <HiOutlineNewspaper className="w-16 h-16 text-[#fdf8f5]/10 mx-auto mb-8 group-hover:scale-110 transition-transform duration-1000" />
+                  <h3 className="text-2xl font-black text-[#fdf8f5] mb-4 uppercase italic tracking-tighter">Subscribe to Intel</h3>
+                  <p className="text-[10px] text-[#8d7b68] font-black mb-10 leading-relaxed uppercase tracking-[0.2em] italic opacity-80">Weekly digest of network anomalies and deep-dives.</p>
+                  
+                  {subStatus === "success" ? (
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.3em] italic bg-[#fdf8f5]/10 py-5 shadow-2xl border border-[#fdf8f5]/20 animate-pulse"
+                    >
+                        Securely Connected
+                    </motion.div>
+                  ) : (
+                    <form onSubmit={handleSubscribe} className="space-y-4 relative z-10">
+                        <input 
+                          type="email" 
+                          placeholder="OPERATOR@NODE.INTEL"
+                          className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] outline-none focus:border-[#fdf8f5] text-[#fdf8f5] transition-all placeholder:text-[#4d3c2e] italic"
+                        />
+                        <button className="btn-primary w-full py-5 text-[10px] font-black uppercase tracking-[0.3em] italic bg-[#fdf8f5] text-[#1a0f0a] hover:bg-[#f5ebe0] border-none rounded-none shadow-xl transition-all">Connect to Feed</button>
+                    </form>
+                  )}
+              </div>
           </div>
+      </div>
 
-          {/* Sidebar Column */}
-          <div className="space-y-12">
-            
-            {/* 5. Trending Insights Panel */}
-            <motion.aside variants={itemVariants} className="bg-[var(--bg-secondary)] border border-indigo-500/20 rounded-2xl p-6 relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl"></div>
-               <h3 className="text-lg font-black text-white border-b border-white/10 pb-4 mb-6 flex items-center gap-2">
-                 <span className="text-indigo-400">⚡</span> Trending Analysis
-               </h3>
-               
-               <div className="space-y-6">
-                 <div>
-                    <p className="text-xs text-indigo-400 font-mono mb-1">MOST ANALYZED NETWORK</p>
-                    <p className="text-white font-bold">Global News Syndicate</p>
-                    <p className="text-sm text-gray-500 mt-1">12,400 articles parsed this week</p>
-                 </div>
-                 <div className="h-px w-full bg-white/5"></div>
-                 <div>
-                    <p className="text-xs text-fuchsia-400 font-mono mb-1">EMERGING NARRATIVE</p>
-                    <p className="text-white font-bold">Resource Scarcity Framing</p>
-                    <p className="text-sm text-gray-500 mt-1">45% increase in fear-based terminology detected across economic reporting.</p>
-                 </div>
-                 <div className="h-px w-full bg-white/5"></div>
-                 <div>
-                    <p className="text-xs text-cyan-400 font-mono mb-1">TOP BIASED CATEGORY</p>
-                    <p className="text-white font-bold">Domestic Healthcare Policy</p>
-                    <p className="text-sm text-gray-500 mt-1">Average deviation from neutrality: 0.68</p>
-                 </div>
-               </div>
-            </motion.aside>
-
-            {/* 6. Methodology Highlight */}
-            <motion.aside variants={itemVariants} className="bg-[var(--bg-elevated)] border border-white/5 rounded-2xl p-6">
-               <h3 className="text-lg font-black text-white border-b border-white/10 pb-4 mb-4">Our Methodology</h3>
-               <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                 TruthLens utilizes localized LLMs and fine-tuned Transformer models to score text along multi-dimensional vectors.
-               </p>
-               <ul className="space-y-2 text-sm text-gray-300">
-                  <li className="flex items-center gap-2"><span className="text-cyan-500">▹</span> NLP Bias Detection</li>
-                  <li className="flex items-center gap-2"><span className="text-cyan-500">▹</span> Aspect-based Sentiment</li>
-                  <li className="flex items-center gap-2"><span className="text-cyan-500">▹</span> Blind Dataset Evaluation</li>
-               </ul>
-               <button onClick={() => alert("Downloading Technical Paper PDF...")} className="mt-6 w-full py-2 bg-white/5 hover:bg-white/10 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">
-                  Read Technical Paper
-               </button>
-            </motion.aside>
-
-            {/* 7. Case Study Highlights */}
-            <motion.aside variants={itemVariants} className="bg-transparent border border-white/10 rounded-2xl p-6">
-               <h3 className="text-lg font-black text-white mb-4">Core Case Studies</h3>
-               <div className="space-y-3">
-                 {caseStudies.map((study, i) => (
-                    <div key={i} onClick={() => alert(`Opening Case Study: ${study.title}`)} className="group cursor-pointer">
-                      <p className="text-xs text-gray-500 font-mono mb-0.5">{study.type}</p>
-                      <p className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors border-l-2 border-transparent group-hover:border-white pl-2 -ml-2.5">
-                        {study.title}
-                      </p>
-                    </div>
-                 ))}
-               </div>
-            </motion.aside>
-
-          </div>
-        </div>
-
-        {/* 8. Newsletter Subscription */}
-        <motion.section variants={itemVariants} className="border-y border-white/10 py-16 relative overflow-hidden">
-           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-900/10 to-transparent"></div>
-           <div className="max-w-2xl mx-auto text-center relative z-10">
-              <h2 className="text-3xl font-black text-white font-serif italic mb-4">Subscribe to Intel</h2>
-              <p className="text-gray-400 mb-8 font-light">
-                Receive our weekly digest of network anomalies, analytical deep-dives, and AI media research straight to your terminal.
-              </p>
-              
-              {subStatus === "success" ? (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.9 }} 
-                  animate={{ opacity: 1, scale: 1 }} 
-                  className="bg-emerald-500/10 border border-emerald-500/50 text-emerald-400 rounded-xl px-5 py-4 font-bold"
-                >
-                  ✓ Securely connected. Welcome to the network.
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
-                  <input 
-                    type="email" 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@organization.com" 
-                    required
-                    disabled={subStatus === "loading"}
-                    className="flex-1 bg-[var(--bg-input)] border border-white/20 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-light disabled:opacity-50"
-                  />
-                  <button 
-                    type="submit" 
-                    disabled={subStatus === "loading"}
-                    className="px-8 py-3.5 bg-white text-black font-black rounded-xl hover:bg-gray-200 transition shadow-[0_0_15px_rgba(255,255,255,0.2)] disabled:opacity-75 flex items-center justify-center min-w-[140px]"
-                  >
-                    {subStatus === "loading" ? (
-                      <span className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
-                    ) : (
-                      "Subscribe"
-                    )}
-                  </button>
-                </form>
-              )}
-           </div>
-        </motion.section>
-
-        {/* 9. Footer Note */}
-        <motion.footer variants={itemVariants} className="text-center pb-8">
-           <p className="text-sm text-gray-500 font-mono tracking-wide">
-             <span className="text-white font-bold italic font-serif">TruthLens Journal</span> provides AI-assisted research insights into media bias and narrative framing across global news platforms.
-           </p>
-        </motion.footer>
-
-      </motion.div>
     </div>
   );
 }

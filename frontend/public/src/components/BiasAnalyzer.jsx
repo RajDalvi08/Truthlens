@@ -1,7 +1,8 @@
+"use client"
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Navigation from "./Navigation";
 import { analyzeArticle } from "../services/api";
+import { HiOutlineSearch, HiOutlineLightningBolt, HiOutlineDocumentText, HiOutlineLink, HiOutlineExclamationCircle, HiOutlineCubeTransparent, HiOutlineChartSquareBar } from "react-icons/hi";
 
 const SAMPLE_URLS = [
   "https://www.bbc.com/news/world-us-canada-66801944",
@@ -15,25 +16,6 @@ export default function BiasAnalyzer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [results, setResults] = useState(null);
   const [error, setError] = useState("");
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
-  };
-
-  const isUrl = (val) => {
-    try {
-      new URL(val);
-      return val.startsWith("http");
-    } catch {
-      return false;
-    }
-  };
 
   const handleAnalyze = async () => {
     if (!url.trim() && !text.trim()) {
@@ -60,7 +42,7 @@ export default function BiasAnalyzer() {
   };
 
   const handleSampleClick = (sample) => {
-    if (isUrl(sample)) {
+    if (sample.startsWith("http")) {
       setUrl(sample);
       setHeadline("");
       setText("");
@@ -71,226 +53,243 @@ export default function BiasAnalyzer() {
     }
   };
 
-  const getBiasLabel = (score) => {
-    if (score > 75) return { label: "Strong Bias / High Subjectivity", color: "text-purple-400" };
-    if (score > 50) return { label: "Moderate Bias / Ideological", color: "text-purple-300" };
-    if (score > 25) return { label: "Low Bias / Slight Framing", color: "text-cyan-400" };
-    return { label: "Neutral / Descriptive", color: "text-cyan-400" };
-  };
-
   return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)] text-[#FDEBD0]">
-      <Navigation />
+    <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-24 mesh-bg">
+      
+      {/* Dynamic Header */}
+      <div className="flex items-end justify-between border-b border-[#fdf8f5]/10 pb-10 flex flex-col md:flex-row md:items-end gap-8">
+        <div>
+          <h2 className="text-5xl font-black tracking-tighter text-[#fdf8f5] uppercase italic">Bias Insight Engine</h2>
+          <p className="text-[#8d7b68] text-[10px] mt-4 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10">Neural processing of semantic vectors and source authenticity.</p>
+        </div>
+        <div className="hidden md:flex items-center gap-6">
+            <div className="w-2.5 h-2.5 rounded-none bg-[#fdf8f5] animate-pulse shadow-[0_0_12px_rgba(253,248,245,0.6)]" />
+            <span className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">CORE_STATUS: <span className="text-[#fdf8f5]">OPTIMIZED</span></span>
+        </div>
+      </div>
 
-      <main className="flex-1 overflow-auto p-8 relative">
-        {/* Ambient Dark Tech Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/10 via-[var(--bg-primary)] to-[var(--bg-primary)] z-0 pointer-events-none"></div>
-
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="max-w-5xl mx-auto space-y-8 relative z-10"
-        >
-          {/* Header Card */}
-          <motion.div
-            variants={itemVariants}
-            className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-8 relative overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)]"
-          >
-            <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div>
-              <h1 className="text-4xl font-black text-white tracking-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                Bias Analyzer
-              </h1>
-              <p className="text-cyan-400 font-mono uppercase tracking-widest mt-2 text-sm">Advanced NLP Processing Module</p>
-              <p className="text-gray-400 mt-4 max-w-2xl leading-relaxed">
-                Analyze articles using state-of-the-art Natural Language Processing. Identify political leanings, emotional framing, and logical fallacies in real-time.
-              </p>
-
-              {/* Input Area */}
-              <div className="mt-8 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Manual Input Section */}
-                  <div className="space-y-4">
-                    <p className="text-xs font-mono uppercase tracking-widest text-cyan-500/80">Manual Content Entry</p>
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1 ml-1">Headline (Optional)</label>
-                        <input
-                          type="text"
-                          value={headline}
-                          onChange={(e) => setHeadline(e.target.value)}
-                          placeholder="Enter article headline..."
-                          className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-cyan-500/40 transition-all placeholder-gray-700"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1 ml-1">Article Text</label>
-                        <textarea
-                          value={text}
-                          onChange={(e) => setText(e.target.value)}
-                          placeholder="Paste the full article content here..."
-                          rows={6}
-                          className="w-full bg-black/40 border border-white/5 rounded-xl p-4 text-white text-sm focus:outline-none focus:border-cyan-500/40 transition-all placeholder-gray-700 resize-none leading-relaxed"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Divider for Mobile */}
-                  <div className="md:hidden flex items-center gap-4">
-                    <div className="flex-1 h-px bg-white/5"></div>
-                    <span className="text-[10px] font-mono text-gray-600">OR</span>
-                    <div className="flex-1 h-px bg-white/5"></div>
-                  </div>
-
-                  {/* URL Section */}
-                  <div className="space-y-4 flex flex-col justify-between">
-                    <div>
-                      <p className="text-xs font-mono uppercase tracking-widest text-blue-500/80">Automated Retrieval</p>
-                      <div className="mt-3">
-                        <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1 ml-1">Article URL</label>
-                        <input
-                          type="text"
-                          value={url}
-                          onChange={(e) => setUrl(e.target.value)}
-                          placeholder="https://news-site.com/article-path"
-                          className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500/40 transition-all placeholder-gray-700"
-                        />
-                        <p className="text-[10px] text-gray-600 mt-2 ml-1 italic">
-                          * Scraping URL will bypass manually entered headline/text.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="pt-4 border-t border-white/5 mt-4">
-                      <p className="text-[10px] text-gray-500 font-mono uppercase mb-2">Quick load Samples</p>
-                      <div className="flex flex-wrap gap-2">
-                        {SAMPLE_URLS.map((sample, i) => (
-                          <button
-                            key={i}
-                            onClick={() => handleSampleClick(sample)}
-                            className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[9px] font-mono text-gray-500 hover:text-white hover:border-white/20 transition-all uppercase tracking-wider"
-                          >
-                            Sample {i + 1}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-6 items-center pt-4 border-t border-white/5">
-                  <motion.button
-                    onClick={handleAnalyze}
-                    disabled={(!url.trim() && !text.trim()) || isAnalyzing}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-cyan-600 to-blue-700 text-white font-black rounded-2xl shadow-[0_10px_30px_rgba(37,99,235,0.2)] disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 uppercase tracking-wider text-sm"
-                  >
-                    {isAnalyzing ? (
-                      <>
-                        <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                        Neural Processing...
-                      </>
-                    ) : (
-                      <>⚡ Run Analysis</>
-                    )}
-                  </motion.button>
-
-                  <p className="text-xs text-gray-500 max-w-xs text-center sm:text-left leading-tight">
-                    Powered by TruthLens Neural Engine.
-                    <span className="block text-gray-600 text-[10px] mt-1 font-mono">Status: Ready for Injection</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Results Panel */}
-          <AnimatePresence>
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ type: "spring", stiffness: 120 }}
-                className="bg-[var(--bg-secondary)] border border-red-400/20 rounded-3xl p-6"
-              >
-                <p className="text-sm font-semibold text-red-200">Error: {error}</p>
-              </motion.div>
-            )}
-
-            {results && (
-              <motion.div
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          
+          {/* Input Control Center - Bento Left */}
+          <div className="lg:col-span-12">
+            <motion.div 
+                className="saas-card group relative overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ type: "spring", stiffness: 100 }}
-                className="space-y-6"
-              >
+            >
+                <div className="absolute top-0 right-0 w-80 h-80 bg-[#fdf8f5]/[0.02] blur-[100px] pointer-events-none group-hover:bg-[#fdf8f5]/[0.05] transition-all duration-1000" />
+                
+                <div className="p-12 border-b border-[#fdf8f5]/5 bg-[#fdf8f5]/[0.01]">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        {/* Text Ingestion */}
+                        <div className="space-y-8">
+                            <div>
+                                <label className="flex items-center gap-4 text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">
+                                    <HiOutlineDocumentText className="w-6 h-6 text-[#fdf8f5]" />
+                                    Semantic Ingestion
+                                </label>
+                                <div className="space-y-5">
+                                    <input
+                                      type="text"
+                                      value={headline}
+                                      onChange={(e) => setHeadline(e.target.value)}
+                                      placeholder="ARTICLE HEADLINE (OPTIONAL)..."
+                                      className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 px-6 py-4 text-[11px] font-black uppercase tracking-[0.2em] rounded-none outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+                                    />
+                                    <textarea
+                                      value={text}
+                                      onChange={(e) => setText(e.target.value)}
+                                      placeholder="PASTE COMPLETE ARTICLE BODY HERE FOR FULL-SPECTRUM ANALYSIS..."
+                                      rows={8}
+                                      className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 px-6 py-4 text-[11px] font-black uppercase tracking-[0.2em] rounded-none outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic resize-none leading-relaxed"
+                                    />
+                                </div>
+                            </div>
+                        </div>
 
+                        {/* URL & Source Retrieval */}
+                        <div className="space-y-10 flex flex-col justify-between">
+                            <div>
+                                <label className="flex items-center gap-4 text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">
+                                    <HiOutlineLink className="w-6 h-6 text-[#fdf8f5]" />
+                                    Source Automation
+                                </label>
+                                <div className="relative group/input">
+                                    <HiOutlineLink className="absolute left-6 top-1/2 -translate-y-1/2 text-[#4d3c2e] group-focus-within/input:text-[#fdf8f5] transition-colors w-5 h-5" />
+                                    <input
+                                      type="text"
+                                      value={url}
+                                      onChange={(e) => setUrl(e.target.value)}
+                                      placeholder="HTTPS://GLOBAL-INTEL.COM/NEWS-PATH..."
+                                      className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 pl-16 pr-8 py-5 text-[11px] font-black uppercase tracking-[0.2em] rounded-none outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic shadow-2xl"
+                                    />
+                                </div>
+                                <p className="text-[10px] text-[#4d3c2e] mt-4 italic font-black uppercase tracking-widest opacity-60">Scraped data vectors will automatically override manual text inputs.</p>
+                            </div>
 
-                {/* Score Cards Row */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Bias Score */}
-                  <div className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 blur-2xl rounded-full"></div>
-                    <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">Bias Score</p>
-                    <p className={`text-4xl font-black ${getBiasLabel(results.bias_score).color}`}>
-                      {results.bias_score}
-                    </p>
-                    <p className={`text-sm font-bold mt-2 ${getBiasLabel(results.bias_score).color}`}>
-                      {results.bias_level}
-                    </p>
-                    {/* Visual Gauge */}
-                    <div className="mt-4 h-2 bg-white/5 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${results.bias_score}%` }}
-                        transition={{ duration: 1, ease: "easeOut" }}
-                        className="h-full bg-gradient-to-r from-indigo-500 via-cyan-500 to-purple-500 rounded-full"
-                      />
+                            <div className="pt-10 border-t border-[#fdf8f5]/5">
+                                <label className="text-[9px] font-black text-[#4d3c2e] uppercase mb-5 block tracking-[0.3em] italic">Engine Templates</label>
+                                <div className="flex flex-wrap gap-4">
+                                    {SAMPLE_URLS.map((sample, i) => (
+                                      <button
+                                        key={i}
+                                        onClick={() => handleSampleClick(sample)}
+                                        className="flex-1 text-[10px] py-3.5 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[#8d7b68] hover:bg-[#fdf8f5]/10 hover:border-[#fdf8f5]/30 rounded-none transition-all uppercase font-black italic tracking-[0.25em]"
+                                      >
+                                        Template {i + 1}
+                                      </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex justify-between mt-1">
-                      <span className="text-[8px] text-gray-600 font-mono">LEFT</span>
-                      <span className="text-[8px] text-gray-600 font-mono">CENTER</span>
-                      <span className="text-[8px] text-gray-600 font-mono">RIGHT</span>
-                    </div>
-                  </div>
 
-                  {/* Breakdown Scores */}
-                  <div className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6">
-                    <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">Bias Breakdown</p>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-300">Linguistic</span>
-                        <span className="text-sm font-bold text-cyan-300">{results.linguistic_bias}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-300">Framing</span>
-                        <span className="text-sm font-bold text-cyan-300">{results.framing_bias}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-300">Entity</span>
-                        <span className="text-sm font-bold text-cyan-300">{results.entity_bias}</span>
-                      </div>
+                    <div className="flex flex-col sm:flex-row items-center gap-10 mt-14 pt-12 border-t border-[#fdf8f5]/10">
+                        <button
+                           onClick={handleAnalyze}
+                           disabled={(!url.trim() && !text.trim()) || isAnalyzing}
+                           className="btn-primary flex items-center justify-center gap-4 px-14 py-6 text-[11px] w-full sm:w-auto shadow-2xl transition-all disabled:opacity-50"
+                        >
+                           {isAnalyzing ? (
+                             <>
+                               <span className="w-6 h-6 border-3 border-[#1a0f0a]/30 border-t-[#1a0f0a] rounded-none animate-spin" />
+                               INGESTING_VECTORS...
+                             </>
+                           ) : (
+                             <>
+                                <HiOutlineLightningBolt className="w-6 h-6" />
+                                EXECUTE INTELLIGENCE AUDIT
+                             </>
+                           )}
+                        </button>
+                        <div className="flex items-center gap-6">
+                            <div className="h-12 w-px bg-[#fdf8f5]/10 hidden sm:block" />
+                            <div className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] leading-relaxed italic">
+                                TruthLens Neural Core v4.2<br/>
+                                <span className="text-[#fdf8f5] opacity-50">STATUS: AWAITING_INJECTION</span>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-
-                  {/* Source Info */}
-                  <div className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6">
-                    <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">Source</p>
-                    <p className="text-sm font-semibold text-gray-200 break-words">{results.source || "N/A"}</p>
-                  </div>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
-        </motion.div>
-      </main>
+                {/* Analysis Output Pane */}
+                <div className="p-12 min-h-[350px] flex items-center justify-center bg-[#fdf8f5]/[0.01] relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none" />
+                    <AnimatePresence mode="wait">
+                        {error && (
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="flex items-center gap-8 p-10 glass-card border-[#fdf8f5]/20 bg-[#fdf8f5]/5 text-[#fdf8f5] rounded-none shadow-2xl relative z-10"
+                        >
+                            <HiOutlineExclamationCircle className="w-12 h-12 text-[#fdf8f5] animate-pulse" />
+                            <div>
+                                <h4 className="font-black uppercase tracking-[0.4em] text-[10px] mb-2 italic">Critical Fault Detected</h4>
+                                <p className="text-sm font-black italic tracking-tighter bg-[#fdf8f5] text-[#1a0f0a] px-3 py-1">{error}</p>
+                            </div>
+                        </motion.div>
+                        )}
+
+                        {results ? (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 40 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10"
+                        >
+                            {/* Result Stats - Left Cluster */}
+                            <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="glass-card p-10 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 group rounded-none shadow-2xl relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#fdf8f5]/5 blur-[60px]" />
+                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">Sentiment Polarity</p>
+                                    <div className="text-7xl font-black text-[#fdf8f5] mb-4 italic tracking-tighter tabular-nums leading-none">{results.bias_score}</div>
+                                    <div className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.3em] mb-10 italic opacity-80">{results.bias_level}</div>
+                                    <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden relative border border-[#fdf8f5]/5 shadow-inner">
+                                        <motion.div 
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${Math.abs(results.bias_score)}%` }}
+                                            className="h-full bg-gradient-to-r from-[#F97316] to-[#EC4899] shadow-[0_0_20px_rgba(236,72,153,0.4)]" 
+                                            transition={{ duration: 2, ease: "easeOut" }}
+                                        />
+                                    </div>
+                                    <div className="flex justify-between mt-5 text-[8px] font-black text-[#4d3c2e] tracking-[0.4em] uppercase">
+                                        <span>Left Vector</span>
+                                        <span>Right Vector</span>
+                                    </div>
+                                </div>
+
+                                <div className="glass-card p-10 md:col-span-2 flex flex-col justify-between bg-[#1a0f0a]/40 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden">
+                                     <div className="absolute bottom-0 left-0 w-full h-[1px] bg-[#fdf8f5]/10" />
+                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-10 italic underline decoration-[#fdf8f5]/10">Neural Decomposition Protocols</p>
+                                    <div className="space-y-10">
+                                        {[
+                                            { label: "Linguistic Framing", value: results.linguistic_bias, color: "bg-[#0EA5E9]", shadow: "shadow-[0_0_12px_rgba(14,165,233,0.4)]" },
+                                            { label: "Predictive Weighting", value: results.framing_bias, color: "#8B5CF6", shadow: "shadow-[0_0_12px_rgba(139,92,246,0.3)]" },
+                                            { label: "Entity Salience", value: results.entity_bias, color: "bg-[#10B981]", shadow: "shadow-[0_0_12px_rgba(16,185,129,0.3)]" },
+                                        ].map((metric, i) => (
+                                            <div key={i} className="space-y-4 group/metric">
+                                                <div className="flex justify-between items-center text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic group-hover/metric:text-[#fdf8f5] transition-colors">
+                                                    <span>{metric.label}</span>
+                                                    <span className="text-[#fdf8f5] tabular-nums tracking-widest">{metric.value}</span>
+                                                </div>
+                                                <div className="h-[2px] w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden relative">
+                                                    <motion.div 
+                                                        initial={{ width: 0 }}
+                                                        animate={{ width: `${(parseInt(metric.value)||50)}%` }}
+                                                        className={`h-full ${metric.color} ${metric.shadow}`}
+                                                        transition={{ delay: 0.8 + (i*0.2), duration: 1.5 }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Metadata Pane - Right Cluster */}
+                            <div className="lg:col-span-4 space-y-8">
+                                <div className="glass-card p-10 h-full flex flex-col justify-between bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-none shadow-2xl relative group">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                                    <div>
+                                        <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-8 italic underline decoration-[#fdf8f5]/10">Source Pulse Signature</p>
+                                        <div className="p-6 bg-[#1a0f0a] rounded-none border border-[#fdf8f5]/10 shadow-2xl relative z-10">
+                                            <p className="text-base font-black text-[#fdf8f5] break-words italic tracking-tighter uppercase leading-[0.9]">
+                                                {results.source || "SYNTHETIC_TEXT_AGENT"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-6 pt-10 relative z-10">
+                                        <div className="flex items-center gap-4 text-[9px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic">
+                                            <HiOutlineCubeTransparent className="w-6 h-6 text-[#fdf8f5]/20" />
+                                            RSA_HASH: <span className="text-[#8d7b68]">_OK_0x4F12</span>
+                                        </div>
+                                        <div className="flex items-center gap-4 text-[9px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic">
+                                            <HiOutlineChartSquareBar className="w-6 h-6 text-[#fdf8f5]/20" />
+                                            LATENCY: <span className="text-[#8d7b68]">42ms</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                        ) : !isAnalyzing && !error && (
+                        <div className="flex flex-col items-center justify-center py-24 text-center group cursor-default relative z-10">
+                            <motion.div 
+                                animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }}
+                                transition={{ repeat: Infinity, duration: 4 }}
+                                className="w-32 h-32 rounded-none border-2 border-[#fdf8f5]/10 flex items-center justify-center mb-10 group-hover:border-[#fdf8f5]/30 transition-all duration-1000"
+                            >
+                                <HiOutlineSearch className="w-14 h-14 text-[#fdf8f5]/20" />
+                            </motion.div>
+                            <h3 className="text-3xl font-black text-[#fdf8f5] uppercase tracking-[0.4em] italic opacity-20 group-hover:opacity-50 transition-opacity duration-1000">Awaiting Neural Stimulus</h3>
+                            <p className="text-[10px] font-black text-[#8d7b68] mt-4 uppercase tracking-[0.3em] italic opacity-40">Initialize ingestion protocol to begin audit.</p>
+                        </div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            </motion.div>
+          </div>
+
+      </div>
+
     </div>
   );
 }

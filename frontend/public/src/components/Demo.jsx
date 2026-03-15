@@ -161,15 +161,15 @@ function getBiasColor(bias) {
     case "Left":
       return { bg: "bg-blue-500/20", text: "text-blue-400", border: "border-blue-500/30" }
     case "Center-Left":
-      return { bg: "bg-blue-500/10", text: "text-blue-300", border: "border-blue-500/20" }
+      return { bg: "bg-cyan-500/20", text: "text-cyan-400", border: "border-cyan-500/30" }
     case "Center":
       return { bg: "bg-emerald-500/20", text: "text-emerald-400", border: "border-emerald-500/30" }
     case "Center-Right":
-      return { bg: "bg-orange-500/10", text: "text-orange-300", border: "border-orange-500/20" }
+      return { bg: "bg-amber-500/20", text: "text-amber-400", border: "border-amber-500/30" }
     case "Right":
       return { bg: "bg-orange-500/20", text: "text-orange-400", border: "border-orange-500/30" }
     default:
-      return { bg: "bg-gray-500/20", text: "text-gray-400", border: "border-gray-500/30" }
+      return { bg: "bg-purple-500/20", text: "text-purple-400", border: "border-purple-500/30" }
   }
 }
 
@@ -479,9 +479,9 @@ function SimpleAreaChart({ data }) {
       <path d={createAreaPath("right")} fill="url(#rightGrad)" />
 
       {/* Lines */}
-      <path d={createPath("center")} fill="none" stroke="#22c55e" strokeWidth="2" />
-      <path d={createPath("left")} fill="none" stroke="#3b82f6" strokeWidth="2" />
-      <path d={createPath("right")} fill="none" stroke="#f97316" strokeWidth="2" />
+      <path d={createPath("center")} fill="none" stroke="#10b981" strokeWidth="3" />
+      <path d={createPath("left")} fill="none" stroke="#3b82f6" strokeWidth="3" />
+      <path d={createPath("right")} fill="none" stroke="#f59e0b" strokeWidth="3" />
 
       {/* X-axis labels */}
       {data.map((d, i) => (
@@ -588,7 +588,7 @@ function SimpleWorldMap({ markers }) {
 
         return (
           <g key={i}>
-            <circle cx={x} cy={y} r={size + 4} fill="#3b82f6" opacity="0.2">
+            <circle cx={x} cy={y} r={size + 4} fill="#f59e0b" opacity="0.2">
               <animate
                 attributeName="r"
                 from={size + 4}
@@ -604,7 +604,7 @@ function SimpleWorldMap({ markers }) {
                 repeatCount="indefinite"
               />
             </circle>
-            <circle cx={x} cy={y} r={size} fill="#3b82f6" className="cursor-pointer hover:fill-blue-400" />
+            <circle cx={x} cy={y} r={size} fill="#f59e0b" className="cursor-pointer hover:fill-amber-400" />
             <title>{`${marker.name}: ${marker.articles.toLocaleString()} articles`}</title>
           </g>
         )

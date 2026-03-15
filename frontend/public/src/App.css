@@ -1,94 +1,196 @@
 @import "tailwindcss";
 
-/* ========== THEME SYSTEM ========== */
-/* Dark Theme (default) */
+/* ========== ADVANCED SAAS DESIGN SYSTEM ========== */
 :root {
-  --bg-primary: #050505;
-  --bg-secondary: #0a0a0a;
-  --bg-card: #0a0a0a;
-  --bg-input: #121212;
-  --bg-elevated: #121212;
+  /* Brown & Fade Skin Premium Theme */
+  --bg-primary: #1a0f0a; /* Deep Espresso */
+  --bg-secondary: #261a14; /* Warm Cocoa */
+  --bg-card: #fdf8f5; /* Light Fade Skin */
+  --bg-offwhite: #f5ebe0; /* Soft Beige */
+  --bg-sidebar: #1a0f0a;
+  --bg-input: #2d1e18;
+  
+  --text-primary: #fdf8f5; /* Skin Text */
+  --text-secondary: #d6c2b8; /* Muted Peach */
+  --text-muted: #8d7b68; /* Dusty Brown */
+  --text-dim: #4d3c2e; /* Deep Tan */
 
-  --text-primary: #ffffff;
-  --text-secondary: #FDEBD0;
-  --text-muted: #9ca3af;
-  --text-dim: #6b7280;
+  --border-subtle: rgba(253, 248, 245, 0.05);
+  --border-light: rgba(253, 248, 245, 0.02);
+  --border-medium: rgba(253, 248, 245, 0.1);
+  --border-glass: rgba(253, 248, 245, 0.1);
 
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --border-light: rgba(255, 255, 255, 0.1);
-  --border-medium: rgba(255, 255, 255, 0.2);
+  --accent-primary: #fdf8f5;
+  --accent-secondary: #3d2b1f;
+  --accent-glow: rgba(253, 248, 245, 0.05);
 
-  --glass-bg: rgba(10, 10, 10, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.05);
+  --shadow-premium: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 
-  --shadow-glow: rgba(0, 0, 0, 0.5);
-  --overlay-radial: rgba(0, 0, 0, 0);
+  --sidebar-width: 280px;
+  --sidebar-width-collapsed: 80px;
+  --header-height: 72px;
 
-  --grid-opacity: 0.5;
-  --hover-bg: rgba(255, 255, 255, 0.03);
-  --hover-bg-strong: rgba(255, 255, 255, 0.05);
-
-  --neural-glow: rgba(6, 182, 212, 0.15);
+  /* Button Specifics */
+  --btn-bg-light: #f5ebe0;
+  --btn-bg-hover: #d6c2b8;
+  --btn-text-dark: #1a0f0a;
 }
 
-/* ========== NEURAL BACKGROUND ANIMATION ========== */
-@keyframes neuralFluid {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Transitions for dynamic layout */
+.layout-transition {
+  transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+              width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.neural-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(circle at 50% 50%, #050505, #000);
+/* Updated Mesh Background (Brown & Fade Skin Gradient) */
+.mesh-bg {
+  background-color: #1a0f0a;
+  background-image: 
+    radial-gradient(at 0% 0%, #2d1e18 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(245, 235, 224, 0.1) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, #2d1e18 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(245, 235, 224, 0.1) 0px, transparent 50%);
+}
+
+* {
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Unified Components */
+.saas-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-premium);
   overflow: hidden;
 }
 
-.neural-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: 
-    radial-gradient(circle at 20% 30%, var(--neural-glow) 0%, transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(240, 2, 122, 0.05) 0%, transparent 40%);
-  filter: blur(80px);
-  animation: neuralFluid 20s ease infinite;
-  background-size: 200% 200%;
-}
-
 .glass-card {
-  background: var(--bg-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-md);
+}
+
+/* Bento Utilities */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+}
+
+.bento-item {
+  border-radius: var(--radius-lg);
+  position: relative;
+}
+
+/* Buttons & Inputs */
+.btn-primary {
+  background: var(--btn-bg-light);
+  color: var(--btn-text-dark);
+  font-weight: 800;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0px;
+  box-shadow: 0 4px 14px 0 rgba(0,0,0,0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  background: var(--btn-bg-hover);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.btn-ghost {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.btn-ghost:hover {
+  background: var(--bg-primary);
   border: 1px solid var(--border-subtle);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-primary);
 }
 
-/* Light Theme */
-.light {
-  --bg-primary: #f8f9fc;
-  --bg-secondary: #eef0f5;
-  --bg-card: #ffffff;
-  --bg-input: #f0f2f7;
-  --bg-elevated: #ffffff;
-
-  --text-primary: #111827;
-  --text-secondary: #1f2937;
-  --text-muted: #6b7280;
-  --text-dim: #9ca3af;
-
-  --border-subtle: rgba(0, 0, 0, 0.06);
-  --border-light: rgba(0, 0, 0, 0.1);
-  --border-medium: rgba(0, 0, 0, 0.15);
-
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(0, 0, 0, 0.08);
-
-  --shadow-glow: rgba(0, 0, 0, 0.08);
-  --overlay-radial: rgba(0, 0, 0, 0);
-
-  --grid-opacity: 0.15;
-  --hover-bg: rgba(0, 0, 0, 0.03);
-  --hover-bg-strong: rgba(0, 0, 0, 0.06);
+.input-saas {
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  width: 100%;
+  outline: none;
+  transition: all 0.2s;
 }
+
+.input-saas:focus {
+  border-color: var(--accent-primary);
+  background: var(--bg-secondary);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+/* Tickers & Badges */
+.status-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: var(--border-light);
+  color: var(--text-muted);
+}
+
+/* Scrollbar Refinement (Hiding Sidebar Scrollbar) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 0px !important;
+  display: none !important;
+}
+
+.custom-scrollbar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Global Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-dim);
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+

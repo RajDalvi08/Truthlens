@@ -1,23 +1,14 @@
+"use client"
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import Navigation from "./Navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { compareEvent } from "../services/api";
+import { HiOutlineCalendar, HiOutlineLink, HiOutlineExclamationCircle, HiOutlineLightningBolt, HiOutlineServer } from "react-icons/hi";
 
 export default function EventComparison() {
   const [url, setUrl] = useState("");
   const [results, setResults] = useState(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
-  };
 
   const handleAnalyze = async () => {
     if (!url.trim()) {
@@ -40,107 +31,153 @@ export default function EventComparison() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)] text-[#FDEBD0]">
-      <Navigation />
+    <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-24 mesh-bg">
+      
+      {/* Header */}
+      <div className="border-b border-[#fdf8f5]/10 pb-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div>
+            <h2 className="text-5xl font-black tracking-tighter text-[#fdf8f5] flex items-center gap-6 uppercase italic">
+              <HiOutlineCalendar className="w-12 h-12 text-[#fdf8f5] shadow-2xl" />
+              Event Meridian
+            </h2>
+            <p className="text-[#8d7b68] text-[10px] mt-4 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10 leading-relaxed">Auto-retrieve and compare multi-source coverage of a single global event nexus.</p>
+          </div>
+          <div className="px-6 py-2 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[#d6c2b8] text-[9px] font-black uppercase tracking-[0.3em] italic">X-OUTLET_SYNC_V4</div>
+      </div>
 
-      <main className="flex-1 overflow-auto p-8 relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-green-900/10 via-[var(--bg-primary)] to-[var(--bg-primary)] z-0 pointer-events-none"></div>
-
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="max-w-5xl mx-auto space-y-8 relative z-10"
-        >
-          <motion.div 
-            variants={itemVariants}
-            className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-8 relative overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)]"
-          >
-            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div>
-              <h1 className="text-4xl font-black text-white tracking-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                Event Comparison
-              </h1>
-              <p className="text-emerald-400 font-mono uppercase tracking-widest mt-2 text-sm">Cross-Outlet Narrative Alignment</p>
-              <p className="text-gray-400 mt-4 max-w-2xl leading-relaxed">
-                Enter an article URL to compare how different outlets cover the same story.
-              </p>
-            </div>
-
-            <div className="mt-8 flex flex-col gap-4 max-w-3xl">
-              <input
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="Article URL to compare across outlets"
-                className="w-full bg-[var(--bg-primary)] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50"
-              />
-
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={handleAnalyze}
-                  disabled={isLoading}
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-bold text-sm text-white shadow-lg hover:scale-105 transition-transform disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? "Analyzing…" : "Compare Event"}
-                </button>
-                {error && <p className="text-sm text-red-300">{error}</p>}
-              </div>
-            </div>
-          </motion.div>
-
-          {results && (
-            <motion.div variants={itemVariants} className="space-y-6">
-              <div className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6">
-                <p className="text-xs font-mono uppercase tracking-widest text-gray-500">Event</p>
-                <h2 className="mt-2 text-2xl font-black text-white">{results.event || "Unknown Event"}</h2>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {results.articles?.map((article, idx) => (
-                  <div key={idx} className="bg-[var(--bg-secondary)] border border-white/5 rounded-3xl p-6">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest">{article.source || "Unknown"}</p>
-                        <h3 className="mt-2 text-lg font-black text-white leading-snug">{article.headline || "(No headline)"}</h3>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-gray-400 uppercase">Bias</p>
-                        <p className="text-2xl font-black text-emerald-300">
-                          {article.bias_score > 0 ? "+" : ""}{article.bias_score}
-                        </p>
-                        <p className="text-xs font-semibold text-gray-400">{article.bias_level}</p>
-                      </div>
-                    </div>
-
-                    <div className="mt-5 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-400">Linguistic</span>
-                        <span className="text-sm font-semibold text-white">{article.linguistic_bias}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-400">Framing</span>
-                        <span className="text-sm font-semibold text-white">{article.framing_bias}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-400">Entity</span>
-                        <span className="text-sm font-semibold text-white">{article.entity_bias}</span>
-                      </div>
-                    </div>
-
-                    {article.bias_visual && (
-                      <div className="mt-4">
-                        <p className="text-xs text-gray-400 uppercase tracking-wide">Visual</p>
-                        <div className="mt-2" dangerouslySetInnerHTML={{ __html: article.bias_visual }} />
-                      </div>
-                    )}
+      {/* Discovery Input */}
+      <motion.div 
+          className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+      >
+          <div className="absolute top-0 left-0 w-full h-[3px] bg-[#fdf8f5] shadow-[0_0_20px_rgba(253,248,245,0.4)]" />
+          
+          <div className="max-w-4xl">
+              <label className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 block italic">Neural Anchor (Article URL Source)</label>
+              <div className="flex flex-col sm:flex-row gap-6">
+                  <div className="relative flex-1 group/input">
+                      <HiOutlineLink className="absolute left-6 top-1/2 -translate-y-1/2 text-[#4d3c2e] group-focus-within/input:text-[#fdf8f5] transition-colors w-6 h-6" />
+                      <input
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                        placeholder="HTTPS://GLOBAL-INTEL.COM/EVENT-ANCHOR..."
+                        className="w-full pl-16 pr-8 py-5 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic shadow-2xl"
+                      />
                   </div>
-                ))}
+                  <button
+                    onClick={handleAnalyze}
+                    disabled={isLoading}
+                    className="btn-primary px-12 py-5 gap-4 whitespace-nowrap w-full sm:w-auto shadow-2xl flex items-center justify-center italic"
+                  >
+                    {isLoading ? (
+                        <>
+                            <span className="w-5 h-5 border-3 border-[#1a0f0a]/30 border-t-[#1a0f0a] rounded-none animate-spin" />
+                            MAPPING...
+                        </>
+                    ) : (
+                        <>
+                            <HiOutlineLightningBolt className="w-5 h-5" />
+                            EXECUTE EVENT SCAN
+                        </>
+                    )}
+                  </button>
               </div>
+              <p className="text-[10px] text-[#4d3c2e] mt-6 italic font-black uppercase tracking-[0.25em] opacity-60">Neural core will crawl global news nodes to identify correlating reports and narrative outliers.</p>
+          </div>
+      </motion.div>
+
+      {/* Results Section */}
+       <AnimatePresence>
+          {error && (
+            <motion.div 
+               initial={{ opacity: 0, y: 15 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="p-8 glass-card border-[#fdf8f5]/20 bg-[#fdf8f5]/5 text-[#fdf8f5] flex items-center gap-6 rounded-none shadow-2xl"
+            >
+               <HiOutlineExclamationCircle className="w-10 h-10 text-[#fdf8f5] animate-pulse" />
+               <span className="font-black text-[11px] tracking-[0.2em] uppercase italic underline decoration-[#fdf8f5]/10">CRITICAL_FAULT: {error}</span>
             </motion.div>
           )}
-        </motion.div>
-      </main>
+
+          {results && (
+            <motion.div 
+               initial={{ opacity: 0, y: 40 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="space-y-12"
+            >
+                {/* Event Summary Card */}
+                <div className="glass-card p-12 bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-80 h-80 bg-[#fdf8f5]/5 blur-[100px] pointer-events-none group-hover:bg-[#fdf8f5]/10 transition-all duration-1000" />
+                    <div className="flex items-start gap-8 relative z-10">
+                        <div className="w-20 h-20 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-none flex items-center justify-center text-[#fdf8f5] shadow-2xl">
+                            <HiOutlineServer className="w-10 h-10" />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-4 font-mono italic underline decoration-[#fdf8f5]/10">Nexus Core Identified</p>
+                            <h2 className="text-4xl font-black text-[#fdf8f5] leading-[0.9] uppercase italic tracking-tighter group-hover:italic transition-all">
+                                {results.event || "Unspecified Intelligence Vector 0xAlpha"}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Article Comparisons Bento */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  {results.articles?.map((article, idx) => (
+                    <motion.div 
+                        key={idx}
+                        className="saas-card p-10 group hover:border-[#fdf8f5]/30 transition-all flex flex-col justify-between bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden"
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.2 + (idx * 0.1) }}
+                    >
+                        <div className="absolute top-0 left-0 w-2 h-full bg-[#fdf8f5]/5 group-hover:bg-[#fdf8f5]/20 transition-all" />
+                        <div>
+                            <div className="flex justify-between items-start mb-10">
+                                <span className="px-4 py-1.5 bg-[#fdf8f5]/5 text-[#fdf8f5] border border-[#fdf8f5]/10 text-[9px] font-black uppercase tracking-[0.3em] italic">{article.source || "Neural Node"}</span>
+                                <div className="text-right">
+                                    <p className="text-[9px] font-black text-[#4d3c2e] uppercase mb-2 tracking-[0.2em] italic">Bias_Index</p>
+                                    <p className="text-4xl font-black text-[#fdf8f5] tabular-nums italic tracking-tighter shadow-2xl">
+                                        {article.bias_score > 0 ? "+" : ""}{article.bias_score}
+                                    </p>
+                                </div>
+                            </div>
+                            <h3 className="text-2xl font-black text-[#fdf8f5] group-hover:italic transition-all leading-[0.9] mb-12 uppercase tracking-tighter">
+                                {article.headline || "Correlated Data Fragment"}
+                            </h3>
+                        </div>
+
+                        <div className="pt-10 border-t border-[#fdf8f5]/5">
+                             <div className="grid grid-cols-3 gap-6">
+                                {[
+                                  { l: "Linguistic", v: article.linguistic_bias },
+                                  { l: "Framing", v: article.framing_bias },
+                                  { l: "Entity", v: article.entity_bias },
+                                ].map((stat, i) => (
+                                    <div key={i} className="group/stat">
+                                       <p className="text-[8px] font-black text-[#8d7b68] uppercase tracking-[0.25em] mb-3 italic group-hover/stat:text-[#d6c2b8] transition-colors">{stat.l}</p>
+                                       <div className="flex items-center gap-3">
+                                          <p className="text-sm font-black text-[#fdf8f5] tabular-nums tracking-widest">{stat.v}</p>
+                                          <div className="flex-1 h-0.5 bg-[#fdf8f5]/5 rounded-none overflow-hidden">
+                                             <motion.div 
+                                                initial={{ width: 0 }}
+                                                animate={{ width: `${(parseInt(stat.v)||50)}%` }}
+                                                className={`h-full ${i === 0 ? 'bg-[#0EA5E9]' : i === 1 ? 'bg-[#8B5CF6]' : 'bg-[#10B981]'}`}
+                                             />
+                                          </div>
+                                       </div>
+                                    </div>
+                                ))}
+                             </div>
+                        </div>
+                    </motion.div>
+                  ))}
+                </div>
+            </motion.div>
+          )}
+       </AnimatePresence>
+
     </div>
   );
 }

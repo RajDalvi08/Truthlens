@@ -1,81 +1,120 @@
-import React, { Suspense, useState } from "react";
+"use client"
+import React, { Suspense } from "react";
 import { motion } from "framer-motion";
-import Navigation from "./Navigation";
+import { HiOutlineTrendingUp, HiOutlineMap, HiOutlineGlobeAlt } from "react-icons/hi";
 
 const BiasGlobe = React.lazy(() => import("./three/BiasGlobe"));
 
 const REGION_STATS = [
-  { region: "North America", bias: "+0.42", trend: "Right-leaning", articles: "183K", color: "text-purple-400" },
-  { region: "Europe", bias: "-0.22", trend: "Center-left", articles: "186K", color: "text-indigo-400" },
-  { region: "Asia Pacific", bias: "+0.15", trend: "Mixed", articles: "176K", color: "text-cyan-400" },
-  { region: "Middle East", bias: "+0.38", trend: "Polarized", articles: "62K", color: "text-orange-400" },
-  { region: "Africa", bias: "+0.30", trend: "Mixed", articles: "28K", color: "text-amber-400" },
-  { region: "Latin America", bias: "+0.18", trend: "Mixed", articles: "45K", color: "text-emerald-400" },
+  { region: "North America", bias: "+0.42", trend: "Right-leaning", articles: "183K", color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
+  { region: "Europe", bias: "-0.22", trend: "Center-left", articles: "186K", color: "text-[#d6c2b8]", bg: "bg-[#fdf8f5]/5" },
+  { region: "Asia Pacific", bias: "+0.15", trend: "Mixed", articles: "176K", color: "text-[#8d7b68]", bg: "bg-[#fdf8f5]/5" },
+  { region: "Middle East", bias: "+0.38", trend: "Polarized", articles: "62K", color: "text-[#d6c2b8]", bg: "bg-[#fdf8f5]/5" },
+  { region: "Africa", bias: "+0.30", trend: "Mixed", articles: "28K", color: "text-[#8d7b68]", bg: "bg-[#fdf8f5]/5" },
+  { region: "Latin America", bias: "+0.18", trend: "Mixed", articles: "45K", color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
 ];
 
 export default function GlobePage() {
   return (
-    <div className="flex min-h-screen bg-[#030303] text-white selection:bg-indigo-500/30">
-      <Navigation />
-
-      <div className="flex-1 flex flex-col relative max-w-[100vw] overflow-hidden">
-        {/* Background blurs */}
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-600/5 blur-[160px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-cyan-600/5 blur-[140px] rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none" />
-
-        {/* Header */}
-        <header className="sticky top-0 z-50 bg-black/60 backdrop-blur-3xl border-b border-white/5 px-8 h-24 flex items-center justify-between">
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-black italic tracking-tighter bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-              Global Bias Intelligence
-            </h1>
-            <p className="text-[10px] text-gray-500 font-mono tracking-widest mt-1 uppercase">3D Interactive Regional Bias Map</p>
-          </div>
-        </header>
-
-        <main className="p-8 space-y-8 relative z-10 overflow-auto pb-32">
-          {/* Globe */}
-          <Suspense fallback={
-            <div className="w-full h-[600px] rounded-3xl bg-white/[0.02] border border-white/10 flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-sm text-gray-500 font-mono">Rendering Globe...</p>
-              </div>
-            </div>
-          }>
-            <BiasGlobe />
-          </Suspense>
-
-          {/* Regional Breakdown Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {REGION_STATS.map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -3, borderColor: "rgba(255,255,255,0.15)" }}
-                className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6 transition-all"
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <h4 className="text-white font-bold text-sm">{stat.region}</h4>
-                  <span className={`text-lg font-black ${stat.color}`}>{stat.bias}</span>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-[10px] font-mono">
-                    <span className="text-gray-600">TREND</span>
-                    <span className="text-gray-400">{stat.trend}</span>
-                  </div>
-                  <div className="flex justify-between text-[10px] font-mono">
-                    <span className="text-gray-600">ARTICLES</span>
-                    <span className="text-cyan-400">{stat.articles}</span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </main>
+    <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-24 mesh-bg">
+      
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-[#fdf8f5]/10 pb-12">
+        <div>
+          <h1 className="text-5xl font-black tracking-tighter text-[#fdf8f5] flex items-center gap-5 uppercase italic">
+            <HiOutlineGlobeAlt className="w-12 h-12 text-[#fdf8f5] shadow-[0_0_20px_rgba(253,248,245,0.2)]" />
+            Global Bias Intelligence
+          </h1>
+          <p className="text-[#8d7b68] text-[10px] mt-4 font-black max-w-xl italic uppercase tracking-[0.2em] underline decoration-[#fdf8f5]/10">
+            Real-time interactive 3D mapping of regional narrative drift and geopolitical bias vectors.
+          </p>
+        </div>
+        <div className="flex items-center gap-8">
+           <span className="px-5 py-2 bg-[#fdf8f5] text-[#1a0f0a] text-[10px] font-black uppercase tracking-[0.3em] italic animate-pulse shadow-xl">LIVE FEED</span>
+           <span className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic underline decoration-[#fdf8f5]/10">382 Nodes Active</span>
+        </div>
       </div>
+
+      {/* Main Globe Section - Large Bento */}
+      <motion.div 
+        className="saas-card min-h-[700px] relative overflow-hidden group bg-[#1a0f0a] border-[#fdf8f5]/10 rounded-none shadow-[0_0_60px_rgba(0,0,0,0.6)]"
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+      >
+        {/* Absolute UI overlay on Globe */}
+        <div className="absolute top-12 left-12 z-10 space-y-4 pointer-events-none">
+            <h3 className="text-2xl font-black text-[#fdf8f5] flex items-center gap-4 uppercase italic tracking-tighter">
+                <HiOutlineMap className="w-7 h-7 text-[#fdf8f5]" />
+                Intercontinental Bias Flux
+            </h3>
+            <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic">Projection Mode: Semantic Cluster // Node Alpha</p>
+        </div>
+
+        <div className="absolute bottom-12 left-12 z-10 flex gap-6 pointer-events-none">
+             <div className="glass-card bg-[#261a14]/80 border-[#fdf8f5]/10 p-6 flex items-center gap-8 rounded-none shadow-2xl">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#fdf8f5] animate-pulse shadow-[0_0_12px_rgba(253,248,245,0.8)]" />
+                <span className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.25em] leading-relaxed italic">
+                   North America Node<br/>
+                   <span className="text-[#fdf8f5] underline decoration-[#fdf8f5]/30">+0.42 INDEX</span>
+                </span>
+             </div>
+        </div>
+
+        <div className="absolute inset-0 z-0 bg-[#fdf8f5]/[0.01]">
+            <Suspense fallback={
+                <div className="w-full h-full flex flex-col items-center justify-center bg-[#1a0f0a]">
+                    <div className="w-16 h-16 border-4 border-[#fdf8f5] border-t-transparent rounded-none animate-spin mb-8 shadow-2xl" />
+                    <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50 animate-pulse">Initialising Neural Globe...</p>
+                </div>
+            }>
+                <BiasGlobe />
+            </Suspense>
+        </div>
+      </motion.div>
+
+      {/* Regional Breakdown Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {REGION_STATS.map((stat, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 + (i * 0.05) }}
+            className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none group hover:border-[#fdf8f5]/40 transition-all cursor-pointer shadow-xl relative overflow-hidden"
+          >
+             <div className="absolute top-0 left-0 w-2 h-full bg-[#fdf8f5]/5 group-hover:bg-[#fdf8f5]/10 transition-colors" />
+             <div className="flex justify-between items-start mb-10">
+                <h4 className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic group-hover:text-[#d6c2b8] transition-colors">{stat.region}</h4>
+                <div className="p-4 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-none group-hover:bg-[#fdf8f5] group-hover:text-[#1a0f0a] transition-all duration-300">
+                    <HiOutlineTrendingUp className="w-6 h-6" />
+                </div>
+             </div>
+             
+             <div className="flex items-end justify-between">
+                <div>
+                   <p className="text-5xl font-black text-[#fdf8f5] italic tracking-tighter tabular-nums group-hover:scale-110 transition-transform origin-left">{stat.bias}</p>
+                   <p className="text-[10px] font-black text-[#8d7b68] uppercase mt-3 tracking-[0.2em] italic underline decoration-[#fdf8f5]/10">{stat.trend}</p>
+                </div>
+                <div className="text-right">
+                   <p className="text-[9px] font-black text-[#4d3c2e] uppercase mb-2 tracking-[0.3em] italic">Archive Packets</p>
+                   <p className="text-lg font-black text-[#d6c2b8] tabular-nums tracking-widest">{stat.articles}</p>
+                </div>
+             </div>
+
+             <div className="mt-10 pt-10 border-t border-[#fdf8f5]/5">
+                <div className="h-2 w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden border border-[#fdf8f5]/5">
+                    <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.random() * 40 + 60}%` }}
+                        className="h-full bg-[#fdf8f5] shadow-[0_0_15px_rgba(253,248,245,0.4)]"
+                        transition={{ delay: 1 + (i * 0.1), duration: 2, ease: "easeOut" }}
+                    />
+                </div>
+             </div>
+          </motion.div>
+        ))}
+      </div>
+
     </div>
   );
 }

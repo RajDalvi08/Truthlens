@@ -1,20 +1,51 @@
 "use client"
-import React, { Suspense } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
 import { HiOutlineTrendingUp, HiOutlineMap, HiOutlineGlobeAlt } from "react-icons/hi";
+import { getRegionalBias, getAnalysisStats } from "../services/analysisService";
 
 const BiasGlobe = React.lazy(() => import("./three/BiasGlobe"));
 
-const REGION_STATS = [
-  { region: "North America", bias: "+0.42", trend: "Right-leaning", articles: "183K", color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
-  { region: "Europe", bias: "-0.22", trend: "Center-left", articles: "186K", color: "text-[#d6c2b8]", bg: "bg-[#fdf8f5]/5" },
-  { region: "Asia Pacific", bias: "+0.15", trend: "Mixed", articles: "176K", color: "text-[#8d7b68]", bg: "bg-[#fdf8f5]/5" },
-  { region: "Middle East", bias: "+0.38", trend: "Polarized", articles: "62K", color: "text-[#d6c2b8]", bg: "bg-[#fdf8f5]/5" },
-  { region: "Africa", bias: "+0.30", trend: "Mixed", articles: "28K", color: "text-[#8d7b68]", bg: "bg-[#fdf8f5]/5" },
-  { region: "Latin America", bias: "+0.18", trend: "Mixed", articles: "45K", color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
-];
-
 export default function GlobePage() {
+  const [regionStats, setRegionStats] = useState([]);
+  const [overviewStats, setOverviewStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [regions, stats] = await Promise.all([
+          getRegionalBias(),
+          getAnalysisStats(),
+        ]);
+        setRegionStats(regions);
+        setOverviewStats(stats);
+      } catch (err) {
+        console.error("Failed to load globe data:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  const totalNodes = overviewStats?.activeSources || 0;
+
+  // Assign UI styles per index for visual variety
+  const colorCycle = [
+    { color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
+    { color: "text-[#d6c2b8]", bg: "bg-[#fdf8f5]/5" },
+    { color: "text-[#8d7b68]", bg: "bg-[#fdf8f5]/5" },
+  ];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] mesh-bg">
+        <div className="w-12 h-12 border-4 border-[#fdf8f5] border-t-transparent rounded-none animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-24 mesh-bg">
       
@@ -31,7 +62,7 @@ export default function GlobePage() {
         </div>
         <div className="flex items-center gap-8">
            <span className="px-5 py-2 bg-[#fdf8f5] text-[#1a0f0a] text-[10px] font-black uppercase tracking-[0.3em] italic animate-pulse shadow-xl">LIVE FEED</span>
-           <span className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic underline decoration-[#fdf8f5]/10">382 Nodes Active</span>
+           <span className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic underline decoration-[#fdf8f5]/10">{totalNodes} Nodes Active</span>
         </div>
       </div>
 
@@ -51,13 +82,15 @@ export default function GlobePage() {
         </div>
 
         <div className="absolute bottom-12 left-12 z-10 flex gap-6 pointer-events-none">
+             {regionStats.length > 0 && (
              <div className="glass-card bg-[#261a14]/80 border-[#fdf8f5]/10 p-6 flex items-center gap-8 rounded-none shadow-2xl">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#fdf8f5] animate-pulse shadow-[0_0_12px_rgba(253,248,245,0.8)]" />
                 <span className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.25em] leading-relaxed italic">
-                   North America Node<br/>
-                   <span className="text-[#fdf8f5] underline decoration-[#fdf8f5]/30">+0.42 INDEX</span>
+                   {regionStats[0]?.region || "Global"} Node<br/>
+                   <span className="text-[#fdf8f5] underline decoration-[#fdf8f5]/30">{regionStats[0]?.bias || "0.00"} INDEX</span>
                 </span>
              </div>
+             )}
         </div>
 
         <div className="absolute inset-0 z-0 bg-[#fdf8f5]/[0.01]">
@@ -74,7 +107,7 @@ export default function GlobePage() {
 
       {/* Regional Breakdown Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {REGION_STATS.map((stat, i) => (
+        {regionStats.length > 0 ? regionStats.map((stat, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 30 }}
@@ -105,14 +138,18 @@ export default function GlobePage() {
                 <div className="h-2 w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden border border-[#fdf8f5]/5">
                     <motion.div 
                         initial={{ width: 0 }}
-                        animate={{ width: `${Math.random() * 40 + 60}%` }}
+                        animate={{ width: `${Math.min(100, (stat.bias_index || 0))}%` }}
                         className="h-full bg-[#fdf8f5] shadow-[0_0_15px_rgba(253,248,245,0.4)]"
                         transition={{ delay: 1 + (i * 0.1), duration: 2, ease: "easeOut" }}
                     />
                 </div>
              </div>
           </motion.div>
-        ))}
+        )) : (
+          <div className="lg:col-span-3 text-center py-20">
+            <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50">Analyze articles to populate regional bias data</p>
+          </div>
+        )}
       </div>
 
     </div>

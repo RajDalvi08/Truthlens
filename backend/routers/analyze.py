@@ -11,6 +11,7 @@ from typing import Optional
 from services.article_fetcher import fetch_article
 from services.preprocessing import clean_article
 from services.bias_engine import analyze_bias
+from database import save_analysis
 
 router = APIRouter(prefix="/analyze", tags=["Analysis"])
 
@@ -83,5 +84,12 @@ def analyze_article(payload: AnalyzeRequest):
             status_code=500,
             detail=f"Bias analysis failed: {exc}",
         )
+
+    # 4. Persist to database for dashboard analytics
+    try:
+        save_analysis(cleaned_article, result)
+    except Exception as exc:
+        # Non-critical — log but don't fail the analysis response
+        print(f"[WARN] Failed to save analysis to DB: {exc}")
 
     return AnalyzeResponse(**result)

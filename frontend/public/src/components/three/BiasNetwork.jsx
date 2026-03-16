@@ -1,26 +1,9 @@
-import React, { useRef, useMemo, useState } from "react";
+"use client"
+import React, { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
-
-const SOURCES = [
-  { name: "CNN Protocol", bias: -0.65, x: -3, y: 1.5, z: 0, color: "#fdf8f5" },
-  { name: "Fox News Node", bias: 0.82, x: 3, y: 1, z: -1, color: "#8d7b68" },
-  { name: "BBC Meridian", bias: -0.15, x: -1, y: -1.5, z: 2, color: "#d6c2b8" },
-  { name: "Reuters Core", bias: 0.05, x: 0.5, y: -2, z: -0.5, color: "#fdf8f5" },
-  { name: "The Guardian Path", bias: -0.72, x: -3.5, y: -0.5, z: -2, color: "#8d7b68" },
-  { name: "Al Jazeera Array", bias: -0.4, x: -2, y: 2.5, z: 1.5, color: "#d6c2b8" },
-  { name: "MSNBC Vector", bias: -0.7, x: -4, y: 0, z: 1, color: "#fdf8f5" },
-  { name: "NY Times Ingest", bias: -0.5, x: -2.5, y: -2, z: -1.5, color: "#8d7b68" },
-  { name: "WSJ Quant", bias: 0.3, x: 2, y: -1, z: 2, color: "#d6c2b8" },
-  { name: "AP News Root", bias: 0.02, x: 0, y: 0, z: 0, color: "#f5ebe0" },
-];
-
-const CONNECTIONS = [
-  [0, 6], [0, 7], [1, 8], [2, 3], [2, 9], [3, 9],
-  [4, 0], [4, 6], [5, 2], [5, 7], [6, 7], [1, 8],
-  [7, 5], [8, 1], [9, 2], [9, 3], [0, 5],
-];
+import { getNetworkData } from "../../services/analysisService";
 
 function SourceNode({ source, onHover }) {
   const meshRef = useRef();
@@ -75,17 +58,22 @@ function SourceNode({ source, onHover }) {
   );
 }
 
-function NetworkLines() {
+function NetworkLines({ sources }) {
   const linesRef = useRef();
 
   const geometry = useMemo(() => {
     const points = [];
-    CONNECTIONS.forEach(([a, b]) => {
-      points.push(new THREE.Vector3(SOURCES[a].x, SOURCES[a].y, SOURCES[a].z));
-      points.push(new THREE.Vector3(SOURCES[b].x, SOURCES[b].y, SOURCES[b].z));
-    });
+    // Random connections for visual effect
+    for (let i = 0; i < sources.length; i++) {
+        const nearCount = 2;
+        for(let j=1; j<=nearCount; j++) {
+            const next = (i + j) % sources.length;
+            points.push(new THREE.Vector3(sources[i].x, sources[i].y, sources[i].z));
+            points.push(new THREE.Vector3(sources[next].x, sources[next].y, sources[next].z));
+        }
+    }
     return new THREE.BufferGeometry().setFromPoints(points);
-  }, []);
+  }, [sources]);
 
   useFrame((state) => {
     if (linesRef.current) {
@@ -102,10 +90,31 @@ function NetworkLines() {
 
 export default function BiasNetwork() {
   const [hoveredSource, setHoveredSource] = useState(null);
+  const [sources, setSources] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+        try {
+            const data = await getNetworkData();
+            setSources(data);
+        } catch (e) {
+            console.error("Network data fetch failed", e);
+        } finally {
+            setLoading(false);
+        }
+    }
+    loadData();
+  }, []);
+
+  if (loading) return (
+    <div className="w-full h-full flex items-center justify-center font-black text-[10px] tracking-[0.3em] text-[#8d7b68] animate-pulse">
+        CONNECTING_NODES...
+    </div>
+  );
 
   return (
     <div className="w-full h-[550px] rounded-none overflow-hidden border border-[#fdf8f5]/10 bg-[#1a0f0a]/60 relative shadow-2xl group">
-
       {hoveredSource && (
         <div className="absolute bottom-10 left-10 z-10 bg-[#1a0f0a]/90 backdrop-blur-3xl border border-[#fdf8f5]/10 rounded-none px-6 py-4 pointer-events-none shadow-2xl border-l-4 border-l-[#fdf8f5]">
           <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic">ACTIVE_NODE_FOCUS: <span className="text-[#fdf8f5]">{hoveredSource.name}</span></p>
@@ -119,10 +128,10 @@ export default function BiasNetwork() {
         <spotLight position={[0, 0, 15]} intensity={0.3} color="#fdf8f5" />
 
         <group rotation={[0, 0, 0]}>
-            {SOURCES.map((source, i) => (
-              <SourceNode key={i} source={source} onHover={setHoveredSource} />
+            {sources.map((source, i) => (
+              <SourceNode key={source.id || i} source={source} onHover={setHoveredSource} />
             ))}
-            <NetworkLines />
+            {sources.length > 0 && <NetworkLines sources={sources} />}
         </group>
 
         <OrbitControls
@@ -134,8 +143,6 @@ export default function BiasNetwork() {
           autoRotateSpeed={0.8}
         />
       </Canvas>
-
-      
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#fdf8f5]/20 to-transparent" />
     </div>
   );

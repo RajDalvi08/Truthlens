@@ -1,9 +1,35 @@
 "use client"
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { HiOutlineDatabase, HiOutlineCloudUpload, HiOutlineCog, HiOutlineShare } from "react-icons/hi";
+import { getDatasetStats } from "../services/analysisService";
 
 export default function DatasetManager() {
+  const [datasets, setDatasets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await getDatasetStats();
+        setDatasets(data);
+      } catch (err) {
+        console.error("Failed to load datasets:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] mesh-bg">
+        <div className="w-12 h-12 border-4 border-[#fdf8f5] border-t-transparent rounded-none animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-24 mesh-bg">
       
@@ -24,12 +50,11 @@ export default function DatasetManager() {
 
       {/* Grid of Datasets */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {[1, 2, 3, 4].map((i) => (
+        {datasets.map((ds) => (
           <motion.div 
-            key={i}
+            key={ds.id}
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: i * 0.1 }}
             className="saas-card group relative overflow-hidden flex flex-col justify-between bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl"
           >
              <div className="absolute top-0 right-0 w-48 h-48 bg-[#fdf8f5]/5 blur-[80px] group-hover:bg-[#fdf8f5]/10 transition-all duration-1000 pointer-events-none" />
@@ -39,20 +64,26 @@ export default function DatasetManager() {
                     <div className="w-16 h-16 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-none flex items-center justify-center text-[#fdf8f5] group-hover:bg-[#fdf8f5] group-hover:text-[#1a0f0a] transition-all">
                         <HiOutlineDatabase className="w-8 h-8" />
                     </div>
-                    <span className="px-5 py-2 bg-[#fdf8f5]/5 text-[#fdf8f5] border border-[#fdf8f5]/20 text-[9px] font-black uppercase tracking-[0.3em] italic">ACTIVE_NODE_Q4</span>
+                    <span className="px-5 py-2 bg-[#fdf8f5]/5 text-[#fdf8f5] border border-[#fdf8f5]/20 text-[9px] font-black uppercase tracking-[0.3em] italic">
+                      {ds.active ? "ACTIVE_NODE" : "ARCHIVE_NODE"}
+                    </span>
                 </div>
                 
-                <h3 className="text-3xl font-black text-[#fdf8f5] mb-4 uppercase italic tracking-tighter">Corpus Bundle 2026.Q{i}</h3>
-                <p className="text-[11px] text-[#d6c2b8] font-black uppercase tracking-tight mb-10 leading-snug opacity-80 italic">Foundational corpus containing 2.4 million verified news fragments across global nodes. Optimized for framing detection.</p>
+                <h3 className="text-3xl font-black text-[#fdf8f5] mb-4 uppercase italic tracking-tighter">{ds.name}</h3>
+                <p className="text-[11px] text-[#d6c2b8] font-black uppercase tracking-tight mb-10 leading-snug opacity-80 italic">{ds.description}</p>
                 
-                <div className="flex items-center gap-10 text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">
+                <div className="flex flex-wrap items-center gap-10 text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">
                     <div className="flex items-center gap-4">
                         <div className="w-1.5 h-1.5 bg-[#fdf8f5] opacity-50" />
-                        84 GB STORAGE
+                        {ds.articles.toLocaleString()} ARTICLES
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="w-1.5 h-1.5 bg-[#fdf8f5] opacity-50" />
-                        v2.4 Neural Pack
+                        {ds.storage} STORAGE
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <div className="w-1.5 h-1.5 bg-[#fdf8f5] opacity-50" />
+                        {ds.version}
                     </div>
                 </div>
              </div>

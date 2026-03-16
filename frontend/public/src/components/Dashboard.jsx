@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { getAnalysisStats, getRecentAnalyses } from "../services/analysisService";
+import { getAnalysisStats, getRecentAnalyses, getBiasTimeseries, getNarrativeBalance } from "../services/analysisService";
 import { HiOutlineTrendingUp, HiOutlineExternalLink, HiOutlineInformationCircle, HiOutlineLightningBolt, HiOutlineShieldCheck, HiOutlineCubeTransparent } from "react-icons/hi";
 
 const COLORS = ['#F97316', '#0EA5E9', '#8B5CF6', '#EC4899', '#10B981'];
@@ -10,17 +10,23 @@ const COLORS = ['#F97316', '#0EA5E9', '#8B5CF6', '#EC4899', '#10B981'];
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [recentAnalyses, setRecentAnalyses] = useState([]);
+  const [biasTimeseries, setBiasTimeseries] = useState([]);
+  const [narrativeBalance, setNarrativeBalance] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
       try {
-        const [statsData, analysesData] = await Promise.all([
+        const [statsData, analysesData, timeseriesData, balanceData] = await Promise.all([
           getAnalysisStats(),
-          getRecentAnalyses(5)
+          getRecentAnalyses(5),
+          getBiasTimeseries(30),
+          getNarrativeBalance(),
         ]);
         setStats(statsData);
         setRecentAnalyses(analysesData);
+        setBiasTimeseries(timeseriesData);
+        setNarrativeBalance(balanceData);
       } catch (error) {
         console.error("Dashboard data load failure:", error);
       } finally {
@@ -30,11 +36,13 @@ export default function Dashboard() {
     loadData();
   }, []);
 
-  const pieData = [
-    { name: 'Neutral', value: 45 },
-    { name: 'Left Leaning', value: 30 },
-    { name: 'Right Leaning', value: 25 },
+  const pieData = narrativeBalance?.pieData || [
+    { name: 'Neutral', value: 0 },
+    { name: 'Left Leaning', value: 0 },
+    { name: 'Right Leaning', value: 0 },
   ];
+
+  const neutralPct = narrativeBalance?.neutralPct ?? 0;
 
   if (loading) {
     return (
@@ -71,10 +79,10 @@ export default function Dashboard() {
       {/* Bento Grid Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {[
-              { label: "Total Articles", value: stats?.totalArticles?.toLocaleString(), icon: HiOutlineCubeTransparent, color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
-              { label: "Avg Bias Score", value: stats?.avgBias, icon: HiOutlineTrendingUp, color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
-              { label: "Neural Fidelity", value: "99.2%", icon: HiOutlineShieldCheck, color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
-              { label: "Active Sources", value: stats?.activeSources, icon: HiOutlineInformationCircle, color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
+              { label: "Total Articles", value: stats?.totalArticles?.toLocaleString() || "0", icon: HiOutlineCubeTransparent, color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
+              { label: "Avg Bias Score", value: stats?.avgBias ?? "0", icon: HiOutlineTrendingUp, color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
+              { label: "Articles / Hr", value: stats?.articlesPerHour ?? "0", icon: HiOutlineShieldCheck, color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
+              { label: "Active Sources", value: stats?.activeSources ?? "0", icon: HiOutlineInformationCircle, color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
           ].map((stat, i) => (
               <motion.div 
                 key={i}
@@ -107,12 +115,9 @@ export default function Dashboard() {
                 <span className="px-4 py-2 bg-[#fdf8f5]/10 text-[#fdf8f5] border border-[#fdf8f5]/20 text-[9px] font-black uppercase tracking-widest italic animate-pulse">LIVE STREAM</span>
             </div>
             <div className="h-[320px] w-full">
+              {biasTimeseries.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={[
-                  { name: 'Mon', value: 400 }, { name: 'Tue', value: 300 }, { name: 'Wed', value: 600 },
-                  { name: 'Thu', value: 800 }, { name: 'Fri', value: 500 }, { name: 'Sat', value: 900 },
-                  { name: 'Sun', value: 700 }
-                ]}>
+                <LineChart data={biasTimeseries}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(253,248,245,0.05)" />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#8d7b68', fontSize: 10, fontWeight: 900}} dy={15} />
                   <YAxis axisLine={false} tickLine={false} tick={{fill: '#8d7b68', fontSize: 10, fontWeight: 900}} />
@@ -120,9 +125,14 @@ export default function Dashboard() {
                     contentStyle={{ backgroundColor: '#1a0f0a', borderRadius: '0', border: '1px solid rgba(253,248,245,0.2)', boxShadow: '0 20px 40px rgba(0,0,0,0.6)', padding: '15px' }}
                     itemStyle={{ color: '#fdf8f5', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase' }}
                   />
-                  <Line type="monotone" dataKey="value" stroke="#ff9d6c" strokeWidth={4} dot={{ r: 5, fill: '#1a0f0a', strokeWidth: 2, stroke: '#ff9d6c' }} activeDot={{ r: 8, fill: '#ff9d6c' }} shadow="0 0 15px rgba(255,157,108,0.4)" />
+                  <Line type="monotone" dataKey="value" stroke="#ff9d6c" strokeWidth={4} dot={{ r: 5, fill: '#1a0f0a', strokeWidth: 2, stroke: '#ff9d6c' }} activeDot={{ r: 8, fill: '#ff9d6c' }} />
                 </LineChart>
               </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50">Analyze articles to populate drift data</p>
+                </div>
+              )}
             </div>
           </motion.div>
 
@@ -151,7 +161,7 @@ export default function Dashboard() {
                     </ResponsiveContainer>
                     {/* Center Text overlay */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span className="text-4xl font-black text-[#fdf8f5] italic tracking-tighter">45%</span>
+                        <span className="text-4xl font-black text-[#fdf8f5] italic tracking-tighter">{neutralPct}%</span>
                         <span className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic">Neutral</span>
                     </div>
                 </div>
@@ -189,7 +199,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#fdf8f5]/5">
-              {recentAnalyses.map((item) => (
+              {recentAnalyses.length > 0 ? recentAnalyses.map((item) => (
                 <tr key={item.id} className="group hover:bg-[#fdf8f5]/[0.04] transition-all duration-300 cursor-pointer">
                   <td className="px-8 py-5 border-r border-[#fdf8f5]/5">
                     <p className="text-[13px] font-black text-[#d6c2b8] group-hover:text-[#fdf8f5] group-hover:italic transition-all leading-tight max-w-md uppercase tracking-tight">
@@ -222,7 +232,13 @@ export default function Dashboard() {
                     </span>
                   </td>
                 </tr>
-              ))}
+              )) : (
+                <tr>
+                  <td colSpan="5" className="px-8 py-12 text-center">
+                    <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50">No analyses yet — submit an article to begin</p>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

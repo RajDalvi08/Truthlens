@@ -8,46 +8,32 @@ import {
 } from 'recharts'
 import { HiOutlineDocumentDownload, HiOutlineFilter, HiOutlineSearch, HiOutlineDatabase, HiOutlineCubeTransparent, HiOutlinePresentationChartBar } from "react-icons/hi"
 
-import { getRecentAnalyses } from "../services/analysisService"
+import { getRecentAnalyses, getBiasDistribution, getSentimentCorrelation, getAnalysisStats } from "../services/analysisService"
 
 const BiasNetwork = React.lazy(() => import("./three/BiasNetwork"));
-
-const biasDistributionData = [
-  { name: 'Left Bias', value: 340, color: '#3b82f6' }, // Blue
-  { name: 'Neutral', value: 512, color: '#10b981' }, // Emerald
-  { name: 'Right Bias', value: 288, color: '#f59e0b' }, // Amber
-]
-
-const sentimentCorrelationData = [
-  { bias: -0.8, sentiment: -0.4, size: 20 },
-  { bias: -0.6, sentiment: -0.2, size: 15 },
-  { bias: -0.4, sentiment: 0.1, size: 10 },
-  { bias: -0.2, sentiment: 0.3, size: 25 },
-  { bias: 0, sentiment: 0.8, size: 30 },
-  { bias: 0.2, sentiment: 0.4, size: 12 },
-  { bias: 0.4, sentiment: 0.1, size: 18 },
-  { bias: 0.6, sentiment: -0.3, size: 22 },
-  { bias: 0.8, sentiment: -0.6, size: 14 },
-]
 
 export default function Analytics() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterType, setFilterType] = useState("all")
   const [recentAnalyses, setRecentAnalyses] = useState([])
+  const [biasDistributionData, setBiasDistributionData] = useState([])
+  const [sentimentCorrelationData, setSentimentCorrelationData] = useState([])
+  const [overviewStats, setOverviewStats] = useState(null)
   const [loading, setLoading] = useState(true)
 
   React.useEffect(() => {
     async function fetchData() {
       try {
-        const data = await getRecentAnalyses(10);
-        // Map data to match component expectations
-        const formattedData = data.map(item => ({
-          ...item,
-          date: new Date(item.timestamp.toDate()).toLocaleDateString(),
-          sentiment: item.sentimentScore > 0.3 ? 'Positive' : item.sentimentScore < -0.3 ? 'Negative' : 'Neutral',
-          bias_score: item.biasScore * 100
-        }));
-        setRecentAnalyses(formattedData);
+        const [data, distData, corrData, statsData] = await Promise.all([
+          getRecentAnalyses(50),
+          getBiasDistribution(),
+          getSentimentCorrelation(),
+          getAnalysisStats(),
+        ]);
+        setRecentAnalyses(data);
+        setBiasDistributionData(distData);
+        setSentimentCorrelationData(corrData);
+        setOverviewStats(statsData);
       } catch (err) {
         console.error("Failed to fetch analytics:", err);
       } finally {
@@ -59,10 +45,13 @@ export default function Analytics() {
 
   const filteredAnalyses = useMemo(() => {
     return recentAnalyses.filter(item => 
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (filterType === "all" || item.sentiment.toLowerCase() === filterType)
+      (item.title || "").toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (filterType === "all" || (item.sentiment || "").toLowerCase() === filterType)
     )
   }, [searchTerm, filterType, recentAnalyses])
+
+  const totalArticleVectors = overviewStats?.totalArticles || 0;
+  const articlesPerHour = overviewStats?.articlesPerHour || 0;
 
   if (loading) {
     return (
@@ -116,7 +105,7 @@ export default function Analytics() {
 
           <div className="absolute bottom-10 right-10 z-10 flex gap-4">
             <span className="px-6 py-2.5 bg-[#fdf8f5] text-[#1a0f0a] text-[10px] font-black uppercase tracking-[0.2em] italic shadow-2xl">HIGH FIDELITY</span>
-            <span className="px-6 py-2.5 bg-[#fdf8f5]/5 text-[#d6c2b8] border border-[#fdf8f5]/10 text-[10px] font-black uppercase tracking-[0.2em] italic underline decoration-[#fdf8f5]/20">1.2K article vectors</span>
+            <span className="px-6 py-2.5 bg-[#fdf8f5]/5 text-[#d6c2b8] border border-[#fdf8f5]/10 text-[10px] font-black uppercase tracking-[0.2em] italic underline decoration-[#fdf8f5]/20">{totalArticleVectors.toLocaleString()} article vectors</span>
           </div>
         </motion.div>
 
@@ -132,6 +121,7 @@ export default function Analytics() {
                 <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.2em] italic underline decoration-[#fdf8f5]/10">Categorical divergence.</p>
               </div>
               <div className="h-32 w-full mt-8">
+                {biasDistributionData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={biasDistributionData}>
                     <Bar dataKey="value" radius={[0, 0, 0, 0]}>
@@ -141,6 +131,11 @@ export default function Analytics() {
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic opacity-50">No data yet</p>
+                  </div>
+                )}
               </div>
             </motion.div>
 
@@ -155,7 +150,7 @@ export default function Analytics() {
                 </div>
                 <h3 className="text-xl font-black text-[#fdf8f5] mb-2 uppercase italic tracking-tighter">Ingestion Velocity</h3>
                 <div className="flex items-end justify-center gap-2 mt-4">
-                    <span className="text-5xl font-black text-[#fdf8f5] italic tracking-tighter tabular-nums">142</span>
+                    <span className="text-5xl font-black text-[#fdf8f5] italic tracking-tighter tabular-nums">{articlesPerHour}</span>
                     <span className="text-[10px] font-black text-[#8d7b68] mb-2 uppercase tracking-[0.2em] italic">ARTICLES / HR</span>
                 </div>
             </motion.div>
@@ -175,6 +170,7 @@ export default function Analytics() {
             <span className="px-6 py-2.5 bg-[#fdf8f5]/5 border border-[#fdf8f5]/20 text-[#fdf8f5] text-[10px] font-black uppercase tracking-[0.3em] italic">NODE CONVERGENCE</span>
           </div>
           <div className="h-[400px] w-full">
+            {sentimentCorrelationData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#fdf8f508" vertical={false} />
@@ -189,6 +185,11 @@ export default function Analytics() {
                 <Scatter name="Articles" data={sentimentCorrelationData} fill="#ec4899" fillOpacity={0.7} stroke="#ec4899" strokeWidth={1} />
               </ScatterChart>
             </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50">Analyze articles to populate correlation data</p>
+              </div>
+            )}
           </div>
         </motion.div>
 
@@ -230,7 +231,7 @@ export default function Analytics() {
                    </tr>
                 </thead>
                 <tbody className="divide-y divide-[#fdf8f5]/5 bg-[#fdf8f5]/[0.01]">
-                   {filteredAnalyses.map((item) => (
+                   {filteredAnalyses.length > 0 ? filteredAnalyses.map((item) => (
                       <tr key={item.id} className="group hover:bg-[#fdf8f5]/[0.05] cursor-pointer transition-all duration-400">
                          <td className="px-8 py-6">
                             <p className="text-[13px] font-black text-[#d6c2b8] group-hover:text-[#fdf8f5] group-hover:italic transition-all leading-tight max-w-lg uppercase tracking-tight">
@@ -258,7 +259,13 @@ export default function Analytics() {
                          </td>
                          <td className="px-8 py-6 text-[10px] font-black text-[#4d3c2e] group-hover:text-[#8d7b68] uppercase tabular-nums tracking-[0.2em] transition-colors">{item.date}</td>
                       </tr>
-                   ))}
+                   )) : (
+                      <tr>
+                        <td colSpan="5" className="px-8 py-12 text-center">
+                          <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50">No analyses found — submit articles to populate</p>
+                        </td>
+                      </tr>
+                   )}
                 </tbody>
              </table>
           </div>

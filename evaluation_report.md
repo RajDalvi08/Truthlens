@@ -1,4 +1,4 @@
-# Machine Learning Model Evaluation Report
+# Machine Learning Model Evaluation Report 
 
 ## Overview
 This report documents the performance of the machine learning models employed within the TruthLens bias evaluation system. The pipeline relies on a triple-model neural architecture built upon Transformer models (DistilBERT). The models process text asynchronously and their output is aggregated into a final bias score via a hybrid (mean-peak) calculation framework. 
@@ -15,7 +15,7 @@ All evaluations below are derived from existing training metrics, evaluation out
 - **Input Features**: Raw article text segment (chunked to `128` token sequence lengths)
 - **Output Format**: Binary classification [0 (Neutral), 1 (Biased)]
 
-### Dataset Information
+### Dataset Information                                                                 
 - **Dataset**: `linguistic_50k.csv` split into `train.csv` and `test.csv`
 - **Train Split**: ~40,000 samples (2 epochs, batch size 8)
 - **Test Split**: ~10,000 samples

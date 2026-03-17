@@ -223,7 +223,7 @@ export default function BiasAnalyzer() {
                                     <div className="space-y-6">
                                         {[
                                             { label: "Linguistic Framing", value: results.linguistic_bias, color: "bg-[#0EA5E9]", shadow: "shadow-[0_0_12px_rgba(14,165,233,0.4)]" },
-                                            { label: "Predictive Weighting", value: results.framing_bias, color: "#8B5CF6", shadow: "shadow-[0_0_12px_rgba(139,92,246,0.3)]" },
+                                            { label: "Predictive Weighting", value: results.framing_bias, color: "bg-[#8B5CF6]", shadow: "shadow-[0_0_12px_rgba(139,92,246,0.3)]" },
                                             { label: "Entity Salience", value: results.entity_bias, color: "bg-[#10B981]", shadow: "shadow-[0_0_12px_rgba(16,185,129,0.3)]" },
                                         ].map((metric, i) => (
                                             <div key={i} className="space-y-3 group/metric">
@@ -234,7 +234,7 @@ export default function BiasAnalyzer() {
                                                 <div className="h-[1px] w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden relative">
                                                     <motion.div 
                                                         initial={{ width: 0 }}
-                                                        animate={{ width: `${(parseInt(metric.value)||50)}%` }}
+                                                        animate={{ width: `${(parseFloat(metric.value) * 100) || 50}%` }}
                                                         className={`h-full ${metric.color} ${metric.shadow}`}
                                                         transition={{ delay: 0.8 + (i*0.2), duration: 1.5 }}
                                                     />

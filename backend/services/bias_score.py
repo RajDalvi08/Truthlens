@@ -25,17 +25,15 @@ def combine_scores(
         entity * ENTITY_WEIGHT
     ) * 100
 
-    bias_score = round(float(bias_score), 2)
+    bias_score = round(bias_score, 2)
 
     # Determine Bias Level with more granular descriptive bands
-    if bias_score < 25:
-        bias_level = "Neutral / Descriptive"
-    elif bias_score < 50:
-        bias_level = "Low Bias / Slight Framing"
-    elif bias_score < 75:
-        bias_level = "Moderate Bias / Ideological"
+    if bias_score < 40:
+        bias_level = "Low Bias"
+    elif bias_score < 70:
+        bias_level = "Moderate Bias"
     else:
-        bias_level = "Strong Bias / Highly Subjective"
+        bias_level = "Strong Bias"
 
     return {
         "score": bias_score,

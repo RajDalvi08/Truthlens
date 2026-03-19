@@ -60,12 +60,8 @@ def analyze_article(payload: AnalyzeRequest):
         }
     elif payload.url:
         try:
-            raw_article = fetch_article(str(payload.url))
-            
-            # Hybrid fallback: if scraping succeeded but content is short, 
-            # and manual text was partially provided, use manual text
-            if payload.text and len(raw_article["text"]) < 500:
-                raw_article["text"] = payload.text
+            # Pass payload.text as fallback to fetch_article
+            raw_article = fetch_article(str(payload.url), input_text=payload.text or "")
         except Exception as exc:
             # Absolute fallback to manual text on scraping failure
             if payload.text and payload.text.strip():

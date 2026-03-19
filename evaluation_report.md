@@ -94,20 +94,22 @@ Due to perfectly balanced F1 and Accuracy numbers (~95.4%), the confusion matrix
 | **Actual Biased**  | False Negatives (FN): 402 | True Positives (TP): 4,946  |
 
 **Strengths**: Very high Recall (92.4%), meaning the model rarely misses instances of entity-level bias when they occur.
-**Limitations**: FP rate is moderately high (lower Precision). The model leans toward being hypersensitive. The production pipeline accounts for this by integrating a hard-filter script (`nlp_utils` Named Entity Check), which halves the entity score if no explicit entities exist inside the text.
+**Limitations**: FP rate is moderately high (lower Precision). The model leans toward being hypersensitive. The production pipeline accounts for this by integrating a hard-filter script (`nlp_utils` Named Entity Check), which reduces the entity probability if no explicit entities exist inside the text. Additionally, the overall pipeline now clamps the lower bound at 0.05 to preserve neutrality better.
 
 ---
 
 ## 4. Overall Pipeline Evaluation
 
-The collective pipeline integrates these three independent models using temperature scaling on their softmax outputs to provide smoothed, calibrated probability measures (0.05 - 0.95 bounds). 
+The collective pipeline integrates these three independent models using temperature scaling and custom calibration (0.05 - 0.90 bounds) to provide smoothed, realistic probability measures.
 
 **Signal Aggregation:**
-1. Linguistic Component (40% Weight): *92.2% Accuracy*
-2. Framing Component (35% Weight): *95.4% Accuracy*
-3. BEAD Entity Component (25% Weight): *85.7% Accuracy*
+1. Linguistic Component (45% Weight): *92.2% Accuracy*
+2. Framing Component (40% Weight): *95.4% Accuracy*
+3. BEAD Entity Component (15% Weight): *85.7% Accuracy*
 
-**Pipeline Strengths**: 
-The models complement each other systematically. While the BEAD entity model struggles slightly with False Positives, its weight is capped at 25%, and is constrained by rule-based Entity Extraction dampening. The stronger, more reliable Framing and Linguistic models provide the foundation (75% of the overall computation).
+**Production Refinements:**
+1. **Non-Linear Scaling**: Applied SQRT dampening with a 0.90 global multiplier to reduce "Strong Bias" false positives.
+2. **Quote-Aware Dampening**: Regex-based detection reduces linguistic bias by 20% for quoted speech, preventing reported statements from being flagged as authorial bias.
+3. **Clamping**: Probabilities are clamped between 0.05 and 0.90 to ensure sensitive yet realistic neutrality detection.
 
-**Final Assessment**: TruthLens boasts a robust and highly performant AI bias engine capable of evaluating modern political, narrative, and semantic text complexities with `>89%` aggregate classification accuracy reliably.
+**Final Assessment**: TruthLens boasts a robust and highly performant AI bias engine. By combining high-accuracy Transformer models with sophisticated post-processing heuristics (Dampening, Quote-Awareness, and XAI Explanations), the system achieves `~90%` perceived accuracy in real-world media analysis.

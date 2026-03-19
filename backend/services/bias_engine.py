@@ -4,8 +4,9 @@ from models.linguistic_model import predict as predict_linguistic
 from models.framing_model import predict as predict_framing
 from models.bead_model import predict as predict_entity
 from services.bias_score import combine_scores
-from services.nlp_utils import split_text, has_named_entities
+from services.nlp_utils import split_text, has_named_entities, extract_entities
 from services.bias_visualizer import generate_bias_bar
+from services.explainer import generate_explanation
 
 
 def _check_reporting_tone(text: str) -> float:
@@ -106,7 +107,16 @@ def analyze_bias(article: dict) -> dict:
     final_entity = round(float(calculate_aggregation(ent_scores)), 4)
 
     # Combine into final score
-    score_data = combine_scores(final_linguistic, final_framing, final_entity)
+    score_data = combine_scores(final_linguistic, final_framing, final_entity, full_text)
+
+    # Final explainability features
+    entities = extract_entities(full_text)
+    explanation = generate_explanation(
+        final_linguistic,
+        final_framing,
+        final_entity,
+        score_data["score"]
+    )
 
     return {
         "headline": headline,
@@ -117,4 +127,9 @@ def analyze_bias(article: dict) -> dict:
         "entity_bias": final_entity,
         "bias_visual": generate_bias_bar(score_data["score"]),
         "source": article.get("source", ""),
+        "entities": {
+            "persons": entities["persons"],
+            "organizations": entities["organizations"]
+        },
+        "explanation": explanation
     }

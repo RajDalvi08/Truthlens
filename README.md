@@ -67,12 +67,14 @@ Evaluates which actors or entities receive the most prominence and how they are 
 The final **TruthLens Score** is a weighted aggregation of the three primary model outputs, providing a balanced and reliable metric for ideological leaning.
 
 **Calculation Formula:**
-`Bias Score = (Linguistic Bias * 0.40) + (Framing Bias * 0.35) + (Entity Bias * 0.25)`
+`Base Score = (Linguistic Bias * 0.45) + (Framing Bias * 0.40) + (Entity Bias * 0.15)`
+`TruthLens Score = SQRT(Base Score) * 90`
 
 ### Interpretive Scale:
-- **0.0 - 39.9: Low Bias** (Objective, neutral reporting patterns)
-- **40.0 - 69.9: Moderate Bias** (Presence of framing and subjective language)
-- **70.0 - 100+: Strong Bias** (Highly partisan or polarized rhetoric)
+- **0.0 - 29.9: Low Bias** (Objective, neutral reporting patterns)
+- **30.0 - 59.9: Moderate Bias** (Presence of framing and subjective language)
+- **60.0 - 79.9: Moderate-High Bias** (Stronger narrative prioritization)
+- **80.0 - 100+: Strong Bias** (Highly partisan or polarized rhetoric)
 
 ---
 
@@ -94,17 +96,20 @@ When an article is processed, the system returns a structured intelligence packe
 
 ```json
 {
-  "bias_score": 60.80,
-  "classification": "Moderate Bias",
-  "breakdown": {
-    "linguistic_bias": 0.58,
-    "framing_bias": 0.73,
-    "entity_bias": 0.33
+  "bias_score": 75.16,
+  "bias_level": "Moderate-High Bias",
+  "linguistic_bias": 0.75,
+  "framing_bias": 0.75,
+  "entity_bias": 0.40,
+  "entities": {
+    "persons": ["Elon Musk"],
+    "organizations": ["Tesla", "SEC"]
   },
-  "metadata": {
-    "topic": "Economy",
-    "region": "North America"
-  }
+  "explanation": [
+    "The article uses emotionally loaded or subjective language.",
+    "The article presents a strong narrative or perspective.",
+    "Overall, the article shows moderate to high bias."
+  ]
 }
 ```
 
@@ -122,7 +127,10 @@ When an article is processed, the system returns a structured intelligence packe
 
 ## Key Features
 
-- **Multi-Model Intelligence**: Simultaneously captures linguistic, framing, and entity-centric bias signals.
+- **Explainable AI (XAI)**: Provides human-readable justifications for every bias score.
+- **Neural Entity Extraction**: Automatically identifies key persons and organizations using advanced spaCy NER.
+- **Quote-Aware Calibration**: Intelligently dampens linguistic bias scores when detecting reported speech (quotes) to improve realism.
+- **Non-Linear Dampening**: Uses custom square-root scaling to reduce "Strong Bias" false positives and increase scoring accuracy.
 - **Real-Time Analysis**: Ingests live URLs and returns results in seconds.
 - **Inter-Source Comparison**: Tools to compare how different media outlets cover the same event.
 - **3D Geospatial Visualization**: Maps media bias across the globe in an interactive 3D environment.

@@ -257,15 +257,64 @@ export default function BiasAnalyzer() {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex flex-col gap-4 pt-8 relative z-10">
-                                        <div className="flex items-center gap-4 text-[8px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic">
-                                            <HiOutlineCubeTransparent className="w-5 h-5 text-[#fdf8f5]/20" />
-                                            RSA_HASH: <span className="text-[#8d7b68]">_OK_0x4F12</span>
+                                </div>
+                            </div>
+
+                            {/* Entities & Explanation Row */}
+                            <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-2 gap-10 mt-6">
+                                {/* Entities */}
+                                <div className="glass-card p-10 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 w-40 h-40 bg-[#10B981]/5 blur-[80px] group-hover:bg-[#10B981]/10 transition-colors duration-1000" />
+                                    <h3 className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.4em] mb-10 italic underline decoration-[#fdf8f5]/10">Neural Entity Salience</h3>
+                                    
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                                        <div className="space-y-6">
+                                            <p className="text-[9px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic opacity-80 border-l-2 border-[#fdf8f5]/20 pl-4 mb-6">Subject:_Personae</p>
+                                            <ul className="space-y-4">
+                                                {results.entities?.persons?.length > 0 ? results.entities.persons.map((p, i) => (
+                                                    <li key={i} className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.15em] italic flex items-center gap-3">
+                                                        <span className="w-1.5 h-1.5 bg-[#fdf8f5]/30 rounded-none" />
+                                                        {p}
+                                                    </li>
+                                                )) : (
+                                                    <li className="text-[10px] text-[#4d3c2e] italic font-black uppercase tracking-widest opacity-60">Null_Detection</li>
+                                                )}
+                                            </ul>
                                         </div>
-                                        <div className="flex items-center gap-4 text-[8px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic">
-                                            <HiOutlineChartSquareBar className="w-5 h-5 text-[#fdf8f5]/20" />
-                                            LATENCY: <span className="text-[#8d7b68]">42ms</span>
+                                        <div className="space-y-6">
+                                            <p className="text-[9px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic opacity-80 border-l-2 border-[#fdf8f5]/20 pl-4 mb-6">Subject:_Organization</p>
+                                            <ul className="space-y-4">
+                                                {results.entities?.organizations?.length > 0 ? results.entities.organizations.map((o, i) => (
+                                                    <li key={i} className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.15em] italic flex items-center gap-3">
+                                                        <span className="w-1.5 h-1.5 bg-[#fdf8f5]/30 rounded-none" />
+                                                        {o}
+                                                    </li>
+                                                )) : (
+                                                    <li className="text-[10px] text-[#4d3c2e] italic font-black uppercase tracking-widest opacity-60">Null_Detection</li>
+                                                )}
+                                            </ul>
                                         </div>
+                                    </div>
+                                </div>
+
+                                {/* Explanation */}
+                                <div className="glass-card p-10 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 w-40 h-40 bg-[#0EA5E9]/5 blur-[80px] group-hover:bg-[#0EA5E9]/10 transition-colors duration-1000" />
+                                    <h3 className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.4em] mb-10 italic underline decoration-[#fdf8f5]/10">Logic_Trace Analysis</h3>
+                                    
+                                    <div className="space-y-4">
+                                        {results.explanation?.map((line, i) => (
+                                            <motion.div 
+                                                key={i} 
+                                                initial={{ x: -10, opacity: 0 }}
+                                                animate={{ x: 0, opacity: 1 }}
+                                                transition={{ delay: 1.2 + (i * 0.1) }}
+                                                className="bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 p-5 text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.1em] italic leading-relaxed flex gap-4 items-start"
+                                            >
+                                                <span className="text-[#0EA5E9] font-black mt-0.5">»</span>
+                                                {line}
+                                            </motion.div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>

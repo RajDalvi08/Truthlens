@@ -60,6 +60,9 @@ def analyze_bias(article: dict) -> dict:
     else:
         full_text = text
 
+    print("TEXT LENGTH:", len(full_text))
+    print("TEXT SAMPLE:", full_text[:200])
+
     # Calculate neutrality dampener for the whole text
     neutrality_dampener = _check_reporting_tone(full_text)
 
@@ -117,6 +120,9 @@ def analyze_bias(article: dict) -> dict:
         final_entity,
         score_data["score"]
     )
+
+    print("FINAL ENTITIES:", entities)
+    print("EXPLANATION:", explanation)
 
     return {
         "headline": headline,

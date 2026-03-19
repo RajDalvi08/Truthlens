@@ -40,8 +40,20 @@ def combine_scores(
         entity * ENTITY_WEIGHT
     )
 
-    adjusted_score = math.sqrt(base_score)
+    # Step 2: apply sqrt scaling
+    sqrt_component = math.sqrt(base_score)
+
+    # Step 3: blend with linear score to reduce inflation
+    adjusted_score = (sqrt_component * 0.50) + (base_score * 0.50)
+
+    # Step 4: final scaling
     final_score = adjusted_score * 100 * 0.90
+
+    # apply correction only to mid-range scores
+    if 0.45 < base_score < 0.75:
+        final_score *= 0.92
+
+    # Step 5: rounding
     final_score = round(final_score, 2)
 
     # Determine Bias Level with more granular descriptive bands

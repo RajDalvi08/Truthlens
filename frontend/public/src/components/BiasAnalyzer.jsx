@@ -33,6 +33,7 @@ export default function BiasAnalyzer() {
         headline: headline.trim(),
         text: text.trim()
       });
+      console.log("API RESPONSE:", response);
       setResults(response);
     } catch (err) {
       setError(err?.message || "Failed to analyze the article. Please check your inputs and try again.");
@@ -270,29 +271,23 @@ export default function BiasAnalyzer() {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                                         <div className="space-y-6">
                                             <p className="text-[9px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic opacity-80 border-l-2 border-[#fdf8f5]/20 pl-4 mb-6">Subject:_Personae</p>
-                                            <ul className="space-y-4">
-                                                {results.entities?.persons?.length > 0 ? results.entities.persons.map((p, i) => (
-                                                    <li key={i} className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.15em] italic flex items-center gap-3">
-                                                        <span className="w-1.5 h-1.5 bg-[#fdf8f5]/30 rounded-none" />
-                                                        {p}
-                                                    </li>
-                                                )) : (
-                                                    <li className="text-[10px] text-[#4d3c2e] italic font-black uppercase tracking-widest opacity-60">Null_Detection</li>
-                                                )}
-                                            </ul>
+                                            <div className="p-4 bg-[#1a0f0a] border border-[#fdf8f5]/5">
+                                                <p className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.15em] italic leading-relaxed">
+                                                    {results.entities?.persons?.length > 0 
+                                                        ? results.entities.persons.join(", ") 
+                                                        : "NULL_DETECTION"}
+                                                </p>
+                                            </div>
                                         </div>
                                         <div className="space-y-6">
                                             <p className="text-[9px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic opacity-80 border-l-2 border-[#fdf8f5]/20 pl-4 mb-6">Subject:_Organization</p>
-                                            <ul className="space-y-4">
-                                                {results.entities?.organizations?.length > 0 ? results.entities.organizations.map((o, i) => (
-                                                    <li key={i} className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.15em] italic flex items-center gap-3">
-                                                        <span className="w-1.5 h-1.5 bg-[#fdf8f5]/30 rounded-none" />
-                                                        {o}
-                                                    </li>
-                                                )) : (
-                                                    <li className="text-[10px] text-[#4d3c2e] italic font-black uppercase tracking-widest opacity-60">Null_Detection</li>
-                                                )}
-                                            </ul>
+                                            <div className="p-4 bg-[#1a0f0a] border border-[#fdf8f5]/5">
+                                                <p className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.15em] italic leading-relaxed">
+                                                    {results.entities?.organizations?.length > 0 
+                                                        ? results.entities.organizations.join(", ") 
+                                                        : "NULL_DETECTION"}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -303,7 +298,7 @@ export default function BiasAnalyzer() {
                                     <h3 className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.4em] mb-10 italic underline decoration-[#fdf8f5]/10">Logic_Trace Analysis</h3>
                                     
                                     <div className="space-y-4">
-                                        {results.explanation?.map((line, i) => (
+                                        {results.explanation?.length > 0 ? results.explanation.map((line, i) => (
                                             <motion.div 
                                                 key={i} 
                                                 initial={{ x: -10, opacity: 0 }}
@@ -314,7 +309,9 @@ export default function BiasAnalyzer() {
                                                 <span className="text-[#0EA5E9] font-black mt-0.5">»</span>
                                                 {line}
                                             </motion.div>
-                                        ))}
+                                        )) : (
+                                            <p className="text-[10px] text-[#4d3c2e] italic font-black uppercase tracking-widest opacity-60 p-5 border border-[#fdf8f5]/5">No explanation available</p>
+                                        )}
                                     </div>
                                 </div>
                             </div>

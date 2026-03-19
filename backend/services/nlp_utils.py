@@ -11,9 +11,8 @@ from typing import List
 try:
     nlp = spacy.load("en_core_web_sm", disable=["lemmatizer"])
 except Exception:
-    # Fallback if model not downloaded (though we should have it)
-    import os
-    os.system("python -m spacy download en_core_web_sm")
+    import subprocess
+    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
     nlp = spacy.load("en_core_web_sm", disable=["lemmatizer"])
 
 
@@ -22,6 +21,7 @@ def extract_entities(text: str) -> dict:
     Extract persons and organizations from text using spaCy.
     """
     doc = nlp(text)
+    print("DETECTED ENTITIES:", [(ent.text, ent.label_) for ent in doc.ents])
     persons = set()
     orgs = set()
 

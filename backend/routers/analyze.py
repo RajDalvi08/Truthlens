@@ -51,19 +51,39 @@ def analyze_article(payload: AnalyzeRequest):
     """Fetch an article by URL or analyze raw text, then return bias analysis."""
 
     # 1. Acquire raw article data
-    if payload.url:
+    # Priority: if user provides manual text, use it (assumes it's either the full article or what they want analyzed)
+    if payload.text and len(payload.text.strip()) > 100:
+        raw_article = {
+            "headline": payload.headline or None,
+            "text": payload.text.strip(),
+            "source": "manual-entry",
+        }
+    elif payload.url:
         try:
             raw_article = fetch_article(str(payload.url))
+            
+            # Hybrid fallback: if scraping succeeded but content is short, 
+            # and manual text was partially provided, use manual text
+            if payload.text and len(raw_article["text"]) < 500:
+                raw_article["text"] = payload.text
         except Exception as exc:
-            raise HTTPException(
-                status_code=422,
-                detail=f"Failed to fetch article: {exc}",
-            )
+            # Absolute fallback to manual text on scraping failure
+            if payload.text and payload.text.strip():
+                raw_article = {
+                    "headline": payload.headline or None,
+                    "text": payload.text.strip(),
+                    "source": "manual-fallback",
+                }
+            else:
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Failed to fetch article: {exc}",
+                )
     else:
         raw_article = {
             "headline": payload.headline or None,
             "text": payload.text or "",
-            "source": "manual",
+            "source": "manual-direct",
         }
 
     # 2. Preprocess

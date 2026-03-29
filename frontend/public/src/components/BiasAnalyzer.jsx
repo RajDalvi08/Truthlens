@@ -219,29 +219,22 @@ export default function BiasAnalyzer() {
                                 </div>
 
                                 <div className="glass-card p-8 md:col-span-2 flex flex-col justify-between bg-[#1a0f0a]/40 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden">
-                                     <div className="absolute bottom-0 left-0 w-full h-[1px] bg-[#fdf8f5]/10" />
-                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">Neural Decomposition Protocols</p>
-                                    <div className="space-y-6">
-                                        {[
-                                            { label: "Linguistic Framing", value: results.linguistic_bias, color: "bg-[#0EA5E9]", shadow: "shadow-[0_0_12px_rgba(14,165,233,0.4)]" },
-                                            { label: "Predictive Weighting", value: results.framing_bias, color: "bg-[#8B5CF6]", shadow: "shadow-[0_0_12px_rgba(139,92,246,0.3)]" },
-                                            { label: "Entity Salience", value: results.entity_bias, color: "bg-[#10B981]", shadow: "shadow-[0_0_12px_rgba(16,185,129,0.3)]" },
-                                        ].map((metric, i) => (
-                                            <div key={i} className="space-y-3 group/metric">
-                                                <div className="flex justify-between items-center text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic group-hover/metric:text-[#fdf8f5] transition-colors">
-                                                    <span>{metric.label}</span>
-                                                    <span className="text-[#fdf8f5] tabular-nums tracking-widest">{metric.value}</span>
-                                                </div>
-                                                <div className="h-[1px] w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden relative">
-                                                    <motion.div 
-                                                        initial={{ width: 0 }}
-                                                        animate={{ width: `${(parseFloat(metric.value) * 100) || 50}%` }}
-                                                        className={`h-full ${metric.color} ${metric.shadow}`}
-                                                        transition={{ delay: 0.8 + (i*0.2), duration: 1.5 }}
-                                                    />
-                                                </div>
+                                    <div className="absolute bottom-0 left-0 w-full h-[1px] bg-[#fdf8f5]/10" />
+                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">Bias Indicators</p>
+                                    
+                                    <div className="grid grid-cols-2 gap-x-6 gap-y-4 mb-4">
+                                        {results.indicators?.map((indicator, i) => (
+                                            <div key={i} className="flex items-center gap-3">
+                                                <div className="w-1.5 h-1.5 bg-[#fdf8f5] rotate-45" />
+                                                <span className="text-[10px] font-black text-[#fdf8f5] uppercase tracking-widest italic">{indicator}</span>
                                             </div>
                                         ))}
+                                    </div>
+
+                                    <div className="mt-6 pt-6 border-t border-[#fdf8f5]/5">
+                                        <p className="text-[11px] font-black text-[#8d7b68] italic leading-relaxed uppercase tracking-tighter">
+                                            This article shows <span className="text-[#fdf8f5]">{results.bias_level}</span> due to strong wording and narrative framing.
+                                        </p>
                                     </div>
                                 </div>
                             </div>

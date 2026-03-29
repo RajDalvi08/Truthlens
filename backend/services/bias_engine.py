@@ -6,7 +6,7 @@ from models.bead_model import predict as predict_entity
 from services.bias_score import combine_scores
 from services.nlp_utils import split_text, has_named_entities, extract_entities
 from services.bias_visualizer import generate_bias_bar
-from services.explainer import generate_explanation
+from services.explainer import generate_explanation, extract_bias_indicators
 
 
 def _check_reporting_tone(text: str) -> float:
@@ -137,5 +137,6 @@ def analyze_bias(article: dict) -> dict:
             "persons": entities["persons"],
             "organizations": entities["organizations"]
         },
-        "explanation": explanation
+        "explanation": explanation,
+        "indicators": extract_bias_indicators(full_text)
     }

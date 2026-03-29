@@ -41,6 +41,9 @@ class AnalyzeResponse(BaseModel):
     entity_bias: float
     bias_visual: str
     source: str
+    entities: dict
+    explanation: list[str]
+    indicators: list[str]
 
 
 # -------------------------

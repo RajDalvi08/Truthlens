@@ -3,41 +3,50 @@
 ![Build Status](https://img.shields.io/badge/status-optimized-success?style=for-the-badge)
 ![AI Model](https://img.shields.io/badge/Model-Triple--Stack_Transformer-blueviolet?style=for-the-badge)
 ![Tech Stack](https://img.shields.io/badge/Architecture-FastAPI_%2B_React-informational?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-4.3_Stable-green?style=for-the-badge)
 
-**TruthLens** is an advanced, AI-driven intelligence platform engineered to quantify and deconstruct ideological bias in global news media. Utilizing a multi-dimensional neural architecture, the platform traverses the layers of news reporting to expose linguistic slant, narrative framing, and entity-centric bias—delivering a transparent, data-driven audit of how information is curated and presented.
+**TruthLens** is an advanced, enterprise-grade AI intelligence platform engineered to quantify and deconstruct ideological bias in global news media. Utilizing a multi-dimensional neural architecture, the platform traverses the layers of news reporting to expose linguistic slant, narrative framing, and entity-centric bias—delivering a transparent, data-driven audit of how information is curated and presented.
 
 ---
 
 ## 🚀 Core Value Proposition
 
 In an era of hyper-polarized media, TruthLens serves as a **high-fidelity cognitive filter**, providing:
-- **Real-Time Bias Auditing**: Instantaneous ingestion and analysis of live news metadata and content.
-- **Explainable AI (XAI)**: Moving beyond "black-box" scores to provide human-readable **Bias Indicators**—flagging specific rhetorical triggers and narrative patterns.
-- **Multidimensional Sentiment Vectors**: Dissecting bias across three distinct axes: Linguistic, Framing, and Entity Salience.
-- **Neural Source Profiling**: Tracking longitudinal bias trends across global news organizations.
+- **Real-Time Bias Auditing**: Instantaneous ingestion and analysis of live news metadata and content via a highly concurrent microservice backend.
+- **Context-Aware Explainable AI (XAI)**: Moving far beyond "black-box" scores to extract literal quotes from source articles, generating mathematically-grounded logic traces.
+- **Multidimensional Sentiment Vectors**: Dissecting bias across three calibrated axes: Linguistic (40%), Framing (45%), and Entity Salience (15%).
+- **Semantic Nuance & Heuristics**: Capturing subtleties such as moderate vs. strong bias vocabulary, automatic objective reporting stabilization, and quote-aware damping.
 
 ---
 
 ## 🛠 Technical Architecture
 
-TruthLens employs a modular micro-service architecture designed for high-throughput NLP processing.
+TruthLens employs a robust microservice architecture designed for high-throughput NLP processing and deterministic explainability.
 
 ```mermaid
 graph TD
-    A[Article Ingestion: URL/Text] --> B{Semantic Pre-processor};
-    B --> C[Linguistic Bias Model - 45%];
-    B --> D[Framing Bias Model - 40%];
-    B --> E[Entity Salience Model - 15%];
-    C & D & E --> F[Mean-Peak Signal Aggregator];
-    F --> G[Calibration Heuristics: Quote-Aware & Clamping];
-    G --> H[Final TruthLens Score & XAI Indicators];
-    H --> I[React Intelligence Dashboard];
+    A[Article Ingestion: URL/Text] --> B{Semantic Pre-processor}
+    B --> C[Linguistic Bias Model - 40%]
+    B --> D[Framing Bias Model - 45%]
+    B --> E[Entity Salience Model - 15%]
+    C & D & E --> F[Mean-Peak Signal Aggregator]
+    F --> G[Calibration Heuristics: Quote-Aware & Clamping]
+    G --> H[Moderate / Strong Vocabulary Boost Injection]
+    H --> I[Dynamic Context-Aware Logic Trace Extraction]
+    I --> J[React Intelligence Dashboard]
 ```
 
 ### 🧠 The Neural Stack
-- **Linguistic Bias Model**: A customized **DistilBERT** transformer trained on 50k+ samples to detect loaded lexical choices.
-- **Framing Model**: Analyzes sequence pairs to identify narrative prioritization and "angle" bias.
+- **Linguistic Bias Model**: A customized **DistilBERT** transformer trained to detect loaded lexical choices.
+- **Framing Model**: Analyzes sequence pairs to identify narrative prioritization, selective emphasis, and "angle" bias.
 - **BEAD (Entity) Model**: Specialized salience detection to monitor how specific actors (politicians/orgs) are positioned within the text.
+
+### ⚙️ Scoring Thresholds & Bands
+Scores are stringently clamped and mapped to the following standard parameters:
+- **>= 75**: Strong Bias
+- **>= 60**: Moderate-High Bias
+- **>= 40**: Moderate Bias
+- **< 40**: Low Bias
 
 ---
 
@@ -63,7 +72,7 @@ uvicorn main:app --reload --port 8000
 *API is accessible at:* `http://localhost:8000/docs`
 
 ### 3. Frontend Initialization
-The React dashboard provides a premium, interactive interface for data visualization.
+The React dashboard provides a premium, responsive interface for cognitive data visualization.
 ```bash
 # Navigate to frontend
 cd frontend/public
@@ -80,16 +89,16 @@ npm run dev
 
 ## 📊 Feature Highlights
 
-- **Dynamic Bias Indicators**: Replaces raw scores with high-impact "signifiers" (e.g., *Tyrannical, Radical, Failure*) for intuitive understanding.
-- **Logic Trace Analysis**: A step-by-step breakdown of why a specific score was assigned.
-- **3D Geospatial Visualization**: (Optional) Interactive globe mapping bias vectors to geographic nodes.
-- **Cyber-Industrial UI**: A high-contrast, premium interface designed for cognitive clarity and analytical depth.
+- **Dynamic Bias Indicators**: Replaces raw scores with high-impact "signifiers" (e.g., *Reckless, Catastrophic, Critical*) for intuitive understanding.
+- **Context-Aware Logic Traces**: Instead of generic templates, TruthLens reads the article and quotes the exact offending sentences back to the user to justify its ML bias scoring.
+- **Neural Source Profiling**: Fallback logic gracefully analyzes articles purely on framing and structure even when explicitly biased words are absent.
+- **Cyber-Industrial UI**: A high-contrast, premium aesthetic constructed on Tailwind CSS and Framer Motion, utilizing grid-aligned spatial tracking and mesh gradients.
 
 ---
 
 ## 🛡 License & Disclaimer
 
-TruthLens is intended for research and educational purposes. The bias scores are probabilistic estimates generated by neural models and should be used as a supplementary tool for critical media consumption.
+TruthLens is intended for research and educational purposes. The bias scores are probabilistic estimates generated by neural models, stabilized by mathematical heuristics, and should be used as a supplementary tool for critical media consumption.
 
 ---
-**Developed by the TruthLens Research Group // Neural Core v4.2**
+**Developed by the TruthLens Research Group // Neural Core v4.3**

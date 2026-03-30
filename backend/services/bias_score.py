@@ -9,8 +9,8 @@ from typing import Any
 
 # Reduced entity weight to prevent topic-based false positives
 # Balanced framing and linguistic for better conceptual capture
-LINGUISTIC_WEIGHT: float = 0.45
-FRAMING_WEIGHT: float = 0.40
+LINGUISTIC_WEIGHT: float = 0.40
+FRAMING_WEIGHT: float = 0.45
 ENTITY_WEIGHT: float = 0.15
 
 
@@ -21,7 +21,8 @@ def combine_scores(
     linguistic: float,
     framing: float,
     entity: float,
-    text: str = ""
+    text: str = "",
+    score_boost: float = 0.0
 ) -> dict[str, float | str]:
     """
     Compute a weighted-average bias score scaled to 0–100.
@@ -40,31 +41,43 @@ def combine_scores(
         entity * ENTITY_WEIGHT
     )
 
+    base_score += score_boost
+    base_score = min(base_score, 0.95)
+
     # Step 2: apply sqrt scaling
     sqrt_component = math.sqrt(base_score)
 
     # Step 3: blend with linear score to reduce inflation
-    adjusted_score = (sqrt_component * 0.50) + (base_score * 0.50)
+    adjusted_score = (sqrt_component * 0.25) + (base_score * 0.75)
 
     # Step 4: final scaling
     final_score = adjusted_score * 100 * 0.90
 
     # apply correction only to mid-range scores
     if 0.45 < base_score < 0.75:
-        final_score *= 0.92
+        final_score *= 0.96
+
+    # Extreme boosting and reducing based on base_score
+    if base_score > 0.75:
+        final_score *= 1.08
+    elif base_score < 0.30:
+        final_score *= 0.96
+
+    if 40 <= final_score <= 60:
+        final_score *= 1.08
 
     # Step 5: rounding
     final_score = round(final_score, 2)
 
     # Determine Bias Level with more granular descriptive bands
-    if final_score < 30:
-        bias_level = "Low Bias"
-    elif final_score < 60:
-        bias_level = "Moderate Bias"
-    elif final_score < 80:
-        bias_level = "Moderate-High Bias"
-    else:
+    if final_score >= 75:
         bias_level = "Strong Bias"
+    elif final_score >= 60:
+        bias_level = "Moderate-High Bias"
+    elif final_score >= 40:
+        bias_level = "Moderate Bias"
+    else:
+        bias_level = "Low Bias"
 
     return {
         "score": final_score,

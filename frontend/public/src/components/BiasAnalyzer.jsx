@@ -55,7 +55,7 @@ export default function BiasAnalyzer() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-24 mesh-bg">
+    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-1000 pb-16 mesh-bg">
       
       {/* Dynamic Header */}
       <div className="flex items-end justify-between border-b border-[#fdf8f5]/10 pb-10 flex flex-col md:flex-row md:items-end gap-8">
@@ -80,7 +80,7 @@ export default function BiasAnalyzer() {
             >
                 <div className="absolute top-0 right-0 w-80 h-80 bg-[#fdf8f5]/[0.02] blur-[100px] pointer-events-none group-hover:bg-[#fdf8f5]/[0.05] transition-all duration-1000" />
                 
-                <div className="p-12 border-b border-[#fdf8f5]/5 bg-[#fdf8f5]/[0.01]">
+                <div className="p-8 border-b border-[#fdf8f5]/5 bg-[#fdf8f5]/[0.01]">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                         {/* Text Ingestion */}
                         <div className="space-y-8">
@@ -145,7 +145,7 @@ export default function BiasAnalyzer() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row items-center gap-10 mt-14 pt-12 border-t border-[#fdf8f5]/10">
+                    <div className="flex flex-col sm:flex-row items-center gap-6 mt-8 pt-6 border-t border-[#fdf8f5]/10">
                         <button
                            onClick={handleAnalyze}
                            disabled={(!url.trim() && !text.trim()) || isAnalyzing}
@@ -174,7 +174,7 @@ export default function BiasAnalyzer() {
                 </div>
 
                 {/* Analysis Output Pane */}
-                <div className="p-12 min-h-[350px] flex items-center justify-center bg-[#fdf8f5]/[0.01] relative overflow-hidden">
+                <div className="p-8 min-h-[200px] flex items-start justify-center bg-[#fdf8f5]/[0.01] relative overflow-hidden">
                     <div className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none" />
                     <AnimatePresence mode="wait">
                         {error && (
@@ -195,7 +195,7 @@ export default function BiasAnalyzer() {
                         <motion.div 
                             initial={{ opacity: 0, y: 40 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10"
+                            className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10"
                         >
                             {/* Result Stats - Left Cluster */}
                             <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -218,23 +218,25 @@ export default function BiasAnalyzer() {
                                     </div>
                                 </div>
 
-                                <div className="glass-card p-8 md:col-span-2 flex flex-col justify-between bg-[#1a0f0a]/40 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden">
+                                <div className="glass-card p-6 md:col-span-2 flex flex-col justify-start bg-[#1a0f0a]/40 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden h-fit">
                                     <div className="absolute bottom-0 left-0 w-full h-[1px] bg-[#fdf8f5]/10" />
-                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">Bias Indicators</p>
+                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-2 italic underline decoration-[#fdf8f5]/10">Bias Indicators</p>
                                     
-                                    <div className="grid grid-cols-2 gap-x-6 gap-y-4 mb-4">
-                                        {results.indicators?.map((indicator, i) => (
-                                            <div key={i} className="flex items-center gap-3">
-                                                <div className="w-1.5 h-1.5 bg-[#fdf8f5] rotate-45" />
-                                                <span className="text-[10px] font-black text-[#fdf8f5] uppercase tracking-widest italic">{indicator}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    <div className="mt-6 pt-6 border-t border-[#fdf8f5]/5">
-                                        <p className="text-[11px] font-black text-[#8d7b68] italic leading-relaxed uppercase tracking-tighter">
-                                            This article shows <span className="text-[#fdf8f5]">{results.bias_level}</span> due to strong wording and narrative framing.
-                                        </p>
+                                    <div className="flex flex-wrap gap-2">
+                                      {results.indicators && results.indicators.length > 0 ? (
+                                        results.indicators.map((item, i) => (
+                                          <div
+                                            key={i}
+                                            className="px-3 py-1 text-xs font-semibold tracking-wide text-[#fdf8f5] bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-md"
+                                          >
+                                            ◆ {item.toUpperCase()}
+                                          </div>
+                                        ))
+                                      ) : (
+                                        <div className="text-xs text-[#4d3c2e] italic">
+                                          No strong bias indicators detected
+                                        </div>
+                                      )}
                                     </div>
                                 </div>
                             </div>
@@ -255,13 +257,13 @@ export default function BiasAnalyzer() {
                             </div>
 
                             {/* Entities & Explanation Row */}
-                            <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-2 gap-10 mt-6">
+                            <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
                                 {/* Entities */}
-                                <div className="glass-card p-10 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group">
+                                <div className="glass-card p-8 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 w-40 h-40 bg-[#10B981]/5 blur-[80px] group-hover:bg-[#10B981]/10 transition-colors duration-1000" />
-                                    <h3 className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.4em] mb-10 italic underline decoration-[#fdf8f5]/10">Neural Entity Salience</h3>
+                                    <h3 className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.4em] mb-6 italic underline decoration-[#fdf8f5]/10">Neural Entity Salience</h3>
                                     
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                         <div className="space-y-6">
                                             <p className="text-[9px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic opacity-80 border-l-2 border-[#fdf8f5]/20 pl-4 mb-6">Subject:_Personae</p>
                                             <div className="p-4 bg-[#1a0f0a] border border-[#fdf8f5]/5">
@@ -286,25 +288,28 @@ export default function BiasAnalyzer() {
                                 </div>
 
                                 {/* Explanation */}
-                                <div className="glass-card p-10 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group">
+                                <div className="glass-card p-8 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 w-40 h-40 bg-[#0EA5E9]/5 blur-[80px] group-hover:bg-[#0EA5E9]/10 transition-colors duration-1000" />
-                                    <h3 className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.4em] mb-10 italic underline decoration-[#fdf8f5]/10">Logic_Trace Analysis</h3>
+                                    <h3 className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.4em] mb-6 italic underline decoration-[#fdf8f5]/10">Logic_Trace Analysis</h3>
                                     
-                                    <div className="space-y-4">
-                                        {results.explanation?.length > 0 ? results.explanation.map((line, i) => (
-                                            <motion.div 
-                                                key={i} 
-                                                initial={{ x: -10, opacity: 0 }}
-                                                animate={{ x: 0, opacity: 1 }}
-                                                transition={{ delay: 1.2 + (i * 0.1) }}
-                                                className="bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 p-5 text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.1em] italic leading-relaxed flex gap-4 items-start"
-                                            >
-                                                <span className="text-[#0EA5E9] font-black mt-0.5">»</span>
-                                                {line}
-                                            </motion.div>
-                                        )) : (
-                                            <p className="text-[10px] text-[#4d3c2e] italic font-black uppercase tracking-widest opacity-60 p-5 border border-[#fdf8f5]/5">No explanation available</p>
-                                        )}
+                                    <div className="space-y-3 mt-2">
+                                      {results.explanation && results.explanation.length > 0 ? (
+                                        results.explanation.map((line, i) => (
+                                          <div
+                                            key={i}
+                                            className="p-4 border border-[#fdf8f5]/5 bg-[#1a0f0a] rounded-xl backdrop-blur-sm"
+                                          >
+                                            <p className="text-[12px] text-[#fdf8f5] leading-relaxed font-medium tracking-wide">
+                                              <span className="text-[#0EA5E9] mr-2 font-bold">»</span>
+                                              {line}
+                                            </p>
+                                          </div>
+                                        ))
+                                      ) : (
+                                        <div className="text-[11px] text-[#4d3c2e] italic">
+                                          No explanation available
+                                        </div>
+                                      )}
                                     </div>
                                 </div>
                             </div>

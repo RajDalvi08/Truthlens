@@ -109,17 +109,22 @@ def analyze_bias(article: dict) -> dict:
     final_framing = round(float(calculate_aggregation(fra_scores)), 4)
     final_entity = round(float(calculate_aggregation(ent_scores)), 4)
 
+    # Calculate indicators to extract score_boost before final scoring
+    entities = extract_entities(full_text)
+    indicators, score_boost = extract_bias_indicators(full_text)
+
     # Combine into final score
-    score_data = combine_scores(final_linguistic, final_framing, final_entity, full_text)
+    score_data = combine_scores(final_linguistic, final_framing, final_entity, full_text, score_boost)
 
     # Final explainability features
-    entities = extract_entities(full_text)
     explanation = generate_explanation(
-        final_linguistic,
-        final_framing,
-        final_entity,
+        full_text,
+        indicators,
         score_data["score"]
     )
+
+    if not explanation:
+        explanation = ["The article shows measurable bias based on analysis."]
 
     print("FINAL ENTITIES:", entities)
     print("EXPLANATION:", explanation)
@@ -138,5 +143,5 @@ def analyze_bias(article: dict) -> dict:
             "organizations": entities["organizations"]
         },
         "explanation": explanation,
-        "indicators": extract_bias_indicators(full_text)
+        "indicators": indicators
     }

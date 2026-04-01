@@ -7,7 +7,7 @@ Provides human-readable explanations for bias scores.
 import re
 
 def get_bias_label(score: float) -> str:
-    if score >= 75:
+    if score >= 80:
         return "Strong Bias"
     elif score >= 60:
         return "Moderate-High Bias"

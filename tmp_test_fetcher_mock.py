@@ -3,13 +3,13 @@ import os
 import unittest
 from unittest.mock import MagicMock, patch
 
-# Add backend directory to sys.path
-sys.path.append(os.path.join(os.getcwd(), 'backend'))
+# Add project root to sys.path
+sys.path.append(os.getcwd())
 
-from services.article_fetcher import fetch_article
+from backend.services.article_fetcher import fetch_article
 
 class TestArticleFetcher(unittest.TestCase):
-    @patch('services.article_fetcher._get_page')
+    @patch('backend.services.article_fetcher._get_page')
     def test_fallback_to_input_text(self, mock_get_page):
         # Mock a very short page content
         mock_response = MagicMock()
@@ -25,7 +25,7 @@ class TestArticleFetcher(unittest.TestCase):
         self.assertEqual(result['text'], input_text)
         print("Fallback test passed!")
 
-    @patch('services.article_fetcher._get_page')
+    @patch('backend.services.article_fetcher._get_page')
     def test_bs4_broad_extraction(self, mock_get_page):
         # Mock multiple paragraphs
         mock_response = MagicMock()

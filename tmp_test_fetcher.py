@@ -1,10 +1,10 @@
 import sys
 import os
 
-# Add backend directory to sys.path
-sys.path.append(os.path.join(os.getcwd(), 'backend'))
+# Add project root to sys.path
+sys.path.append(os.getcwd())
 
-from services.article_fetcher import fetch_article
+from backend.services.article_fetcher import fetch_article
 
 # A BBC URL to test
 url = "https://www.bbc.com/news/world-us-canada-68582772"

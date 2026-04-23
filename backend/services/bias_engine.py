@@ -7,6 +7,7 @@ from services.bias_score import combine_scores
 from services.nlp_utils import split_text, has_named_entities, extract_entities
 from services.bias_visualizer import generate_bias_bar
 from services.explainer import generate_explanation, extract_bias_indicators
+from services.ai_explainer import generate_llm_explanation
 
 
 def _check_reporting_tone(text: str) -> float:
@@ -117,14 +118,23 @@ def analyze_bias(article: dict) -> dict:
     score_data = combine_scores(final_linguistic, final_framing, final_entity, full_text, score_boost)
 
     # Final explainability features
-    explanation = generate_explanation(
+    fallback_explanation = generate_explanation(
         full_text,
         indicators,
         score_data["score"]
     )
 
-    if not explanation:
-        explanation = ["The article shows measurable bias based on analysis."]
+    if not fallback_explanation:
+        fallback_explanation = ["The article shows measurable bias based on analysis."]
+
+    try:
+        ai_exp = generate_llm_explanation(full_text, score_data["score"], score_data["level"], indicators)
+        if ai_exp and len(ai_exp) > 20:
+            explanation = [ai_exp]
+        else:
+            explanation = fallback_explanation
+    except Exception:
+        explanation = fallback_explanation
 
     print("FINAL ENTITIES:", entities)
     print("EXPLANATION:", explanation)

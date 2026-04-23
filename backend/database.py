@@ -10,6 +10,7 @@ To enable Cloud mode: place 'serviceAccountKey.json' in this directory.
 import os
 import sqlite3
 import logging
+import traceback
 from datetime import datetime, timezone
 
 logging.basicConfig(level=logging.INFO)
@@ -48,7 +49,9 @@ def _try_init_firebase():
         USE_FIREBASE = True
         logger.info("🚀 DB MODE: FIREBASE CLOUD (Production)")
     except Exception as exc:
-        logger.error(f"Firebase init failed ({exc}). Falling back to SQLite.")
+        logger.error(f"❌ Firebase init FAILED — falling back to SQLite.")
+        logger.error(f"   Reason: {exc}")
+        logger.error(traceback.format_exc())
         USE_FIREBASE = False
 
 _try_init_firebase()
@@ -350,6 +353,62 @@ def get_sentiment_correlation() -> list:
             sv = SM.get(r["sentiment"],0) + (r["linguistic_bias"]-r["framing_bias"])*0.02
             out.append({"bias":round(b,2),"sentiment":round(sv,2),"size":max(10,min(40,int(r["bias_score"]/3)))})
         return out
+
+
+# ── Migration helper ─────────────────────────────────────────────────────────
+def migrate_sqlite_to_firebase():
+    """
+    One-shot utility: copies all rows from the local SQLite 'analyzed_articles'
+    table into Firestore. Safe to call multiple times — it checks Firestore count
+    first and skips if data already exists.
+
+    Run manually after placing serviceAccountKey.json:
+        python -c "import database; database.migrate_sqlite_to_firebase()"
+    """
+    if not USE_FIREBASE:
+        logger.error("migrate_sqlite_to_firebase: Firebase is not enabled. Place serviceAccountKey.json first.")
+        return
+
+    existing = len(_db_cloud.collection("analyzed_articles").limit(1).get())
+    if existing > 0:
+        logger.info("migrate_sqlite_to_firebase: Firestore already has data — skipping migration.")
+        return
+
+    if not os.path.exists(DB_PATH):
+        logger.info("migrate_sqlite_to_firebase: No local SQLite DB found — nothing to migrate.")
+        return
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("SELECT * FROM analyzed_articles ORDER BY id ASC").fetchall()
+    conn.close()
+
+    if not rows:
+        logger.info("migrate_sqlite_to_firebase: SQLite DB is empty — nothing to migrate.")
+        return
+
+    logger.info(f"migrate_sqlite_to_firebase: Migrating {len(rows)} articles to Firestore...")
+    batch_size = 400  # Firestore batch limit is 500
+    batch = _db_cloud.batch()
+    count = 0
+    for row in rows:
+        d = dict(row)
+        ts_raw = d.pop("timestamp", None)
+        d.pop("id", None)  # Firestore auto-generates IDs
+        try:
+            d["timestamp"] = datetime.fromisoformat(ts_raw) if ts_raw else datetime.now(timezone.utc)
+        except Exception:
+            d["timestamp"] = datetime.now(timezone.utc)
+        ref = _db_cloud.collection("analyzed_articles").document()
+        batch.set(ref, d)
+        count += 1
+        if count % batch_size == 0:
+            batch.commit()
+            batch = _db_cloud.batch()
+            logger.info(f"  ... committed {count}/{len(rows)}")
+    if count % batch_size != 0:
+        batch.commit()
+    logger.info(f"✅ Migration complete — {count} articles pushed to Firestore.")
 
 
 # ── Boot ──────────────────────────────────────────────────────────────────────

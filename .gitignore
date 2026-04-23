@@ -33,3 +33,5 @@ backend/models/
 Models/
 
 .venv/
+
+serviceAccountKey.json

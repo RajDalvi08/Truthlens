@@ -79,6 +79,7 @@ def _init_sqlite():
     conn.executescript("""
         CREATE TABLE IF NOT EXISTS analyzed_articles (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id         TEXT,
             headline        TEXT,
             source          TEXT    NOT NULL DEFAULT 'unknown',
             topic           TEXT    NOT NULL DEFAULT 'General',
@@ -156,7 +157,7 @@ def _detect_sentiment(score: float, level: str) -> str:
 
 
 # ── Write ─────────────────────────────────────────────────────────────────────
-def save_analysis(article: dict, result: dict):
+def save_analysis(article: dict, result: dict, user_id: str = None):
     headline    = result.get("headline") or article.get("headline") or "Untitled"
     source      = result.get("source")   or article.get("source")   or "unknown"
     text        = article.get("text", "")
@@ -170,6 +171,7 @@ def save_analysis(article: dict, result: dict):
     if USE_FIREBASE:
         from firebase_admin import firestore as fs
         _db_cloud.collection("analyzed_articles").add({
+            "user_id": user_id,
             "headline": headline, "source": source, "topic": topic,
             "bias_score": bias_score,
             "linguistic_bias": float(result.get("linguistic_bias", 0)),
@@ -197,9 +199,9 @@ def save_analysis(article: dict, result: dict):
         conn = _sql()
         conn.execute("""
             INSERT INTO analyzed_articles
-              (headline,source,topic,bias_score,linguistic_bias,framing_bias,entity_bias,bias_level,sentiment,region,timestamp)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?)
-        """, (headline, source, topic, bias_score,
+              (user_id,headline,source,topic,bias_score,linguistic_bias,framing_bias,entity_bias,bias_level,sentiment,region,timestamp)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+        """, (user_id, headline, source, topic, bias_score,
               result.get("linguistic_bias",0), result.get("framing_bias",0), result.get("entity_bias",0),
               bias_level, sentiment, region, now.isoformat()))
         conn.execute("""
@@ -214,9 +216,12 @@ def save_analysis(article: dict, result: dict):
 
 
 # ── Read ──────────────────────────────────────────────────────────────────────
-def get_overview_stats() -> dict:
+def get_overview_stats(user_id: str = None) -> dict:
     if USE_FIREBASE:
-        docs  = _db_cloud.collection("analyzed_articles").get()
+        query = _db_cloud.collection("analyzed_articles")
+        if user_id:
+            query = query.where("user_id", "==", user_id)
+        docs  = query.get()
         total = len(docs)
         if total == 0:
             return {"total_articles":0,"avg_bias_score":0,"active_sources":0,"articles_per_hour":0,"last_updated":None}
@@ -240,17 +245,28 @@ def get_overview_stats() -> dict:
                 "last_updated": last_ts.isoformat() if hasattr(last_ts, "isoformat") else str(last_ts) if last_ts else None}
     else:
         conn = _sql()
-        row  = conn.execute("SELECT COUNT(*) as total, AVG(bias_score) as avg, MAX(timestamp) as lu FROM analyzed_articles").fetchone()
-        srcs = conn.execute("SELECT COUNT(DISTINCT source) FROM analyzed_articles").fetchone()[0]
-        recent = conn.execute("SELECT COUNT(*) FROM analyzed_articles WHERE timestamp >= datetime('now', '-1 hour')").fetchone()[0]
+        where_clause = "WHERE user_id = ?" if user_id else ""
+        params = (user_id,) if user_id else ()
+        
+        row  = conn.execute(f"SELECT COUNT(*) as total, AVG(bias_score) as avg, MAX(timestamp) as lu FROM analyzed_articles {where_clause}", params).fetchone()
+        srcs = conn.execute(f"SELECT COUNT(DISTINCT source) FROM analyzed_articles {where_clause}", params).fetchone()[0]
+        
+        recent_query = f"SELECT COUNT(*) FROM analyzed_articles WHERE timestamp >= datetime('now', '-1 hour')"
+        if user_id:
+            recent_query += " AND user_id = ?"
+        recent = conn.execute(recent_query, params).fetchone()[0]
+        
         conn.close()
         return {"total_articles": row["total"] or 0, "avg_bias_score": round(row["avg"] or 0,2),
                 "active_sources": srcs or 0, "articles_per_hour": recent or 0, "last_updated": row["lu"]}
 
 
-def get_bias_timeseries(days: int = 30) -> list:
+def get_bias_timeseries(days: int = 30, user_id: str = None) -> list:
     if USE_FIREBASE:
-        docs, daily = _db_cloud.collection("analyzed_articles").order_by("timestamp").get(), {}
+        query = _db_cloud.collection("analyzed_articles")
+        if user_id:
+            query = query.where("user_id", "==", user_id)
+        docs, daily = query.order_by("timestamp").get(), {}
         for d in docs:
             dd = d.to_dict(); ts = dd.get("timestamp")
             if not ts: continue
@@ -260,19 +276,28 @@ def get_bias_timeseries(days: int = 30) -> list:
         return [{"date":k,"average_bias":round(v["s"]/v["c"],2),"article_count":v["c"]} for k,v in sorted(daily.items())]
     else:
         conn = _sql()
-        rows = conn.execute("""
+        where_clause = "WHERE timestamp >= datetime('now', ? || ' days')"
+        params = [f"-{days}"]
+        if user_id:
+            where_clause += " AND user_id = ?"
+            params.append(user_id)
+            
+        rows = conn.execute(f"""
             SELECT DATE(timestamp) as date, AVG(bias_score) as average_bias, COUNT(*) as article_count
             FROM analyzed_articles
-            WHERE timestamp >= datetime('now', ? || ' days')
+            {where_clause}
             GROUP BY DATE(timestamp) ORDER BY date ASC
-        """, (f"-{days}",)).fetchall()
+        """, params).fetchall()
         conn.close()
         return [dict(r) for r in rows]
 
 
-def get_narrative_balance() -> dict:
+def get_narrative_balance(user_id: str = None) -> dict:
     if USE_FIREBASE:
-        docs = _db_cloud.collection("analyzed_articles").get()
+        query = _db_cloud.collection("analyzed_articles")
+        if user_id:
+            query = query.where("user_id", "==", user_id)
+        docs = query.get()
         total = len(docs)
         if total == 0: return {"neutral":0,"left_leaning":0,"right_leaning":0,"total":0}
         n=l=r=0
@@ -284,18 +309,35 @@ def get_narrative_balance() -> dict:
         return {"neutral":round(n/total*100,1),"left_leaning":round(l/total*100,1),"right_leaning":round(r/total*100,1),"total":total}
     else:
         conn  = _sql()
-        total = conn.execute("SELECT COUNT(*) FROM analyzed_articles").fetchone()[0] or 1
-        n     = conn.execute("SELECT COUNT(*) FROM analyzed_articles WHERE bias_score < 35").fetchone()[0]
-        l     = conn.execute("SELECT COUNT(*) FROM analyzed_articles WHERE bias_score>=35 AND bias_score<60").fetchone()[0]
-        r     = conn.execute("SELECT COUNT(*) FROM analyzed_articles WHERE bias_score>=60").fetchone()[0]
+        where_clause = "WHERE user_id = ?" if user_id else ""
+        params = (user_id,) if user_id else ()
+        
+        total = conn.execute(f"SELECT COUNT(*) FROM analyzed_articles {where_clause}", params).fetchone()[0] or 1
+        
+        n_query = "SELECT COUNT(*) FROM analyzed_articles WHERE bias_score < 35"
+        l_query = "SELECT COUNT(*) FROM analyzed_articles WHERE bias_score>=35 AND bias_score<60"
+        r_query = "SELECT COUNT(*) FROM analyzed_articles WHERE bias_score>=60"
+        
+        if user_id:
+            n_query += " AND user_id = ?"
+            l_query += " AND user_id = ?"
+            r_query += " AND user_id = ?"
+            
+        n = conn.execute(n_query, params).fetchone()[0]
+        l = conn.execute(l_query, params).fetchone()[0]
+        r = conn.execute(r_query, params).fetchone()[0]
+        
         conn.close()
         return {"neutral":round(n/total*100,1),"left_leaning":round(l/total*100,1),"right_leaning":round(r/total*100,1),"total":total}
 
 
-def get_recent_articles(limit: int = 10) -> list:
+def get_recent_articles(limit: int = 10, user_id: str = None) -> list:
     if USE_FIREBASE:
         from firebase_admin import firestore as fs
-        docs = _db_cloud.collection("analyzed_articles").order_by("timestamp",direction=fs.Query.DESCENDING).limit(limit).get()
+        query = _db_cloud.collection("analyzed_articles")
+        if user_id:
+            query = query.where("user_id", "==", user_id)
+        docs = query.order_by("timestamp",direction=fs.Query.DESCENDING).limit(limit).get()
         out = []
         for d in docs:
             dd = d.to_dict(); dd["id"] = d.id
@@ -304,7 +346,12 @@ def get_recent_articles(limit: int = 10) -> list:
         return out
     else:
         conn = _sql()
-        rows = conn.execute("SELECT * FROM analyzed_articles ORDER BY id DESC LIMIT ?", (limit,)).fetchall()
+        where_clause = "WHERE user_id = ?" if user_id else ""
+        params = (user_id,) if user_id else (limit,)
+        if user_id:
+            params = (user_id, limit)
+            
+        rows = conn.execute(f"SELECT * FROM analyzed_articles {where_clause} ORDER BY id DESC LIMIT ?", params).fetchall()
         conn.close()
         return [dict(r) for r in rows]
 
@@ -321,9 +368,12 @@ def get_regional_bias() -> list:
         return [dict(r) for r in rows]
 
 
-def get_bias_distribution() -> dict:
+def get_bias_distribution(user_id: str = None) -> dict:
     if USE_FIREBASE:
-        docs = _db_cloud.collection("analyzed_articles").get()
+        query = _db_cloud.collection("analyzed_articles")
+        if user_id:
+            query = query.where("user_id", "==", user_id)
+        docs = query.get()
         lo=mo=hi=0
         for d in docs:
             s = d.to_dict().get("bias_score",0)
@@ -333,18 +383,33 @@ def get_bias_distribution() -> dict:
         return {"low_bias":lo,"moderate_bias":mo,"high_bias":hi}
     else:
         conn = _sql()
-        lo = conn.execute("SELECT COUNT(*) FROM analyzed_articles WHERE bias_score<35").fetchone()[0]
-        mo = conn.execute("SELECT COUNT(*) FROM analyzed_articles WHERE bias_score>=35 AND bias_score<60").fetchone()[0]
-        hi = conn.execute("SELECT COUNT(*) FROM analyzed_articles WHERE bias_score>=60").fetchone()[0]
+        where_clause = "WHERE user_id = ?" if user_id else ""
+        params = (user_id,) if user_id else ()
+        
+        lo_query = "SELECT COUNT(*) FROM analyzed_articles WHERE bias_score<35"
+        mo_query = "SELECT COUNT(*) FROM analyzed_articles WHERE bias_score>=35 AND bias_score<60"
+        hi_query = "SELECT COUNT(*) FROM analyzed_articles WHERE bias_score>=60"
+        
+        if user_id:
+            lo_query += " AND user_id = ?"
+            mo_query += " AND user_id = ?"
+            hi_query += " AND user_id = ?"
+            
+        lo = conn.execute(lo_query, params).fetchone()[0]
+        mo = conn.execute(mo_query, params).fetchone()[0]
+        hi = conn.execute(hi_query, params).fetchone()[0]
         conn.close()
         return {"low_bias":lo,"moderate_bias":mo,"high_bias":hi}
 
 
-def get_sentiment_correlation() -> list:
+def get_sentiment_correlation(user_id: str = None) -> list:
     SM = {"Positive":0.6,"Neutral":0.0,"Negative":-0.6}
     if USE_FIREBASE:
         from firebase_admin import firestore as fs
-        docs = _db_cloud.collection("analyzed_articles").order_by("timestamp",direction=fs.Query.DESCENDING).limit(100).get()
+        query = _db_cloud.collection("analyzed_articles")
+        if user_id:
+            query = query.where("user_id", "==", user_id)
+        docs = query.order_by("timestamp",direction=fs.Query.DESCENDING).limit(100).get()
         out = []
         for d in docs:
             r = d.to_dict()
@@ -354,7 +419,14 @@ def get_sentiment_correlation() -> list:
         return out
     else:
         conn = _sql()
-        rows = conn.execute("SELECT bias_score,linguistic_bias,framing_bias,sentiment FROM analyzed_articles ORDER BY id DESC LIMIT 100").fetchall()
+        where_clause = "WHERE user_id = ?" if user_id else ""
+        params = (user_id,) if user_id else (limit,) # limit is not defined here but we can assume 100
+        if user_id:
+            params = (user_id, 100)
+        else:
+            params = (100,)
+            
+        rows = conn.execute(f"SELECT bias_score,linguistic_bias,framing_bias,sentiment FROM analyzed_articles {where_clause} ORDER BY id DESC LIMIT ?", params).fetchall()
         conn.close()
         out = []
         for r in rows:

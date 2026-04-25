@@ -31,5 +31,7 @@ dist-ssr
 
 backend/models/
 Models/
+backend/data/
+db.json
 
 .venv/

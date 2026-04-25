@@ -13,10 +13,10 @@ const revenueData = [
 ];
 
 const stats = [
-  { label: "Neural Revenue", value: "$422,000", change: "+18.5%", isPositive: true },
-  { label: "API Protocol Costs", value: "$108,000", change: "-2.4%", isPositive: true },
-  { label: "Net Intelligence Profit", value: "$314,000", change: "+24.8%", isPositive: true },
-  { label: "Active Analyst Nodes", value: "8,942", change: "+12.1%", isPositive: true },
+  { label: "Total Revenue", value: "$422,000", change: "+18.5%", isPositive: true },
+  { label: "Operating Costs", value: "$108,000", change: "-2.4%", isPositive: true },
+  { label: "Net Profit", value: "$314,000", change: "+24.8%", isPositive: true },
+  { label: "Active Users", value: "8,942", change: "+12.1%", isPositive: true },
 ];
 
 function AreaChart({ data }) {
@@ -93,19 +93,19 @@ export default function Revenue() {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-[#fdf8f5]/10 pb-12">
             <div>
-              <h1 className="text-5xl font-black text-[#fdf8f5] tracking-tighter uppercase italic leading-none">Financial Intelligence</h1>
+              <h1 className="text-5xl font-black text-[#fdf8f5] tracking-tighter uppercase italic leading-none">Revenue Overview</h1>
               <p className="text-[#8d7b68] text-[10px] mt-4 font-black uppercase tracking-[0.3em] italic underline decoration-[#fdf8f5]/10 leading-relaxed">Status: OPERATIONAL // Neural Node Secure Flux</p>
             </div>
             <div className="flex gap-6">
               <button 
                 className="px-10 py-4 rounded-none border border-[#fdf8f5]/10 bg-[#fdf8f5]/5 hover:bg-[#fdf8f5]/10 transition-all font-black text-[10px] uppercase tracking-[0.3em] text-[#8d7b68] hover:text-[#fdf8f5] italic shadow-xl"
               >
-                Export Archive
+                Download Report
               </button>
               <button 
                 className="btn-primary px-10 py-4 shadow-2xl transition-all italic"
               >
-                Generate Synthesis
+                Create Summary
               </button>
             </div>
           </div>
@@ -139,8 +139,8 @@ export default function Revenue() {
             <div className="absolute top-0 left-0 w-2 h-full bg-[#fdf8f5]/5 group-hover:bg-[#fdf8f5]/20 transition-all" />
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
               <div>
-                <h3 className="text-3xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Growth Dynamics</h3>
-                <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] mt-3 italic underline decoration-[#fdf8f5]/10">Revenue vs Protocol Expenditure Vectors</p>
+                <h3 className="text-3xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Revenue Trends</h3>
+                <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] mt-3 italic underline decoration-[#fdf8f5]/10">Earnings vs Expenses</p>
               </div>
               <div className="flex items-center gap-10">
                 <div className="flex items-center gap-4">
@@ -164,25 +164,25 @@ export default function Revenue() {
             className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-none overflow-hidden mt-12 shadow-2xl"
           >
             <div className="p-10 border-b border-[#fdf8f5]/10 bg-[#fdf8f5]/[0.02]">
-              <h3 className="text-2xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Recent Node Subscriptions</h3>
-              <p className="text-[9px] text-[#8d7b68] uppercase tracking-[0.3em] mt-2 italic">Neural Ingestion Ledger // Terminal 0xA</p>
+              <h3 className="text-2xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Recent Subscriptions</h3>
+              <p className="text-[9px] text-[#8d7b68] uppercase tracking-[0.3em] mt-2 italic">Subscription History</p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead className="bg-[#1a0f0a]/80 text-[#8d7b68] font-black text-[10px] uppercase tracking-[0.3em] italic border-b border-[#fdf8f5]/5">
                   <tr>
-                    <th className="px-10 py-6 font-black">Node Identifier</th>
-                    <th className="px-10 py-6 font-black">Protocol Plan</th>
-                    <th className="px-10 py-6 font-black">Magnitude</th>
-                    <th className="px-10 py-6 font-black">Vector Status</th>
+                    <th className="px-10 py-6 font-black">User ID</th>
+                    <th className="px-10 py-6 font-black">Subscription Plan</th>
+                    <th className="px-10 py-6 font-black">Price</th>
+                    <th className="px-10 py-6 font-black">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#fdf8f5]/5">
                   {[
-                    { id: "usr_8fa9...", plan: "Pro Analyst Protocol", amount: "$99.00", status: "Synchronized" },
-                    { id: "usr_2cb4...", plan: "Enterprise Flux", amount: "$499.00", status: "Synchronized" },
-                    { id: "usr_9ee1...", plan: "Standard Array", amount: "$29.00", status: "Latent" },
-                    { id: "usr_5ab0...", plan: "Pro Analyst Protocol", amount: "$99.00", status: "Synchronized" },
+                    { id: "usr_8fa9...", plan: "Pro Plan", amount: "$99.00", status: "Active" },
+                    { id: "usr_2cb4...", plan: "Enterprise Plan", amount: "$499.00", status: "Active" },
+                    { id: "usr_9ee1...", plan: "Standard Plan", amount: "$29.00", status: "Inactive" },
+                    { id: "usr_5ab0...", plan: "Pro Plan", amount: "$99.00", status: "Active" },
                   ].map((row, i) => (
                     <motion.tr 
                       key={i}
@@ -194,7 +194,7 @@ export default function Revenue() {
                       <td className="px-10 py-8 font-black text-[#fdf8f5] tabular-nums text-lg italic tracking-tighter shadow-2xl">{row.amount}</td>
                       <td className="px-10 py-8">
                         <span className={`px-5 py-2 rounded-none text-[9px] font-black uppercase tracking-[0.3em] italic shadow-xl transition-all ${
-                          row.status === 'Synchronized' ? 'bg-[#fdf8f5] text-[#1a0f0a]' : 'bg-[#fdf8f5]/5 text-[#8d7b68] border border-[#fdf8f5]/10 group-hover:border-[#fdf8f5]/30 group-hover:text-[#fdf8f5]'
+                          row.status === 'Active' ? 'bg-[#fdf8f5] text-[#1a0f0a]' : 'bg-[#fdf8f5]/5 text-[#8d7b68] border border-[#fdf8f5]/10 group-hover:border-[#fdf8f5]/30 group-hover:text-[#fdf8f5]'
                         }`}>
                           {row.status}
                         </span>

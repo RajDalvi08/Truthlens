@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 const accounts = [
-  { id: 1, username: "creative_ambition", role: "Super Admin Protocol", avatar: "CA", active: true },
-  { id: 2, username: "John Doe Analyst", role: "Pro Lead Analyst", avatar: "JD", active: false },
-  { id: 3, username: "System_AI_Node", role: "Bot Integration v4", avatar: "AI", active: false },
+  { id: 1, username: "creative_ambition", role: "Super Admin", avatar: "CA", active: true },
+  { id: 2, username: "John Doe Analyst", role: "Pro Analyst", avatar: "JD", active: false },
+  { id: 3, username: "System_AI_Node", role: "AI Assistant", avatar: "AI", active: false },
 ];
 
 export default function ChangeAccount() {
@@ -35,8 +35,8 @@ export default function ChangeAccount() {
           className="w-full relative z-10"
         >
           <div className="text-center mb-20 border-b border-[#fdf8f5]/10 pb-20">
-            <h1 className="text-6xl md:text-7xl font-black text-[#fdf8f5] tracking-tighter uppercase italic leading-[0.85]">Identity <br/> <span className="text-[#8d7b68]">Matrix</span></h1>
-            <p className="text-[#d6c2b8] mt-8 font-black uppercase tracking-[0.25em] text-[11px] italic underline decoration-[#fdf8f5]/10 leading-relaxed">Select active terminal profile or instantiate a new neural network identity anchor.</p>
+            <h1 className="text-6xl md:text-7xl font-black text-[#fdf8f5] tracking-tighter uppercase italic leading-[0.85]">Switch <br/> <span className="text-[#8d7b68]">Account</span></h1>
+            <p className="text-[#d6c2b8] mt-8 font-black uppercase tracking-[0.25em] text-[11px] italic underline decoration-[#fdf8f5]/10 leading-relaxed">Select an account to use or create a new one.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -74,7 +74,7 @@ export default function ChangeAccount() {
               onClick={() => setIsAddingNew(!isAddingNew)}
               className="px-14 py-5 rounded-none border-2 border-[#fdf8f5]/20 text-[#fdf8f5] hover:bg-[#fdf8f5] hover:text-[#1a0f0a] transition-all font-black uppercase tracking-[0.3em] text-[11px] flex items-center gap-6 italic shadow-2xl"
             >
-              <span>{isAddingNew ? "TERMINATE PROTOCOL" : "INSTANTIATE NEW IDENTITY"}</span>
+              <span>{isAddingNew ? "CANCEL" : "ADD NEW ACCOUNT"}</span>
               <motion.span animate={{ rotate: isAddingNew ? 45 : 0 }} className="text-xl leading-none">
                 +
               </motion.span>
@@ -89,19 +89,19 @@ export default function ChangeAccount() {
               <div className="absolute top-0 right-0 w-48 h-48 bg-[#fdf8f5]/5 blur-[80px] rounded-none pointer-events-none" />
               <div className="absolute left-0 top-0 w-2 h-full bg-[#fdf8f5] opacity-50" />
               
-              <h3 className="text-3xl font-black text-[#fdf8f5] mb-12 uppercase italic tracking-tighter border-b border-[#fdf8f5]/10 pb-6 leading-none">New Authorization</h3>
+              <h3 className="text-3xl font-black text-[#fdf8f5] mb-12 uppercase italic tracking-tighter border-b border-[#fdf8f5]/10 pb-6 leading-none">New Account Details</h3>
               
               <form className="space-y-10 relative z-10" onSubmit={(e) => e.preventDefault()}>
                 <div className="space-y-4">
-                  <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic underline decoration-[#fdf8f5]/10">Network Handle Alpha</label>
+                  <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic underline decoration-[#fdf8f5]/10">Account Name</label>
                   <input 
                     type="text" 
-                    placeholder="E.G. NODE_OPERATOR_0x7..."
+                    placeholder="e.g. John Doe"
                     className="w-full bg-[#fdf8f5]/[0.02] border border-[#fdf8f5]/10 rounded-none px-8 py-5 text-[#fdf8f5] focus:outline-none focus:border-[#fdf8f5] transition-all text-xs font-black uppercase tracking-widest placeholder:text-[#4d3c2e] italic shadow-inner"
                   />
                 </div>
                 <div className="space-y-4">
-                  <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic underline decoration-[#fdf8f5]/10">Access Token Redaction</label>
+                  <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic underline decoration-[#fdf8f5]/10">Password</label>
                   <input 
                     type="password" 
                     placeholder="••••••••••••••••"
@@ -115,7 +115,7 @@ export default function ChangeAccount() {
                   type="submit"
                   className="w-full py-6 mt-8 bg-[#fdf8f5] text-[#1a0f0a] font-black uppercase tracking-[0.4em] text-[11px] rounded-none shadow-2xl hover:bg-[#f5ebe0] transition-colors italic"
                 >
-                  AUTHORIZE IDENTITY
+                  CREATE ACCOUNT
                 </motion.button>
               </form>
             </motion.div>

@@ -11,6 +11,7 @@ from typing import Optional
 from services.article_fetcher import fetch_article
 from services.preprocessing import clean_article
 from services.bias_engine import analyze_bias
+from services.persistence_service import save_analysis
 
 router = APIRouter(prefix="/analyze", tags=["Analysis"])
 
@@ -22,6 +23,7 @@ class AnalyzeRequest(BaseModel):
     url: Optional[str] = None
     headline: Optional[str] = None
     text: Optional[str] = None
+    user_id: Optional[str] = None
 
     @model_validator(mode='before')
     @classmethod
@@ -83,5 +85,8 @@ def analyze_article(payload: AnalyzeRequest):
             status_code=500,
             detail=f"Bias analysis failed: {exc}",
         )
+
+    # 4. Persist
+    save_analysis(result, user_id=payload.user_id)
 
     return AnalyzeResponse(**result)

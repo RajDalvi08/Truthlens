@@ -40,27 +40,27 @@ function SourceNode({ source, onHover }) {
         onPointerOver={(e) => { e.stopPropagation(); setHovered(true); onHover(source); }}
         onPointerOut={() => { setHovered(false); onHover(null); }}
       >
-        <sphereGeometry args={[hovered ? 0.38 : 0.28, 48, 48]} />
+        <sphereGeometry args={[hovered ? 0.5 : 0.35, 48, 48]} />
         <meshStandardMaterial
           color={source.color}
           emissive={source.color}
-          emissiveIntensity={hovered ? 2.5 : 0.4}
-          roughness={0.2}
-          metalness={0.8}
+          emissiveIntensity={hovered ? 3.5 : 1.2}
+          roughness={0.1}
+          metalness={0.9}
         />
       </mesh>
-      {/* Glow ring - Sharp Square aesthetics projected in 3D */}
+      {/* Glow ring */}
       <mesh position={[source.x, source.y, source.z]}>
-        <ringGeometry args={[0.42, 0.48, 4]} />
+        <ringGeometry args={[0.55, 0.65, 4]} />
         <meshBasicMaterial
           color={source.color}
           transparent
-          opacity={hovered ? 0.7 : 0.08}
+          opacity={hovered ? 0.8 : 0.25}
           side={THREE.DoubleSide}
         />
       </mesh>
       {hovered && (
-        <Html position={[source.x, source.y + 0.8, source.z]} center>
+        <Html position={[source.x, source.y + 1.2, source.z]} center>
           <div className="bg-[#1a0f0a]/95 backdrop-blur-3xl border border-[#fdf8f5]/20 rounded-none px-6 py-3 text-center whitespace-nowrap pointer-events-none shadow-2xl scale-in-center">
             <p className="text-[#fdf8f5] text-base font-black uppercase italic tracking-tighter">{source.name}</p>
             <p className="text-[10px] text-[#8d7b68] font-black mt-2 uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10">
@@ -89,13 +89,13 @@ function NetworkLines() {
 
   useFrame((state) => {
     if (linesRef.current) {
-      linesRef.current.material.opacity = 0.06 + Math.sin(state.clock.getElapsedTime()) * 0.04;
+      linesRef.current.material.opacity = 0.3 + Math.sin(state.clock.getElapsedTime() * 1.5) * 0.15;
     }
   });
 
   return (
     <lineSegments ref={linesRef} geometry={geometry}>
-      <lineBasicMaterial color="#fdf8f5" transparent opacity={0.1} blending={THREE.AdditiveBlending} />
+      <lineBasicMaterial color="#fdf8f5" transparent opacity={0.4} linewidth={2} blending={THREE.AdditiveBlending} />
     </lineSegments>
   );
 }
@@ -104,17 +104,9 @@ export default function BiasNetwork() {
   const [hoveredSource, setHoveredSource] = useState(null);
 
   return (
-    <div className="w-full h-[550px] rounded-none overflow-hidden border border-[#fdf8f5]/10 bg-[#1a0f0a]/60 relative shadow-2xl group">
-      <div className="absolute top-8 left-10 z-10 pointer-events-none">
-        <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-[#fdf8f5] flex items-center gap-4 italic leading-none">
-          <span className="w-2.5 h-2.5 rounded-none bg-[#fdf8f5] shadow-[0_0_15px_rgba(253,248,245,0.4)]" />
-          Narrative Topology Matrix
-        </h3>
-        <p className="text-[9px] text-[#8d7b68] mt-3 font-black uppercase tracking-[0.3em] italic opacity-60">Navigate the 3D nexus of source inter-relationships.</p>
-      </div>
-
+    <div className="w-full h-full rounded-none overflow-hidden bg-[#1a0f0a]/20 relative group">
       {hoveredSource && (
-        <div className="absolute bottom-10 left-10 z-10 bg-[#1a0f0a]/90 backdrop-blur-3xl border border-[#fdf8f5]/10 rounded-none px-6 py-4 pointer-events-none shadow-2xl border-l-4 border-l-[#fdf8f5]">
+        <div className="absolute top-40 left-10 z-10 bg-[#1a0f0a]/90 backdrop-blur-3xl border border-[#fdf8f5]/10 rounded-none px-6 py-4 pointer-events-none shadow-2xl border-l-4 border-l-[#fdf8f5] animate-in slide-in-from-left duration-300">
           <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic">ACTIVE_NODE_FOCUS: <span className="text-[#fdf8f5]">{hoveredSource.name}</span></p>
         </div>
       )}
@@ -141,19 +133,6 @@ export default function BiasNetwork() {
           autoRotateSpeed={0.8}
         />
       </Canvas>
-
-      {/* Legend */}
-      <div className="absolute bottom-10 right-10 z-10 flex gap-8 pointer-events-none bg-gradient-to-l from-[#1a0f0a]/40 to-transparent pl-12 py-4">
-        {[
-          { label: "Vector Alpha", color: "bg-[#fdf8f5]" },
-          { label: "Neural Flux", color: "bg-[#d6c2b8]" },
-          { label: "Vector Beta", color: "bg-[#8d7b68]" },
-        ].map((l) => (
-          <div key={l.label} className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.3em] text-[#8d7b68] italic group-hover:text-[#fdf8f5] transition-colors">
-            <div className={`w-3 h-3 rounded-none shadow-2xl ${l.color}`} /> {l.label}
-          </div>
-        ))}
-      </div>
       
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#fdf8f5]/20 to-transparent" />
     </div>

@@ -42,11 +42,11 @@ export default function Login() {
           <div className="w-12 h-12 rounded-none bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-2xl shadow-2xl italic group-hover:scale-110 transition-transform">TL</div>
           <span className="text-3xl font-black text-[#fdf8f5] tracking-tighter uppercase italic">TruthLens</span>
         </Link>
-        <h2 className="text-4xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Terminal Access</h2>
+        <h2 className="text-4xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">User Login</h2>
         <p className="mt-3 text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic underline decoration-[#fdf8f5]/10">
           Or{' '}
           <Link to="/register" className="text-[#fdf8f5] hover:tracking-widest transition-all">
-            Initialize New Analyst Identity
+            Create New Account
           </Link>
         </p>
       </div>
@@ -56,13 +56,13 @@ export default function Login() {
           
           {error && (
             <div className="mb-8 p-4 bg-[#fdf8f5]/5 border border-[#fdf8f5]/20 text-[#fdf8f5] text-[10px] font-black uppercase tracking-widest italic animate-pulse">
-              SYSTEM_ERROR: {error}
+              ERROR: {error}
             </div>
           )}
 
           <form className="space-y-8" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-3 italic">Operator Identifier</label>
+              <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-3 italic">Email Address</label>
               <div className="relative group">
                 <HiOutlineMail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4d3c2e] group-focus-within:text-[#fdf8f5] w-5 h-5 transition-colors" />
                 <input
@@ -71,13 +71,13 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
-                  placeholder="ANALYST@TRUTHLENS.IO"
+                  placeholder="EMAIL@EXAMPLE.COM"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-3 italic">Authentication Key</label>
+              <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-3 italic">Password</label>
               <div className="relative group">
                 <HiOutlineLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4d3c2e] group-focus-within:text-[#fdf8f5] w-5 h-5 transition-colors" />
                 <input
@@ -94,10 +94,10 @@ export default function Login() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <input type="checkbox" className="h-4 w-4 text-[#1a0f0a] border-[#fdf8f5]/20 rounded-none focus:ring-0 bg-transparent cursor-pointer" />
-                <label className="text-[9px] font-black text-[#8d7b68] uppercase tracking-widest italic">Persistent Node</label>
+                <label className="text-[9px] font-black text-[#8d7b68] uppercase tracking-widest italic">Remember Me</label>
               </div>
               <div className="text-[9px]">
-                <a href="#" className="font-black text-[#8d7b68] uppercase tracking-widest hover:text-[#fdf8f5] transition-colors italic">Key Recovery</a>
+                <a href="#" className="font-black text-[#8d7b68] uppercase tracking-widest hover:text-[#fdf8f5] transition-colors italic">Forgot Password?</a>
               </div>
             </div>
 
@@ -106,7 +106,7 @@ export default function Login() {
               disabled={loading}
               className="btn-primary w-full py-4 px-6 shadow-2xl transition-all disabled:opacity-50"
             >
-              {loading ? "AUTHENTICATING_STREAM..." : "BOOT_PROTOCOL"}
+              {loading ? "LOGGING IN..." : "LOGIN"}
             </button>
           </form>
 
@@ -116,7 +116,7 @@ export default function Login() {
                 <div className="w-full border-t border-[#fdf8f5]/10" />
               </div>
               <div className="relative flex justify-center text-[9px]">
-                <span className="px-4 bg-[#261a14] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic">Federated Auth</span>
+                <span className="px-4 bg-[#261a14] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic">Or Sign In With</span>
               </div>
             </div>
 
@@ -131,7 +131,7 @@ export default function Login() {
                   <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" opacity="0.8"/>
                   <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" opacity="0.9"/>
                 </svg>
-                Google Node
+                Google
               </button>
             </div>
           </div>

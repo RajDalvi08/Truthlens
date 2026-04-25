@@ -11,6 +11,7 @@ from typing import Optional
 from services.article_fetcher import fetch_article
 from services.preprocessing import clean_article
 from services.comparison_engine import compare_articles
+from services.persistence_service import save_analysis
 
 router = APIRouter(prefix="/compare", tags=["Comparison"])
 
@@ -116,5 +117,9 @@ def compare_two_articles(payload: CompareRequest):
             status_code=500,
             detail=f"Comparison failed: {exc}",
         )
+
+    # 4. Persist
+    save_analysis(comparison["article_1"])
+    save_analysis(comparison["article_2"])
 
     return CompareResponse(**comparison)

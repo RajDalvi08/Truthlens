@@ -19,11 +19,11 @@ export default function Register() {
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Access keys do not match.");
+      setError("Passwords do not match.");
       return;
     }
     if (password.length < 6) {
-      setError("Access key must be at least 6 characters.");
+      setError("Password must be at least 6 characters.");
       return;
     }
 
@@ -54,7 +54,7 @@ export default function Register() {
           <div className="w-12 h-12 rounded-none bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-2xl shadow-2xl italic group-hover:scale-110 transition-transform">TL</div>
           <span className="text-3xl font-black text-[#fdf8f5] tracking-tighter uppercase italic">TruthLens</span>
         </Link>
-        <h2 className="text-4xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Initialize Identity</h2>
+        <h2 className="text-4xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Create Account</h2>
         <p className="mt-3 text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic underline decoration-[#fdf8f5]/10">
           Already an analyst?{' '}
           <Link to="/login" className="text-[#fdf8f5] hover:tracking-widest transition-all">
@@ -68,13 +68,13 @@ export default function Register() {
           
           {error && (
             <div className="mb-8 p-4 bg-[#fdf8f5]/5 border border-[#fdf8f5]/20 text-[#fdf8f5] text-[10px] font-black uppercase tracking-widest italic animate-pulse">
-              INITIALIZATION_ERROR: {error}
+              ERROR: {error}
             </div>
           )}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-3 italic">Full Legal Identifier</label>
+              <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-3 italic">Full Name</label>
               <div className="relative group">
                 <HiOutlineUser className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4d3c2e] group-focus-within:text-[#fdf8f5] w-5 h-5 transition-colors" />
                 <input
@@ -83,13 +83,13 @@ export default function Register() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
-                  placeholder="ANALYST NAME"
+                  placeholder="YOUR FULL NAME"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-3 italic">Communication Vector</label>
+              <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-3 italic">Email Address</label>
               <div className="relative group">
                 <HiOutlineMail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4d3c2e] group-focus-within:text-[#fdf8f5] w-5 h-5 transition-colors" />
                 <input
@@ -98,14 +98,14 @@ export default function Register() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
-                  placeholder="ANALYST@TRUTHLENS.IO"
+                  placeholder="YOUR@EMAIL.COM"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-3 italic">Primary Key</label>
+                <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-3 italic">Password</label>
                 <input
                   type="password"
                   required
@@ -116,7 +116,7 @@ export default function Register() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-3 italic">Verify Key</label>
+                <label className="block text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-3 italic">Confirm Password</label>
                 <input
                   type="password"
                   required
@@ -133,7 +133,7 @@ export default function Register() {
               disabled={loading}
               className="btn-primary w-full py-4 px-6 mt-6 shadow-2xl transition-all disabled:opacity-50"
             >
-              {loading ? "INITIALIZING_NODE..." : "GENERATE_IDENTITY"}
+              {loading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT"}
             </button>
           </form>
 
@@ -143,7 +143,7 @@ export default function Register() {
                 <div className="w-full border-t border-[#fdf8f5]/10" />
               </div>
               <div className="relative flex justify-center text-[9px]">
-                <span className="px-4 bg-[#261a14] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic">Federated Auth</span>
+                <span className="px-4 bg-[#261a14] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic">Or Sign Up With</span>
               </div>
             </div>
 
@@ -158,7 +158,7 @@ export default function Register() {
                   <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" opacity="0.8"/>
                   <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" opacity="0.9"/>
                 </svg>
-                Google Node
+                Google
               </button>
             </div>
           </div>

@@ -1,0 +1,23 @@
+{
+  "headline": "Prime Minister visits Tech Corp HQ",
+  "bias_score": 81.7,
+  "bias_level": "Strong Bias",
+  "linguistic_bias": 0.9252,
+  "framing_bias": 0.9036,
+  "entity_bias": 0.7554,
+  "bias_visual": "\n    <div style=\"width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 99px; overflow: hidden; margin-top: 8px;\">\n        <div style=\"width: 81.7%; height: 100%; background: linear-gradient(90deg, #6366f1, #06b6d4, #a855f7); box-shadow: 0 0 8px rgba(6,182,212,0.4);\"></div>\n    </div>\n    ",
+  "source": "Manual Entry",
+  "entities": {
+    "persons": [],
+    "organizations": [
+      "Tech Corp",
+      "Tech Corp HQ"
+    ]
+  },
+  "explanation": [
+    "The article uses emotionally loaded or subjective language.",
+    "The article presents a strong narrative or perspective.",
+    "Specific individuals or organizations are portrayed with noticeable bias.",
+    "Overall, the article shows strong bias."
+  ]
+}

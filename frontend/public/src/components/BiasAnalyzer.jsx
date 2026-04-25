@@ -52,6 +52,7 @@ export default function BiasAnalyzer() {
         text: text.trim(),
         userId: user?.uid
       });
+      console.log("API RESPONSE:", response);
       setResults(response);
       
       // Trigger global notification
@@ -80,7 +81,7 @@ export default function BiasAnalyzer() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-24 mesh-bg">
+    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-1000 pb-16 mesh-bg">
       
       {/* Dynamic Header */}
       <div className="flex items-end justify-between border-b border-[#fdf8f5]/10 pb-10 flex flex-col md:flex-row md:items-end gap-8">
@@ -107,7 +108,7 @@ export default function BiasAnalyzer() {
             >
                 <div className="absolute top-0 right-0 w-80 h-80 bg-[#fdf8f5]/[0.02] blur-[100px] pointer-events-none group-hover:bg-[#fdf8f5]/[0.05] transition-all duration-1000" />
                 
-                <div className="p-12 border-b border-[#fdf8f5]/5 bg-[#fdf8f5]/[0.01]">
+                <div className="p-8 border-b border-[#fdf8f5]/5 bg-[#fdf8f5]/[0.01]">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                         {/* Text Ingestion */}
                         <div className="space-y-8">
@@ -172,7 +173,7 @@ export default function BiasAnalyzer() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row items-center gap-10 mt-14 pt-12 border-t border-[#fdf8f5]/10">
+                    <div className="flex flex-col sm:flex-row items-center gap-6 mt-8 pt-6 border-t border-[#fdf8f5]/10">
                         <button
                            onClick={handleAnalyze}
                            disabled={(!url.trim() && !text.trim()) || isAnalyzing || !isOnline}
@@ -203,7 +204,7 @@ export default function BiasAnalyzer() {
                 </div>
 
                 {/* Analysis Output Pane */}
-                <div className="p-12 min-h-[350px] flex items-center justify-center bg-[#fdf8f5]/[0.01] relative overflow-hidden">
+                <div className="p-8 min-h-[200px] flex items-start justify-center bg-[#fdf8f5]/[0.01] relative overflow-hidden">
                     <div className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none" />
                     <AnimatePresence mode="wait">
                         {error && (
@@ -224,11 +225,11 @@ export default function BiasAnalyzer() {
                         <motion.div 
                             initial={{ opacity: 0, y: 40 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10"
+                            className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10"
                         >
                             {/* Result Stats - Left Cluster */}
                             <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <div className="glass-card p-10 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 group rounded-none shadow-2xl relative overflow-hidden">
+                                <div className="glass-card p-8 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 group rounded-none shadow-2xl relative overflow-hidden">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#fdf8f5]/5 blur-[60px]" />
                                     <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">Bias Result</p>
                                     <div className="text-7xl font-black text-[#fdf8f5] mb-4 italic tracking-tighter tabular-nums leading-none">{results.bias_score}</div>
@@ -241,7 +242,7 @@ export default function BiasAnalyzer() {
                                             transition={{ duration: 2, ease: "easeOut" }}
                                         />
                                     </div>
-                                    <div className="flex justify-between mt-5 text-[8px] font-black text-[#4d3c2e] tracking-[0.4em] uppercase">
+                                    <div className="flex justify-between mt-4 text-[8px] font-black text-[#4d3c2e] tracking-[0.3em] uppercase">
                                         <span>Left Vector</span>
                                         <span>Right Vector</span>
                                     </div>
@@ -276,8 +277,8 @@ export default function BiasAnalyzer() {
                             </div>
 
                             {/* Metadata Pane - Right Cluster */}
-                            <div className="lg:col-span-4 space-y-8">
-                                <div className="glass-card p-10 h-full flex flex-col justify-between bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-none shadow-2xl relative group">
+                            <div className="lg:col-span-4 space-y-6">
+                                <div className="glass-card p-8 h-full flex flex-col justify-between bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-none shadow-2xl relative group">
                                     <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                                     <div>
                                         <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-8 italic underline decoration-[#fdf8f5]/10">About the Source</p>
@@ -296,6 +297,32 @@ export default function BiasAnalyzer() {
                                             <HiOutlineChartSquareBar className="w-6 h-6 text-[#fdf8f5]/20" />
                                             SPEED: <span className="text-[#8d7b68]">Normal</span>
                                         </div>
+                                    </div>
+                                </div>
+
+                                {/* Explanation */}
+                                <div className="glass-card p-8 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 w-40 h-40 bg-[#0EA5E9]/5 blur-[80px] group-hover:bg-[#0EA5E9]/10 transition-colors duration-1000" />
+                                    <h3 className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.4em] mb-6 italic underline decoration-[#fdf8f5]/10">Logic_Trace Analysis</h3>
+                                    
+                                    <div className="space-y-3 mt-2">
+                                      {results.explanation && results.explanation.length > 0 ? (
+                                        results.explanation.map((line, i) => (
+                                          <div
+                                            key={i}
+                                            className="p-4 border border-[#fdf8f5]/5 bg-[#1a0f0a] rounded-xl backdrop-blur-sm"
+                                          >
+                                            <p className="text-[12px] text-[#fdf8f5] leading-relaxed font-medium tracking-wide">
+                                              <span className="text-[#0EA5E9] mr-2 font-bold">»</span>
+                                              {line}
+                                            </p>
+                                          </div>
+                                        ))
+                                      ) : (
+                                        <div className="text-[11px] text-[#4d3c2e] italic">
+                                          No explanation available
+                                        </div>
+                                      )}
                                     </div>
                                 </div>
                             </div>

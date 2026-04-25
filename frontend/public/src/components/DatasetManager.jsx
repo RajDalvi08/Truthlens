@@ -195,7 +195,7 @@ export default function DatasetManager() {
                 <h3 className="text-3xl font-black text-[#fdf8f5] mb-6 uppercase italic tracking-tighter">TruthLens Main Database</h3>
                 <p className="text-sm text-[#d6c2b8] font-black uppercase tracking-tight mb-12 leading-relaxed opacity-80 italic max-w-2xl">A collection of all news articles analyzed by the system. Updated automatically with every new scan.</p>
                 
-                <div className="flex items-center gap-10 text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">
+                <div className="flex flex-wrap items-center gap-10 text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">
                     <div className="flex items-center gap-4">
                         <div className="w-1.5 h-1.5 bg-[#fdf8f5] opacity-50" />
                         {stats?.totalArticles || 0} ANALYZED ARTICLES

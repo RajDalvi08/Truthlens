@@ -1,0 +1,32 @@
+python : 
+At line:1 char:1
++ python test_integration_v3.py > 
+test_logs.txt 2>&1 ; Get-Content 
+test ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotS 
+   pecified: (:String) [], Remote  
+  Exception
+    + FullyQualifiedErrorId : Nati 
+   veCommandError
+ 
+Loading weights:   0%|          | 
+0/104 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 
+104/104 [00:00<00:00, 9290.30it/s]
+
+Loading weights:   0%|          | 
+0/104 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 
+104/104 [00:00<00:00, 8970.48it/s]
+
+Loading weights:   0%|          | 
+0/104 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 
+104/104 [00:00<00:00, 8003.66it/s]
+TEXT LENGTH: 132
+TEXT SAMPLE: Prime Minister visits Tech Corp HQ The Prime Minister met with the CEO of Tech Corp today. some emotionally loaded staggering words.
+DETECTED ENTITIES: [('Tech Corp HQ', 'ORG'), ('Tech Corp', 'ORG'), ('today', 'DATE')]
+FINAL ENTITIES: {'persons': [], 'organizations': ['Tech Corp HQ', 'Tech Corp']}
+EXPLANATION: ['The article uses emotionally loaded or subjective language.', 'The article presents a strong narrative or perspective.', 'Specific individuals or organizations are portrayed with noticeable bias.', 'Overall, the article shows strong bias.']

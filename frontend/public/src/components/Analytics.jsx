@@ -13,24 +13,6 @@ import { getRecentAnalyses, getAnalysisStats } from "../services/analysisService
 
 const BiasNetwork = React.lazy(() => import("./three/BiasNetwork"));
 
-const biasDistributionData = [
-  { name: 'Left Bias', value: 340, color: '#3b82f6' }, // Blue
-  { name: 'Neutral', value: 512, color: '#10b981' }, // Emerald
-  { name: 'Right Bias', value: 288, color: '#f59e0b' }, // Amber
-]
-
-const sentimentCorrelationData = [
-  { bias: -0.8, sentiment: -0.4, size: 20 },
-  { bias: -0.6, sentiment: -0.2, size: 15 },
-  { bias: -0.4, sentiment: 0.1, size: 10 },
-  { bias: -0.2, sentiment: 0.3, size: 25 },
-  { bias: 0, sentiment: 0.8, size: 30 },
-  { bias: 0.2, sentiment: 0.4, size: 12 },
-  { bias: 0.4, sentiment: 0.1, size: 18 },
-  { bias: 0.6, sentiment: -0.3, size: 22 },
-  { bias: 0.8, sentiment: -0.6, size: 14 },
-]
-
 export default function Analytics() {
   const { searchQuery, setSearchQuery } = useSearch()
   const [filterType, setFilterType] = useState("all")
@@ -85,6 +67,9 @@ export default function Analytics() {
       (filterType === "all" || item.sentiment.toLowerCase() === filterType)
     )
   }, [searchQuery, filterType, recentAnalyses])
+
+  const totalArticleVectors = overviewStats?.totalArticles || 0;
+  const articlesPerHour = overviewStats?.articlesPerHour || 0;
 
   if (loading) {
     return (
@@ -308,6 +293,11 @@ export default function Analytics() {
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic opacity-50">No data yet</p>
+                  </div>
+                )}
               </div>
             </motion.div>
 
@@ -456,6 +446,11 @@ export default function Analytics() {
                 </Scatter>
               </ScatterChart>
             </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50">Analyze articles to populate correlation data</p>
+              </div>
+            )}
           </div>
         </motion.div>
 
@@ -497,7 +492,7 @@ export default function Analytics() {
                    </tr>
                 </thead>
                 <tbody className="divide-y divide-[#fdf8f5]/5 bg-[#fdf8f5]/[0.01]">
-                   {filteredAnalyses.map((item) => (
+                   {filteredAnalyses.length > 0 ? filteredAnalyses.map((item) => (
                       <tr key={item.id} className="group hover:bg-[#fdf8f5]/[0.05] cursor-pointer transition-all duration-400">
                          <td className="px-12 py-10">
                             <p className="text-sm font-black text-[#d6c2b8] group-hover:text-[#fdf8f5] group-hover:italic transition-all leading-snug max-w-xl uppercase tracking-tight line-clamp-2">
@@ -520,12 +515,18 @@ export default function Analytics() {
                                <div className="flex-1 w-28 h-2 bg-[#fdf8f5]/5 rounded-none overflow-hidden border border-[#fdf8f5]/5">
                                   <div className="h-full bg-[#fdf8f5] shadow-[0_0_12px_rgba(253,248,245,0.5)]" style={{ width: `${Math.abs(item.bias_score)}%` }} />
                                 </div>
-                               <span className="text-[11px] font-black text-[#fdf8f5] tabular-nums tracking-tighter italic">{item.bias_score > 0 ? `+${item.bias_score.toFixed(1)}` : item.bias_score.toFixed(1)}</span>
+                               <span className="text-[10px] font-black text-[#fdf8f5] tabular-nums tracking-tighter italic">{item.bias_score > 0 ? `+${item.bias_score.toFixed(1)}` : item.bias_score.toFixed(1)}</span>
                             </div>
                          </td>
                          <td className="px-12 py-10 text-[11px] font-black text-[#4d3c2e] group-hover:text-[#8d7b68] uppercase tabular-nums tracking-[0.25em] transition-colors">{item.date}</td>
                       </tr>
-                   ))}
+                   )) : (
+                      <tr>
+                        <td colSpan="5" className="px-8 py-12 text-center">
+                          <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50">No analyses found — submit articles to populate</p>
+                        </td>
+                      </tr>
+                   )}
                 </tbody>
              </table>
           </div>

@@ -4,8 +4,10 @@ from models.linguistic_model import predict as predict_linguistic
 from models.framing_model import predict as predict_framing
 from models.bead_model import predict as predict_entity
 from services.bias_score import combine_scores
-from services.nlp_utils import split_text, has_named_entities
+from services.nlp_utils import split_text, has_named_entities, extract_entities
 from services.bias_visualizer import generate_bias_bar
+from services.explainer import generate_explanation, extract_bias_indicators
+from services.ai_explainer import generate_llm_explanation
 
 
 def _check_reporting_tone(text: str) -> float:
@@ -59,6 +61,9 @@ def analyze_bias(article: dict) -> dict:
     else:
         full_text = text
 
+    print("TEXT LENGTH:", len(full_text))
+    print("TEXT SAMPLE:", full_text[:200])
+
     # Calculate neutrality dampener for the whole text
     neutrality_dampener = _check_reporting_tone(full_text)
 
@@ -105,8 +110,34 @@ def analyze_bias(article: dict) -> dict:
     final_framing = round(float(calculate_aggregation(fra_scores)), 4)
     final_entity = round(float(calculate_aggregation(ent_scores)), 4)
 
+    # Calculate indicators to extract score_boost before final scoring
+    entities = extract_entities(full_text)
+    indicators, score_boost = extract_bias_indicators(full_text)
+
     # Combine into final score
-    score_data = combine_scores(final_linguistic, final_framing, final_entity)
+    score_data = combine_scores(final_linguistic, final_framing, final_entity, full_text, score_boost)
+
+    # Final explainability features
+    fallback_explanation = generate_explanation(
+        full_text,
+        indicators,
+        score_data["score"]
+    )
+
+    if not fallback_explanation:
+        fallback_explanation = ["The article shows measurable bias based on analysis."]
+
+    try:
+        ai_exp = generate_llm_explanation(full_text, score_data["score"], score_data["level"], indicators)
+        if ai_exp and len(ai_exp) > 20:
+            explanation = [ai_exp]
+        else:
+            explanation = fallback_explanation
+    except Exception:
+        explanation = fallback_explanation
+
+    print("FINAL ENTITIES:", entities)
+    print("EXPLANATION:", explanation)
 
     return {
         "headline": headline,
@@ -117,4 +148,10 @@ def analyze_bias(article: dict) -> dict:
         "entity_bias": final_entity,
         "bias_visual": generate_bias_bar(score_data["score"]),
         "source": article.get("source", ""),
+        "entities": {
+            "persons": entities["persons"],
+            "organizations": entities["organizations"]
+        },
+        "explanation": explanation,
+        "indicators": indicators
     }

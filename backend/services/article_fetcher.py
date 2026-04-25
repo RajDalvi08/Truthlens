@@ -108,8 +108,8 @@ def _get_page(session: requests.Session, url: str) -> requests.Response:
         return response
 
 
-def fetch_article(url: str) -> dict:
-    """Download a webpage and extract the headline and article text using newspaper3k."""
+def fetch_article(url: str, input_text: str = "") -> dict:
+    """Download a webpage and extract the headline and article text."""
     session = _create_session()
 
     response = _get_page(session, url)
@@ -128,8 +128,8 @@ def fetch_article(url: str) -> dict:
         headline = ""
         article_text = ""
 
-    # Fallback to BeautifulSoup if newspaper3k fails or returns empty text
-    if not article_text.strip():
+    # Fallback to BeautifulSoup if newspaper3k fails or returns very short text
+    if not article_text.strip() or len(article_text) < 500:
         soup = BeautifulSoup(html_content, "html.parser")
 
         # 1. Extract headline
@@ -137,27 +137,23 @@ def fetch_article(url: str) -> dict:
             h1 = soup.find("h1")
             headline = h1.get_text(strip=True) if h1 else ""
 
-        # 2. Extract article text using fallback selectors
-        selectors = [
-            "article",
-            "div.article-body",
-            "div.article__body",
-            "div.story-body",
-            "p",
-        ]
-        
-        for selector in selectors:
-            elements = soup.select(selector)
-            if elements:
-                # Combine text from all elements found by this selector
-                text_blocks = [el.get_text(strip=True) for el in elements]
-                text = "\n\n".join(t for t in text_blocks if len(t) > 40) # Filter out short snippets
-                if text.strip():
-                    article_text = text
-                    break
+        # 2. Broad paragraph extraction (Simplified as requested)
+        paragraphs = soup.find_all("p")
+        article_text = " ".join([p.get_text() for p in paragraphs])
+
+    # Final logic for BBC / Blocked sites fallback
+    if len(article_text) < 500 and input_text:
+        print("Fallback triggered - using raw text input")
+        article_text = input_text
 
     if not article_text.strip():
-        raise ValueError(f"No article text could be extracted from {url}. The page might be empty or content is loaded via JavaScript.")
+        if input_text:
+            article_text = input_text
+        else:
+            raise ValueError(f"No article text could be extracted from {url}. The page might be empty or content is loaded via JavaScript.")
+
+    print("FETCHED TEXT LENGTH:", len(article_text))
+    print("FETCH SAMPLE:", article_text[:300])
 
     # Extract source domain for tracking purposes
     parsed_url = urllib.parse.urlparse(url)

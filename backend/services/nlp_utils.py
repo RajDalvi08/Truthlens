@@ -9,12 +9,32 @@ from typing import List
 
 # Load spaCy model once at startup
 try:
-    nlp = spacy.load("en_core_web_sm", disable=["parser", "lemmatizer"])
+    nlp = spacy.load("en_core_web_sm", disable=["lemmatizer"])
 except Exception:
-    # Fallback if model not downloaded (though we should have it)
-    import os
-    os.system("python -m spacy download en_core_web_sm")
-    nlp = spacy.load("en_core_web_sm", disable=["parser", "lemmatizer"])
+    import subprocess
+    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
+    nlp = spacy.load("en_core_web_sm", disable=["lemmatizer"])
+
+
+def extract_entities(text: str) -> dict:
+    """
+    Extract persons and organizations from text using spaCy.
+    """
+    doc = nlp(text)
+    print("DETECTED ENTITIES:", [(ent.text, ent.label_) for ent in doc.ents])
+    persons = set()
+    orgs = set()
+
+    for ent in doc.ents:
+        if ent.label_ == "PERSON":
+            persons.add(ent.text)
+        elif ent.label_ == "ORG":
+            orgs.add(ent.text)
+
+    return {
+        "persons": list(persons),
+        "organizations": list(orgs)
+    }
 
 
 def has_named_entities(text: str) -> bool:

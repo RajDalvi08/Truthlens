@@ -13,6 +13,8 @@ const COLORS = ['#F97316', '#0EA5E9', '#8B5CF6', '#EC4899', '#10B981'];
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [recentAnalyses, setRecentAnalyses] = useState([]);
+  const [biasTimeseries, setBiasTimeseries] = useState([]);
+  const [narrativeBalance, setNarrativeBalance] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
   const navigate = useNavigate();
@@ -33,6 +35,8 @@ export default function Dashboard() {
         ]);
         setStats(statsData);
         setRecentAnalyses(analysesData);
+        setBiasTimeseries(timeseriesData);
+        setNarrativeBalance(balanceData);
       } catch (error) {
         console.error("Dashboard data load failure:", error);
       } finally {
@@ -180,7 +184,7 @@ export default function Dashboard() {
                   )}
                     {/* Center Text overlay */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span className="text-4xl font-black text-[#fdf8f5] italic tracking-tighter">45%</span>
+                        <span className="text-4xl font-black text-[#fdf8f5] italic tracking-tighter">{neutralPct}%</span>
                         <span className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic">Neutral</span>
                     </div>
                 </div>
@@ -238,7 +242,7 @@ export default function Dashboard() {
                   </td>
                   <td className="px-10 py-8">
                     <div className="flex items-center gap-4">
-                      <div className="flex-1 h-1.5 w-24 bg-[#fdf8f5]/5 rounded-none overflow-hidden">
+                      <div className="flex-1 h-1 w-20 bg-[#fdf8f5]/5 rounded-none overflow-hidden">
                         <div 
                           className="h-full bg-[#fdf8f5] shadow-[0_0_10px_rgba(253,248,245,0.4)]" 
                           style={{ width: `${Math.min(100, Math.abs((item.bias_score || 0) * 100))}%` }} 
@@ -254,7 +258,13 @@ export default function Dashboard() {
                     </span>
                   </td>
                 </tr>
-              ))}
+              )) : (
+                <tr>
+                  <td colSpan="5" className="px-8 py-12 text-center">
+                    <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50">No analyses yet — submit an article to begin</p>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

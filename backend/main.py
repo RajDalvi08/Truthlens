@@ -11,7 +11,8 @@ from fastapi.staticfiles import StaticFiles
 from routers.analyze import router as analyze_router
 from routers.compare import router as compare_router
 from routers.event import router as event_router
-from routers.stats import router as stats_router
+from routers.dashboard import router as dashboard_router
+import database  # Initialises the database on import
 
 app = FastAPI(
     title="TruthLens API",
@@ -38,7 +39,7 @@ app.add_middleware(
 app.include_router(analyze_router)
 app.include_router(compare_router)
 app.include_router(event_router)
-app.include_router(stats_router)
+app.include_router(dashboard_router)
 
 # Serve static files
 app.mount("/static", StaticFiles(directory="static"), name="static")

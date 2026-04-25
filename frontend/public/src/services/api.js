@@ -22,16 +22,15 @@ const isUrl = (value) => {
   }
 };
 
-export async function analyzeArticle({ url, headline, text, userId }) {
+export async function analyzeArticle({ url, headline, text }) {
   let payload;
 
   if (url && url.trim().length > 0) {
-    payload = { url, user_id: userId };
+    payload = { url };
   } else {
     payload = {
       headline: headline || null,
       text: text,
-      user_id: userId
     };
   }
 
@@ -68,26 +67,3 @@ export async function compareEvent(url) {
 
   return handleResponse(response);
 }
-
-export async function getStats(userId) {
-  const url = userId ? `${API_BASE}/stats/overview?user_id=${userId}` : `${API_BASE}/stats/overview`;
-  const response = await fetch(url);
-  return handleResponse(response);
-}
-
-export async function getRecentAnalyses(limit = 10, userId) {
-  let url = `${API_BASE}/stats/recent?limit=${limit}`;
-  if (userId) url += `&user_id=${userId}`;
-  const response = await fetch(url);
-  return handleResponse(response);
-}
-
-export async function deleteAnalysis(id, userId) {
-  let url = `${API_BASE}/stats/recent/${id}`;
-  if (userId) url += `?user_id=${userId}`;
-  const response = await fetch(url, {
-    method: "DELETE",
-  });
-  return handleResponse(response);
-}
-

@@ -45,7 +45,7 @@ const Navigation = () => {
       <Nav title="Dashboard" Icon={RiDashboard2Fill} collapsed={nav} onClick={() => navigate("/dashboard")} />
       <Nav title="Analytics" Icon={VscGraphLine} collapsed={nav} onClick={() => navigate("/analytics")} />
       <Nav title="Bias Analyzer" Icon={FiActivity} collapsed={nav} onClick={() => navigate("/bias-analyzer")} />
-      <Nav title="Article Database" Icon={FiDatabase} collapsed={nav} onClick={() => navigate("/datasets")} />
+      <Nav title="Dataset Manager" Icon={FiDatabase} collapsed={nav} onClick={() => navigate("/datasets")} />
       <Nav title="Source Comparison" Icon={TbArrowsExchange} collapsed={nav} onClick={() => navigate("/compare")} />
       <Nav title="Reports" Icon={FiFileText} collapsed={nav} onClick={() => navigate("/reports")} />
 

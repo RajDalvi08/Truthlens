@@ -7,7 +7,6 @@ POST /compare_event — analyze and compare multiple outlets for a single event.
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, HttpUrl
 from services.event_compare import compare_event
-from services.persistence_service import save_analysis
 from typing import List
 
 router = APIRouter(prefix="/compare_event", tags=["Event Comparison"])
@@ -40,11 +39,6 @@ def compare_event_bias(payload: EventRequest):
         result = compare_event(url_str)
         if "error" in result:
             raise HTTPException(status_code=422, detail=result["error"])
-        
-        # 4. Persist
-        for article in result.get("articles", []):
-            save_analysis(article)
-            
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Event comparison failed: {str(e)}")

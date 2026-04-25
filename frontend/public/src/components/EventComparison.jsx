@@ -38,9 +38,9 @@ export default function EventComparison() {
           <div>
             <h2 className="text-5xl font-black tracking-tighter text-[#fdf8f5] flex items-center gap-6 uppercase italic">
               <HiOutlineCalendar className="w-12 h-12 text-[#fdf8f5] shadow-2xl" />
-              News Comparison
+              Event Meridian
             </h2>
-            <p className="text-[#8d7b68] text-[10px] mt-4 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10 leading-relaxed">Compare how different news outlets cover the same story.</p>
+            <p className="text-[#8d7b68] text-[10px] mt-4 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10 leading-relaxed">Auto-retrieve and compare multi-source coverage of a single global event nexus.</p>
           </div>
           <div className="px-6 py-2 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[#d6c2b8] text-[9px] font-black uppercase tracking-[0.3em] italic">X-OUTLET_SYNC_V4</div>
       </div>
@@ -54,14 +54,14 @@ export default function EventComparison() {
           <div className="absolute top-0 left-0 w-full h-[3px] bg-[#fdf8f5] shadow-[0_0_20px_rgba(253,248,245,0.4)]" />
           
           <div className="max-w-4xl">
-              <label className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 block italic">Main Article URL</label>
+              <label className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 block italic">Neural Anchor (Article URL Source)</label>
               <div className="flex flex-col sm:flex-row gap-6">
                   <div className="relative flex-1 group/input">
                       <HiOutlineLink className="absolute left-6 top-1/2 -translate-y-1/2 text-[#4d3c2e] group-focus-within/input:text-[#fdf8f5] transition-colors w-6 h-6" />
                       <input
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
-                        placeholder="HTTPS://EXAMPLESITE.COM/NEWS-STORY..."
+                        placeholder="HTTPS://GLOBAL-INTEL.COM/EVENT-ANCHOR..."
                         className="w-full pl-16 pr-8 py-5 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic shadow-2xl"
                       />
                   </div>
@@ -73,17 +73,17 @@ export default function EventComparison() {
                     {isLoading ? (
                         <>
                             <span className="w-5 h-5 border-3 border-[#1a0f0a]/30 border-t-[#1a0f0a] rounded-none animate-spin" />
-                            COMPARING...
+                            MAPPING...
                         </>
                     ) : (
                         <>
                             <HiOutlineLightningBolt className="w-5 h-5" />
-                            COMPARE STORY
+                            EXECUTE EVENT SCAN
                         </>
                     )}
                   </button>
               </div>
-              <p className="text-[10px] text-[#4d3c2e] mt-6 italic font-black uppercase tracking-[0.25em] opacity-60">The system will find related articles and show how they compare in terms of bias.</p>
+              <p className="text-[10px] text-[#4d3c2e] mt-6 italic font-black uppercase tracking-[0.25em] opacity-60">Neural core will crawl global news nodes to identify correlating reports and narrative outliers.</p>
           </div>
       </motion.div>
 
@@ -114,9 +114,9 @@ export default function EventComparison() {
                             <HiOutlineServer className="w-10 h-10" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-4 font-mono italic underline decoration-[#fdf8f5]/10">News Story Found</p>
+                            <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-4 font-mono italic underline decoration-[#fdf8f5]/10">Nexus Core Identified</p>
                             <h2 className="text-4xl font-black text-[#fdf8f5] leading-[0.9] uppercase italic tracking-tighter group-hover:italic transition-all">
-                                {results.event || "Analyzed News Event"}
+                                {results.event || "Unspecified Intelligence Vector 0xAlpha"}
                             </h2>
                         </div>
                     </div>
@@ -135,7 +135,7 @@ export default function EventComparison() {
                         <div className="absolute top-0 left-0 w-2 h-full bg-[#fdf8f5]/5 group-hover:bg-[#fdf8f5]/20 transition-all" />
                         <div>
                             <div className="flex justify-between items-start mb-10">
-                                <span className="px-4 py-1.5 bg-[#fdf8f5]/5 text-[#fdf8f5] border border-[#fdf8f5]/10 text-[9px] font-black uppercase tracking-[0.3em] italic">{article.source || "Unknown Source"}</span>
+                                <span className="px-4 py-1.5 bg-[#fdf8f5]/5 text-[#fdf8f5] border border-[#fdf8f5]/10 text-[9px] font-black uppercase tracking-[0.3em] italic">{article.source || "Neural Node"}</span>
                                 <div className="text-right">
                                     <p className="text-[9px] font-black text-[#4d3c2e] uppercase mb-2 tracking-[0.2em] italic">Bias_Index</p>
                                     <p className="text-4xl font-black text-[#fdf8f5] tabular-nums italic tracking-tighter shadow-2xl">
@@ -143,8 +143,8 @@ export default function EventComparison() {
                                     </p>
                                 </div>
                             </div>
-                            <h3 className="text-2xl font-black text-[#fdf8f5] group-hover:italic transition-all leading-tight mb-12 uppercase tracking-tighter line-clamp-2">
-                                {article.headline || "Related Article"}
+                            <h3 className="text-2xl font-black text-[#fdf8f5] group-hover:italic transition-all leading-[0.9] mb-12 uppercase tracking-tighter">
+                                {article.headline || "Correlated Data Fragment"}
                             </h3>
                         </div>
 

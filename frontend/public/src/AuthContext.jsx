@@ -79,31 +79,7 @@ export function AuthProvider({ children }) {
     return signOut(auth);
   };
 
-  const updateUserProfile = async (updates) => {
-    if (!user?.uid) return;
-    try {
-      if (updates.username || updates.photoURL) {
-        await updateProfile(auth.currentUser, {
-          displayName: updates.username || auth.currentUser.displayName,
-          photoURL: updates.photoURL || auth.currentUser.photoURL
-        });
-      }
-      
-      const userRef = doc(db, "users", user.uid);
-      const firestoreUpdates = { ...updates };
-      if (updates.username) {
-        firestoreUpdates.avatar = updates.username.substring(0, 2).toUpperCase();
-      }
-      
-      await setDoc(userRef, firestoreUpdates, { merge: true });
-      setUser(prev => ({ ...prev, ...firestoreUpdates, avatar: firestoreUpdates.avatar || prev.avatar }));
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      throw error;
-    }
-  };
-
-  const value = { user, login, register, loginWithGoogle, logout, updateUserProfile, loading };
+  const value = { user, login, register, loginWithGoogle, logout, loading };
 
   return (
     <AuthContext.Provider value={value}>

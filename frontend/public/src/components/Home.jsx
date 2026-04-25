@@ -25,7 +25,7 @@ export default function Home() {
                 className="inline-flex items-center gap-3 px-6 py-2.5 glass-card bg-[#fdf8f5]/5 backdrop-blur-3xl border-[#fdf8f5]/10 rounded-none shadow-2xl"
               >
                   <span className="flex h-2.5 w-2.5 rounded-full bg-[#fdf8f5] animate-ping" />
-                  <span className="text-[10px] font-black text-[#fdf8f5] uppercase tracking-[0.3em] italic">System Live: TruthLens v1.0</span>
+                  <span className="text-[10px] font-black text-[#fdf8f5] uppercase tracking-[0.3em] italic">Neural Core v4.2 Live // 0xEspresso</span>
               </motion.div>
 
               <motion.h1 
@@ -34,8 +34,8 @@ export default function Home() {
                 transition={{ delay: 0.1 }}
                 className="text-7xl md:text-[110px] font-black tracking-tighter text-[#fdf8f5] leading-[0.85] uppercase italic"
               >
-                Discover the <br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#fdf8f5] via-[#8d7b68] to-[#261a14] not-italic">Truth in News.</span>
+                Decipher the <br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#fdf8f5] via-[#8d7b68] to-[#261a14] not-italic">Hidden Reality.</span>
               </motion.h1>
 
               <motion.p 
@@ -44,7 +44,7 @@ export default function Home() {
                 transition={{ delay: 0.2 }}
                 className="text-xl text-[#d6c2b8] max-w-3xl mx-auto font-black uppercase tracking-tight leading-relaxed italic border-x border-[#fdf8f5]/10 px-10"
               >
-                The advanced AI tool to detect news bias. Measure political leaning and find the objective truth in every story.
+                The world's most advanced AI-driven bias detection engine. Quantify media leaning, track narrative drift, and reclaim objective truth.
               </motion.p>
 
               <motion.div 
@@ -54,11 +54,11 @@ export default function Home() {
                 className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-12"
               >
                   <Link to="/dashboard" className="btn-primary px-12 py-6 text-[11px] shadow-[0_0_50px_rgba(245,235,224,0.1)] transition-all group italic">
-                      Start Analysis
+                      Initialize Audit
                       <HiOutlineArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                   </Link>
                   <Link to="/login" className="px-12 py-6 text-[11px] font-black uppercase tracking-[0.3em] italic bg-[#fdf8f5]/5 backdrop-blur-md border border-[#fdf8f5]/10 text-[#fdf8f5] hover:bg-[#fdf8f5]/10 hover:border-[#fdf8f5]/30 rounded-none transition-all">
-                      Login / Sign Up
+                      Operator Access
                   </Link>
               </motion.div>
           </div>
@@ -74,9 +74,9 @@ export default function Home() {
               >
                   <div className="absolute top-0 right-0 w-80 h-80 bg-[#fdf8f5]/5 blur-[120px] pointer-events-none group-hover:bg-[#fdf8f5]/10 transition-all duration-1000" />
                   <HiOutlineGlobeAlt className="w-16 h-16 text-[#fdf8f5] mb-10 shadow-[0_0_20px_rgba(253,248,245,0.2)]" />
-                  <h3 className="text-4xl font-black text-[#fdf8f5] mb-6 uppercase italic tracking-tighter">Global News Analysis</h3>
+                  <h3 className="text-4xl font-black text-[#fdf8f5] mb-6 uppercase italic tracking-tighter">Intercontinental Bias Mapping</h3>
                   <p className="text-[#d6c2b8] font-black uppercase tracking-tight leading-relaxed max-w-xl italic opacity-80">
-                      See how news stories differ across the world in real-time. We analyze thousands of articles daily to find bias.
+                      Visualise narrative drift across global news nodes in a real-time, 3D interactive environment. Core-synchronized with 1.2M article vectors daily.
                   </p>
                   <div className="mt-16 flex items-center gap-10">
                       <div className="flex -space-x-4">
@@ -99,9 +99,9 @@ export default function Home() {
                       <HiOutlineLightningBolt className="w-8 h-8" />
                   </div>
                   <div>
-                      <h3 className="text-3xl font-black text-[#fdf8f5] mb-3 uppercase italic tracking-tighter">Smart Analysis</h3>
+                      <h3 className="text-3xl font-black text-[#fdf8f5] mb-3 uppercase italic tracking-tighter">Neural Ingestion</h3>
                       <p className="text-[11px] text-[#8d7b68] font-black uppercase tracking-widest leading-relaxed italic opacity-80 group-hover:text-[#d6c2b8] transition-colors">
-                          Fast analysis of news language and topics using advanced AI.
+                          Sub-second analysis of semantic framing and entity salience using the Gemini 1.5 Pro core.
                       </p>
                   </div>
               </motion.div>
@@ -116,9 +116,9 @@ export default function Home() {
                       <HiOutlineShieldCheck className="w-8 h-8" />
                   </div>
                   <div>
-                      <h3 className="text-3xl font-black text-[#fdf8f5] mb-3 uppercase italic tracking-tighter">Source Checking</h3>
+                      <h3 className="text-3xl font-black text-[#fdf8f5] mb-3 uppercase italic tracking-tighter">Source Fidelity</h3>
                       <p className="text-[11px] text-[#8d7b68] font-black uppercase tracking-widest leading-relaxed italic opacity-80 group-hover:text-[#d6c2b8] transition-colors">
-                          Verification of news sources and their history of bias.
+                          Cryptographic verification of source authenticity and historical bias weighting.
                       </p>
                   </div>
               </motion.div>
@@ -133,7 +133,7 @@ export default function Home() {
                   <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-12 h-full">
                       <div className="space-y-6">
                           <HiOutlinePresentationChartBar className="w-16 h-16 text-[#fdf8f5] shadow-[0_0_20px_rgba(253,248,245,0.2)]" />
-                          <h3 className="text-4xl font-black leading-tight uppercase italic tracking-tighter">Measure News <br/>Differences.</h3>
+                          <h3 className="text-4xl font-black leading-tight uppercase italic tracking-tighter">Quantify Narrative <br/>Divergence.</h3>
                       </div>
                       <div className="flex-1 max-w-sm space-y-6">
                           <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden border border-[#fdf8f5]/10">

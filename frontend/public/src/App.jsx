@@ -23,8 +23,6 @@ import Settings from "./components/Settings.jsx";
 import Journal from "./components/Journal.jsx";
 import GlobePage from "./components/GlobePage.jsx";
 import { AuthProvider } from "./AuthContext";
-import { SearchProvider } from "./SearchContext";
-import { NotificationProvider } from "./NotificationContext";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
@@ -40,8 +38,6 @@ function App() {
     : (isSidebarCollapsed ? 'var(--sidebar-width-collapsed)' : 'var(--sidebar-width)');
 
   return (
-    <NotificationProvider>
-    <SearchProvider>
     <AuthProvider>
       <div className={`flex min-h-screen mesh-bg transition-colors duration-300 font-sans text-white`}>
           
@@ -89,8 +85,6 @@ function App() {
           </div>
       </div>
     </AuthProvider>
-    </SearchProvider>
-    </NotificationProvider>
   );
 }
 

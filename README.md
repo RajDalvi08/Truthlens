@@ -22,10 +22,8 @@ In an era of hyper-polarized media, TruthLens serves as a **high-fidelity cognit
 
 ## 🖥️ Platform Preview
 
-> **[ Placeholder for GIF Demo ]**
-> *Watch TruthLens analyze a live article, displaying real-time bias vector shifts and context-aware LLM explanations through its Cyber-Industrial dashboard.*
-
-*(Add high-quality screenshots of the bias indicators and the dynamic logic trace popup here)*
+![TruthLens Demo](demo.webp)
+*Watch TruthLens analyze a live article, displaying real-time bias vector shifts and context-aware LLM explanations through its Cyber-Industrial dashboard.*
 
 ---
 

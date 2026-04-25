@@ -20,13 +20,6 @@ In an era of hyper-polarized media, TruthLens serves as a **high-fidelity cognit
 
 ---
 
-## 🖥️ Platform Preview
-
-![TruthLens Demo](demo.webp)
-*Watch TruthLens analyze a live article, displaying real-time bias vector shifts and context-aware LLM explanations through its Cyber-Industrial dashboard.*
-
----
-
 ## 📊 Feature Highlights
 
 - **Dynamic LLM Explanations**: Seamlessly explains complex neural bias scores using conversational logic and intelligent summaries, making machine learning outputs fully interpretable for end-users.

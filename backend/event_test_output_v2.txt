@@ -1,14 +1,0 @@
-[Linguistic] Loading tokenizer …
-[Linguistic] Loading model from G:\Truthlens\Models\Linguistic Bias Model\linguistic_bias_model …
-Loading weights:   0%|                                                                          | 0/104 [00:00<?, ?it/s]Loading weights: 100%|██████████████████████████████████████████████████████████████| 104/104 [00:00<00:00, 3453.25it/s]
-[Linguistic] Model ready on cuda
-[Framing] Loading tokenizer …
-[Framing] Loading model from G:\Truthlens\backend\models\framing_model …
-Loading weights:   0%|                                                                          | 0/104 [00:00<?, ?it/s]Loading weights: 100%|██████████████████████████████████████████████████████████████| 104/104 [00:00<00:00, 3208.40it/s]
-[Framing] Model ready on cuda
-[BEAD] Loading tokenizer …
-[BEAD] Loading model from G:\Truthlens\Models\BEAD Entity Bias Model\final_distilbert_bead …
-Loading weights:   0%|                                                                          | 0/104 [00:00<?, ?it/s]Loading weights: 100%|██████████████████████████████████████████████████████████████| 104/104 [00:00<00:00, 1932.13it/s]
-[BEAD] Model ready on cuda
-Testing event comparison for: https://www.bbc.com/news/world-europe-68514414
-Error: Failed to fetch main article: 404 Client Error: Not Found for url: https://www.bbc.com/news/world-europe-68514414

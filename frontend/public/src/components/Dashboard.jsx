@@ -51,14 +51,20 @@ export default function Dashboard() {
   );
 
   const pieData = stats?.distribution ? [
-    { name: 'Neutral', value: stats.distribution.neutral },
-    { name: 'Left Leaning', value: stats.distribution.left },
-    { name: 'Right Leaning', value: stats.distribution.right },
+    { name: 'Neutral', value: stats.distribution.neutral, color: COLORS[0] },
+    { name: 'Left Leaning', value: stats.distribution.left, color: COLORS[1] },
+    { name: 'Right Leaning', value: stats.distribution.right, color: COLORS[2] },
   ] : [
-    { name: 'Neutral', value: 100 },
-    { name: 'Left Leaning', value: 0 },
-    { name: 'Right Leaning', value: 0 },
+    { name: 'Neutral', value: 100, color: COLORS[0] },
+    { name: 'Left Leaning', value: 0, color: COLORS[1] },
+    { name: 'Right Leaning', value: 0, color: COLORS[2] },
   ];
+
+  const activePieData = pieData.filter(d => d.value > 0);
+
+  const totalValue = activePieData.reduce((acc, curr) => acc + curr.value, 0) || 1;
+  const dominantBias = [...pieData].sort((a, b) => b.value - a.value)[0];
+  const dominantPct = Math.round((dominantBias.value / totalValue) * 100);
 
 
   if (loading) {
@@ -161,20 +167,20 @@ export default function Dashboard() {
                 <h3 className="text-2xl font-black text-[#fdf8f5] mb-8 w-full text-center uppercase italic tracking-tighter">Bias Distribution</h3>
                 <div className="h-[260px] w-full relative">
                   {isMounted && (
-                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+                    <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie
-                            data={pieData}
+                            data={activePieData.map(d => ({...d, value: Number(d.value)}))}
                             cx="50%"
                             cy="50%"
                             innerRadius={70}
                             outerRadius={100}
-                            paddingAngle={10}
+                            paddingAngle={activePieData.length > 1 ? 10 : 0}
                             dataKey="value"
                             stroke="none"
                           >
-                            {pieData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            {activePieData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
                             ))}
                           </Pie>
                           <Tooltip />
@@ -183,8 +189,8 @@ export default function Dashboard() {
                   )}
                     {/* Center Text overlay */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span className="text-4xl font-black text-[#fdf8f5] italic tracking-tighter">{stats?.distribution?.neutral || 100}%</span>
-                        <span className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic">Neutral</span>
+                        <span className="text-4xl font-black text-[#fdf8f5] italic tracking-tighter">{dominantPct}%</span>
+                        <span className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic">{dominantBias.name}</span>
                     </div>
                 </div>
                 <div className="mt-10 grid grid-cols-3 gap-4 w-full border-t border-[#fdf8f5]/5 pt-8">

@@ -53,13 +53,13 @@ export default function Analytics() {
       { name: 'Left Bias', value: stats.distribution.left, color: '#3b82f6' },
       { name: 'Neutral', value: stats.distribution.neutral, color: '#10b981' },
       { name: 'Right Bias', value: stats.distribution.right, color: '#f59e0b' },
-  ] : biasDistributionData;
+  ] : [];
 
   const dynamicScatterData = recentAnalyses.length > 0 ? recentAnalyses.map((item, i) => ({
       bias: item.bias_score / 100,
       sentiment: item.raw_sentiment,
       size: 15 + (Math.random() * 15) // randomized node size for visual flair
-  })) : sentimentCorrelationData;
+  })) : [];
 
   const filteredAnalyses = useMemo(() => {
     return recentAnalyses.filter(item => 
@@ -68,8 +68,7 @@ export default function Analytics() {
     )
   }, [searchQuery, filterType, recentAnalyses])
 
-  const totalArticleVectors = overviewStats?.totalArticles || 0;
-  const articlesPerHour = overviewStats?.articlesPerHour || 0;
+
 
   if (loading) {
     return (
@@ -284,15 +283,16 @@ export default function Analytics() {
                 <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.2em] italic underline decoration-[#fdf8f5]/10">Categorical divergence.</p>
               </div>
               <div className="h-32 w-full mt-8">
-                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-                  <BarChart data={dynamicBiasDistribution}>
-                    <Bar dataKey="value" radius={[0, 0, 0, 0]}>
-                      {dynamicBiasDistribution.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+                {dynamicBiasDistribution.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+                    <BarChart data={dynamicBiasDistribution}>
+                      <Bar dataKey="value" radius={[0, 0, 0, 0]}>
+                        {dynamicBiasDistribution.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic opacity-50">No data yet</p>
@@ -371,8 +371,9 @@ export default function Analytics() {
                 <p className="text-[8px] text-[#8d7b68] uppercase tracking-[0.2em] mt-1">Bias with Positive Framing</p>
             </div>
 
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-              <ScatterChart margin={{ top: 80, right: 80, bottom: 80, left: 80 }}>
+            {dynamicScatterData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+                <ScatterChart margin={{ top: 80, right: 80, bottom: 80, left: 80 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#fdf8f510" vertical={true} />
                 <XAxis 
                     type="number" 

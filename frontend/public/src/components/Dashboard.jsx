@@ -35,8 +35,7 @@ export default function Dashboard() {
         ]);
         setStats(statsData);
         setRecentAnalyses(analysesData);
-        setBiasTimeseries(timeseriesData);
-        setNarrativeBalance(balanceData);
+
       } catch (error) {
         console.error("Dashboard data load failure:", error);
       } finally {
@@ -184,7 +183,7 @@ export default function Dashboard() {
                   )}
                     {/* Center Text overlay */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span className="text-4xl font-black text-[#fdf8f5] italic tracking-tighter">{neutralPct}%</span>
+                        <span className="text-4xl font-black text-[#fdf8f5] italic tracking-tighter">{stats?.distribution?.neutral || 100}%</span>
                         <span className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic">Neutral</span>
                     </div>
                 </div>
@@ -225,7 +224,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#fdf8f5]/5">
-              {filteredAnalyses.map((item) => (
+              {filteredAnalyses.length > 0 ? filteredAnalyses.map((item) => (
                 <tr key={item.id} className="group hover:bg-[#fdf8f5]/[0.04] transition-all duration-300 cursor-pointer">
                   <td className="px-10 py-8">
                     <p className="text-sm font-black text-[#d6c2b8] group-hover:text-[#fdf8f5] group-hover:italic transition-all leading-snug max-w-lg uppercase tracking-tight line-clamp-2">

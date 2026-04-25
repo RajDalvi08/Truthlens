@@ -238,7 +238,7 @@ export default function Dashboard() {
                     </p>
                   </td>
                   <td className="px-10 py-8">
-                    <span className="px-4 py-2 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[10px] font-black text-[#8d7b68] group-hover:text-[#fdf8f5] group-hover:border-[#fdf8f5]/30 transition-all uppercase tracking-widest italic">
+                    <span className="inline-block whitespace-nowrap px-4 py-2 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[10px] font-black text-[#8d7b68] group-hover:text-[#fdf8f5] group-hover:border-[#fdf8f5]/30 transition-all uppercase tracking-widest italic">
                       {item.source || "Unknown Source"}
                     </span>
                   </td>
@@ -257,7 +257,7 @@ export default function Dashboard() {
                     </div>
                   </td>
                   <td className="px-10 py-8">
-                    <span className="flex items-center gap-3 text-[9px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic border border-[#fdf8f5]/10 px-4 py-2 rounded-none bg-[#fdf8f5]/[0.03]">
+                    <span className="inline-flex whitespace-nowrap items-center gap-3 text-[9px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic border border-[#fdf8f5]/10 px-4 py-2 rounded-none bg-[#fdf8f5]/[0.03]">
                       <div className="w-2 h-2 rounded-full bg-[#fdf8f5] animate-pulse shadow-[0_0_8px_rgba(253,248,245,0.8)]" />
                       Analyzed
                     </span>

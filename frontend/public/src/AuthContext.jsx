@@ -32,6 +32,7 @@ export function AuthProvider({ children }) {
           email: firebaseUser.email,
           username: firebaseUser.displayName || firebaseUser.email.split("@")[0],
           avatar: (firebaseUser.displayName || "U").substring(0, 2).toUpperCase(),
+          photoURL: firebaseUser.photoURL,
           ...(userSnap.exists() ? userSnap.data() : {})
         };
         setUser(userData);

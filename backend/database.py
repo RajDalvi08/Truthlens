@@ -221,22 +221,31 @@ def get_overview_stats() -> dict:
         if total == 0:
             return {"total_articles":0,"avg_bias_score":0,"active_sources":0,"articles_per_hour":0,"last_updated":None}
         sb, sources, last_ts = 0, set(), None
+        articles_per_hour = 0
+        now_utc = datetime.now(timezone.utc)
         for d in docs:
             dd = d.to_dict()
             sb += dd.get("bias_score", 0)
             sources.add(dd.get("source"))
             ts = dd.get("timestamp")
             if not last_ts or (ts and ts > last_ts): last_ts = ts
+            if ts and isinstance(ts, datetime):
+                # Ensure timezone aware
+                if ts.tzinfo is None:
+                    ts = ts.replace(tzinfo=timezone.utc)
+                if (now_utc - ts).total_seconds() <= 3600:
+                    articles_per_hour += 1
         return {"total_articles": total, "avg_bias_score": round(sb/total,2),
-                "active_sources": len(sources), "articles_per_hour": 0,
-                "last_updated": last_ts.isoformat() if last_ts else None}
+                "active_sources": len(sources), "articles_per_hour": articles_per_hour,
+                "last_updated": last_ts.isoformat() if hasattr(last_ts, "isoformat") else str(last_ts) if last_ts else None}
     else:
         conn = _sql()
         row  = conn.execute("SELECT COUNT(*) as total, AVG(bias_score) as avg, MAX(timestamp) as lu FROM analyzed_articles").fetchone()
         srcs = conn.execute("SELECT COUNT(DISTINCT source) FROM analyzed_articles").fetchone()[0]
+        recent = conn.execute("SELECT COUNT(*) FROM analyzed_articles WHERE timestamp >= datetime('now', '-1 hour')").fetchone()[0]
         conn.close()
         return {"total_articles": row["total"] or 0, "avg_bias_score": round(row["avg"] or 0,2),
-                "active_sources": srcs or 0, "articles_per_hour": 0, "last_updated": row["lu"]}
+                "active_sources": srcs or 0, "articles_per_hour": recent or 0, "last_updated": row["lu"]}
 
 
 def get_bias_timeseries(days: int = 30) -> list:

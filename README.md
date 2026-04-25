@@ -20,6 +20,15 @@ In an era of hyper-polarized media, TruthLens serves as a **high-fidelity cognit
 
 ---
 
+## 🖥️ Platform Preview
+
+> **[ Placeholder for GIF Demo ]**
+> *Watch TruthLens analyze a live article, displaying real-time bias vector shifts and context-aware LLM explanations through its Cyber-Industrial dashboard.*
+
+*(Add high-quality screenshots of the bias indicators and the dynamic logic trace popup here)*
+
+---
+
 ## 📊 Feature Highlights
 
 - **Dynamic LLM Explanations**: Seamlessly explains complex neural bias scores using conversational logic and intelligent summaries, making machine learning outputs fully interpretable for end-users.
@@ -123,6 +132,38 @@ graph TD
 
 ---
 
+## 📡 API Usage
+
+TruthLens exposes a highly concurrent microservice backend. Here is an example of how to programmatically submit an article for analysis:
+
+**Request:**
+```bash
+curl -X POST "http://localhost:8000/analyze" \
+     -H "Content-Type: application/json" \
+     -d '{"url": "https://example-news-site.com/article-123"}'
+```
+
+**JSON Response:**
+```json
+{
+  "status": "success",
+  "bias_score": 78.5,
+  "bias_band": "Strong Bias",
+  "vectors": {
+    "linguistic": 82.1,
+    "framing": 76.0,
+    "entity": 70.5
+  },
+  "llm_explanation": "The article demonstrates strong bias by repeatedly using emotionally charged rhetoric (e.g., 'catastrophic failure', 'reckless behavior') to frame the subject negatively, prioritizing this narrative over objective facts.",
+  "extracted_quotes": [
+    "...a catastrophic failure of leadership...",
+    "...completely reckless behavior that endangers everyone..."
+  ]
+}
+```
+
+---
+
 ## ⚡ Getting Started
 
 To initialize the TruthLens Intelligence Environment, follow these steps:
@@ -161,6 +202,16 @@ npm install
 npm run dev
 ```
 *Dashboard is accessible at:* `http://localhost:5173`
+
+---
+
+## 🛣️ Roadmap
+
+The TruthLens project is actively evolving. Our target milestones for **v5.0** include:
+- [ ] **Multi-language Support**: Expanding NLP processing to analyze and translate non-English global news.
+- [ ] **Twitter/X Live Feed Ingestion**: Real-time social media narrative and bias tracking.
+- [ ] **Automated Daily Reporting**: Scheduled cron jobs that generate comprehensive daily bias trend reports across major media outlets.
+- [ ] **Enhanced Cloud Integrations**: Native deployment templates for AWS and full Firebase integration.
 
 ---
 

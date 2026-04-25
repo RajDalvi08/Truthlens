@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const contacts = [
-  { id: 1, name: "Neural Admin Alpha", status: "online", lastMessage: "Protocol 4.2 updated.", avatar: "SA" },
-  { id: 2, name: "Data Bot Cluster", status: "offline", lastMessage: "Batch #8492 complete.", avatar: "DB" },
-  { id: 3, name: "Analyst_Cypher_0x", status: "online", lastMessage: "Discrepancy in the Fox feed.", avatar: "AC" },
-  { id: 4, name: "Global Intel Aggregator", status: "online", lastMessage: "Receiving live delta updates.", avatar: "GN" },
+  { id: 1, name: "System Admin", status: "online", lastMessage: "System updated.", avatar: "SA" },
+  { id: 2, name: "Data Bot", status: "offline", lastMessage: "Data sync complete.", avatar: "DB" },
+  { id: 3, name: "Cypher", status: "online", lastMessage: "Issue with the latest feed.", avatar: "AC" },
+  { id: 4, name: "News Aggregator", status: "online", lastMessage: "Receiving live updates.", avatar: "GN" },
 ];
 
 const initialMessages = [
@@ -57,8 +57,8 @@ export default function Message() {
         >
           <div className="absolute top-0 left-0 w-2 h-full bg-[#fdf8f5]/5 pointer-events-none" />
           <div className="p-10 border-b border-[#fdf8f5]/10 bg-[#fdf8f5]/[0.02]">
-            <h2 className="text-3xl font-black text-[#fdf8f5] tracking-tighter uppercase italic leading-none mb-3">Secure Comms</h2>
-            <p className="text-[10px] text-[#8d7b68] uppercase tracking-[0.35em] font-black italic underline decoration-[#fdf8f5]/10">Encrypted Network // Node 0x42</p>
+            <h2 className="text-3xl font-black text-[#fdf8f5] tracking-tighter uppercase italic leading-none mb-3">Direct Messages</h2>
+            <p className="text-[10px] text-[#8d7b68] uppercase tracking-[0.35em] font-black italic underline decoration-[#fdf8f5]/10">Secure Chat</p>
           </div>
           
           <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar relative z-10">
@@ -116,7 +116,7 @@ export default function Message() {
                 <h3 className="text-3xl font-black text-[#fdf8f5] uppercase italic tracking-tighter leading-none mb-3">{activeContact.name}</h3>
                 <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] flex items-center gap-3 italic">
                   <span className="w-2.5 h-2.5 rounded-none bg-[#fdf8f5] animate-pulse shadow-[0_0_10px_rgba(253,248,245,0.6)]" />
-                  ACTIVE_SECURE_NODE_SYNCHRONIZED
+                  CONNECTED
                 </p>
               </div>
             </div>
@@ -163,7 +163,7 @@ export default function Message() {
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder="TRANSMIT ENCRYPTED NEURAL SIGNAL..."
+                placeholder="TYPE A MESSAGE..."
                 className="flex-1 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none px-8 py-5 text-xs font-black text-[#fdf8f5] focus:outline-none focus:border-[#fdf8f5] transition-all placeholder:text-[#4d3c2e] uppercase tracking-[0.2em] italic shadow-inner"
               />
               <motion.button
@@ -172,7 +172,7 @@ export default function Message() {
                 type="submit"
                 className="bg-[#fdf8f5] text-[#1a0f0a] px-14 rounded-none font-black uppercase tracking-[0.3em] text-[11px] shadow-2xl hover:bg-[#f5ebe0] transition-all italic border-none"
               >
-                TRANSMIT
+                SEND
               </motion.button>
             </form>
           </div>

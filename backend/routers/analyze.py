@@ -11,7 +11,7 @@ from typing import Optional
 from services.article_fetcher import fetch_article
 from services.preprocessing import clean_article
 from services.bias_engine import analyze_bias
-from database import save_analysis
+from services.persistence_service import save_analysis
 
 router = APIRouter(prefix="/analyze", tags=["Analysis"])
 
@@ -23,6 +23,7 @@ class AnalyzeRequest(BaseModel):
     url: Optional[str] = None
     headline: Optional[str] = None
     text: Optional[str] = None
+    user_id: Optional[str] = None
 
     @model_validator(mode='before')
     @classmethod
@@ -104,11 +105,7 @@ def analyze_article(payload: AnalyzeRequest):
             detail=f"Bias analysis failed: {exc}",
         )
 
-    # 4. Persist to database for dashboard analytics
-    try:
-        save_analysis(cleaned_article, result)
-    except Exception as exc:
-        # Non-critical — log but don't fail the analysis response
-        print(f"[WARN] Failed to save analysis to DB: {exc}")
+    # 4. Persist
+    save_analysis(result, user_id=payload.user_id)
 
     return AnalyzeResponse(**result)

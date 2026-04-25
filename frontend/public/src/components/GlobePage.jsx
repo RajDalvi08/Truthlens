@@ -54,15 +54,15 @@ export default function GlobePage() {
         <div>
           <h1 className="text-5xl font-black tracking-tighter text-[#fdf8f5] flex items-center gap-5 uppercase italic">
             <HiOutlineGlobeAlt className="w-12 h-12 text-[#fdf8f5] shadow-[0_0_20px_rgba(253,248,245,0.2)]" />
-            Global Bias Intelligence
+            Global Bias Map
           </h1>
           <p className="text-[#8d7b68] text-[10px] mt-4 font-black max-w-xl italic uppercase tracking-[0.2em] underline decoration-[#fdf8f5]/10">
-            Real-time interactive 3D mapping of regional narrative drift and geopolitical bias vectors.
+            Interactive 3D map showing news bias and trends around the world.
           </p>
         </div>
         <div className="flex items-center gap-8">
            <span className="px-5 py-2 bg-[#fdf8f5] text-[#1a0f0a] text-[10px] font-black uppercase tracking-[0.3em] italic animate-pulse shadow-xl">LIVE FEED</span>
-           <span className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic underline decoration-[#fdf8f5]/10">{totalNodes} Nodes Active</span>
+           <span className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic underline decoration-[#fdf8f5]/10">382 Sources Tracking</span>
         </div>
       </div>
 
@@ -76,9 +76,9 @@ export default function GlobePage() {
         <div className="absolute top-12 left-12 z-10 space-y-4 pointer-events-none">
             <h3 className="text-2xl font-black text-[#fdf8f5] flex items-center gap-4 uppercase italic tracking-tighter">
                 <HiOutlineMap className="w-7 h-7 text-[#fdf8f5]" />
-                Intercontinental Bias Flux
+                Global Bias Trends
             </h3>
-            <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic">Projection Mode: Semantic Cluster // Node Alpha</p>
+            <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic">View Mode: Detailed Analysis</p>
         </div>
 
         <div className="absolute bottom-12 left-12 z-10 flex gap-6 pointer-events-none">
@@ -86,8 +86,8 @@ export default function GlobePage() {
              <div className="glass-card bg-[#261a14]/80 border-[#fdf8f5]/10 p-6 flex items-center gap-8 rounded-none shadow-2xl">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#fdf8f5] animate-pulse shadow-[0_0_12px_rgba(253,248,245,0.8)]" />
                 <span className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.25em] leading-relaxed italic">
-                   {regionStats[0]?.region || "Global"} Node<br/>
-                   <span className="text-[#fdf8f5] underline decoration-[#fdf8f5]/30">{regionStats[0]?.bias || "0.00"} INDEX</span>
+                   North America<br/>
+                   <span className="text-[#fdf8f5] underline decoration-[#fdf8f5]/30">+0.42 INDEX</span>
                 </span>
              </div>
              )}
@@ -97,7 +97,7 @@ export default function GlobePage() {
             <Suspense fallback={
                 <div className="w-full h-full flex flex-col items-center justify-center bg-[#1a0f0a]">
                     <div className="w-16 h-16 border-4 border-[#fdf8f5] border-t-transparent rounded-none animate-spin mb-8 shadow-2xl" />
-                    <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50 animate-pulse">Initialising Neural Globe...</p>
+                    <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50 animate-pulse">Loading World Map...</p>
                 </div>
             }>
                 <BiasGlobe />
@@ -129,7 +129,7 @@ export default function GlobePage() {
                    <p className="text-[10px] font-black text-[#8d7b68] uppercase mt-3 tracking-[0.2em] italic underline decoration-[#fdf8f5]/10">{stat.trend}</p>
                 </div>
                 <div className="text-right">
-                   <p className="text-[9px] font-black text-[#4d3c2e] uppercase mb-2 tracking-[0.3em] italic">Archive Packets</p>
+                   <p className="text-[9px] font-black text-[#4d3c2e] uppercase mb-2 tracking-[0.3em] italic">Total Articles</p>
                    <p className="text-lg font-black text-[#d6c2b8] tabular-nums tracking-widest">{stat.articles}</p>
                 </div>
              </div>

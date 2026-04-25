@@ -39,9 +39,9 @@ export default function SourceComparison() {
           <div>
             <h2 className="text-5xl font-black tracking-tighter text-[#fdf8f5] flex items-center gap-5 uppercase italic">
               <HiOutlineScale className="w-12 h-12 text-[#fdf8f5] shadow-2xl" />
-              Source Delta Analysis
+              Compare News Sources
             </h2>
-            <p className="text-[#8d7b68] text-[10px] mt-4 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10">Quantify narrative divergence between distinct news entities.</p>
+            <p className="text-[#8d7b68] text-[10px] mt-4 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10">Measure the difference in bias between two news outlets.</p>
           </div>
           <div className="flex gap-4">
              <span className="px-6 py-2.5 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[#d6c2b8] text-[10px] font-black uppercase tracking-[0.3em] italic">0xDelta Mode</span>
@@ -58,7 +58,7 @@ export default function SourceComparison() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div className="space-y-4">
-                  <label className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">Target Vector Alpha</label>
+                  <label className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">First Article</label>
                   <div className="relative group/input">
                       <HiOutlineLink className="absolute left-5 top-1/2 -translate-y-1/2 text-[#4d3c2e] group-focus-within/input:text-[#fdf8f5] transition-colors" />
                       <input
@@ -70,7 +70,7 @@ export default function SourceComparison() {
                   </div>
               </div>
               <div className="space-y-4">
-                  <label className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">Target Vector Beta</label>
+                  <label className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">Second Article</label>
                   <div className="relative group/input">
                       <HiOutlineLink className="absolute left-5 top-1/2 -translate-y-1/2 text-[#4d3c2e] group-focus-within/input:text-[#fdf8f5] transition-colors" />
                       <input
@@ -92,14 +92,14 @@ export default function SourceComparison() {
                 {isLoading ? (
                     <>
                         <span className="w-5 h-5 border-3 border-[#1a0f0a]/30 border-t-[#1a0f0a] rounded-none animate-spin" />
-                        SYNCHRONIZING...
+                        COMPARING...
                     </>
                 ) : (
-                    <>RUN COMPARATIVE AUDIT <HiOutlineArrowRight className="w-5 h-5" /></>
+                    <>COMPARE ARTICLES <HiOutlineArrowRight className="w-5 h-5" /></>
                 )}
               </button>
               <p className="text-[10px] font-black text-[#8d7b68] uppercase max-w-xs text-center sm:text-left leading-relaxed italic underline decoration-[#fdf8f5]/10">
-                  Calculates absolute bias delta and linguistic framing divergence across multiple neural layers.
+                  Calculates the difference in bias and linguistic framing between the two articles.
               </p>
           </div>
        </motion.div>
@@ -113,7 +113,7 @@ export default function SourceComparison() {
                className="p-8 glass-card bg-[#fdf8f5]/5 border border-[#fdf8f5]/20 text-[#fdf8f5] flex items-center gap-6 rounded-none shadow-2xl"
             >
                <HiOutlineExclamationCircle className="w-10 h-10 text-[#fdf8f5] animate-pulse" />
-               <span className="font-black text-[11px] tracking-[0.2em] uppercase italic">TERMINAL_FAULT: {error}</span>
+               <span className="font-black text-[11px] tracking-[0.2em] uppercase italic">ERROR: {error}</span>
             </motion.div>
           )}
 
@@ -127,18 +127,18 @@ export default function SourceComparison() {
                <div className="lg:col-span-12 glass-card p-12 flex flex-col md:flex-row md:items-center justify-between gap-10 bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 shadow-2xl rounded-none relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-[#fdf8f5]/5 blur-[80px] group-hover:bg-[#fdf8f5]/10 transition-all duration-1000" />
                     <div>
-                        <h3 className="text-3xl font-black text-[#fdf8f5] uppercase tracking-tighter italic">Narrative Divergence Score</h3>
-                        <p className="text-[10px] text-[#8d7b68] mt-3 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10">Cross-source misalignment magnitude.</p>
+                        <h3 className="text-3xl font-black text-[#fdf8f5] uppercase tracking-tighter italic">Comparison Result</h3>
+                        <p className="text-[10px] text-[#8d7b68] mt-3 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10">How different these stories are.</p>
                     </div>
-                    <div className="flex flex-col items-end gap-2">
-                        <span className="text-7xl font-black text-[#fdf8f5] italic tracking-tighter tabular-nums leading-tight">{results.bias_difference}</span>
-                        <span className="text-[9px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic">Absolute Delta Index</span>
+                    <div className="flex items-end gap-5">
+                        <span className="text-8xl font-black text-[#fdf8f5] italic tracking-tighter tabular-nums leading-none">{results.bias_difference}</span>
+                        <span className="text-[11px] font-black text-[#8d7b68] mb-4 uppercase tracking-[0.3em] italic">Difference Score</span>
                     </div>
                </div>
 
                {[
-                 { label: "VECTOR_ALPHA", data: results.article_1, side: "left" },
-                 { label: "VECTOR_BETA", data: results.article_2, side: "right" },
+                 { label: "ARTICLE 1", data: results.article_1, side: "left" },
+                 { label: "ARTICLE 2", data: results.article_2, side: "right" },
                ].map((item, idx) => (
                  <motion.div
                    key={idx}
@@ -152,12 +152,12 @@ export default function SourceComparison() {
                         <div className="flex-1">
                             <span className="px-5 py-1.5 bg-[#fdf8f5]/5 text-[#fdf8f5] border border-[#fdf8f5]/10 text-[9px] font-black uppercase tracking-[0.3em] italic">{item.label}</span>
                             <h2 className="mt-8 text-2xl font-black text-[#fdf8f5] group-hover:italic transition-all leading-[0.95] uppercase tracking-tighter">
-                                {item.data.headline || "Untitled Intelligence Fragment"}
+                                {item.data.headline || "News Article"}
                             </h2>
                         </div>
                         <div className="text-right ml-6">
-                            <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.2em] leading-none mb-2 italic">Index</p>
-                            <p className="text-4xl font-black text-[#fdf8f5] tabular-nums italic tracking-tighter shadow-2xl">
+                            <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] leading-none mb-3 italic">Score</p>
+                            <p className="text-5xl font-black text-[#fdf8f5] tabular-nums italic tracking-tighter shadow-2xl">
                                 {item.data.bias_score > 0 ? "+" : ""}{item.data.bias_score}
                             </p>
                         </div>
@@ -165,9 +165,9 @@ export default function SourceComparison() {
 
                     <div className="space-y-6 pt-10 border-t border-[#fdf8f5]/5">
                         {[
-                          { l: "Linguistic Divergence", v: item.data.linguistic_bias },
-                          { l: "Framing Protocol", v: item.data.framing_bias },
-                          { l: "Entity Salience", v: item.data.entity_bias },
+                          { l: "Language Difference", v: item.data.linguistic_bias },
+                          { l: "Topic Difference", v: item.data.framing_bias },
+                          { l: "Key Figures", v: item.data.entity_bias },
                         ].map((stat, i) => (
                           <div key={i} className="flex items-center justify-between group/stat">
                              <span className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/5 group-hover/stat:text-[#d6c2b8] transition-colors">{stat.l}</span>

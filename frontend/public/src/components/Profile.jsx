@@ -90,7 +90,7 @@ export default function Profile() {
       
       {/* Profile Banner Card */}
       <motion.div 
-        className="glass-card p-12 relative overflow-hidden group bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl"
+        className="glass-card p-12 relative overflow-hidden group bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl"
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -99,13 +99,13 @@ export default function Profile() {
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-16">
            <div className="relative group/avatar">
               <div 
-                className="w-48 h-48 rounded-none p-1.5 bg-[#fdf8f5] shadow-2xl relative z-10 overflow-hidden transform group-hover/avatar:scale-105 transition-transform duration-700 cursor-pointer"
+                className="w-48 h-48 rounded-2xl p-1.5 bg-[#fdf8f5] shadow-2xl relative z-10 overflow-hidden transform group-hover/avatar:scale-105 transition-transform duration-700 cursor-pointer"
                 onClick={handlePhotoClick}
               >
                   <img 
                     src={profilePhoto} 
                     alt="User Profile" 
-                    className="w-full h-full rounded-none object-cover grayscale brightness-110"
+                    className="w-full h-full rounded-2xl object-cover grayscale brightness-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1a0f0a]/40 to-transparent" />
                   
@@ -128,7 +128,7 @@ export default function Profile() {
                 className="hidden"
               />
 
-              <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-[#fdf8f5] border-4 border-[#1a0f0a] rounded-none flex items-center justify-center shadow-2xl z-20">
+              <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-[#fdf8f5] border-4 border-[#1a0f0a] rounded-2xl flex items-center justify-center shadow-2xl z-20">
                   <div className="w-3 h-3 bg-[#1a0f0a] animate-pulse" />
               </div>
            </div>
@@ -159,13 +159,13 @@ export default function Profile() {
                      <>
                        <button 
                          onClick={handleSaveProfile}
-                         className="px-12 py-5 text-[11px] font-black uppercase tracking-[0.3em] bg-[#fdf8f5] text-[#1a0f0a] hover:bg-[#f5ebe0] border-none rounded-none italic shadow-2xl transition-all flex items-center gap-3"
+                         className="px-12 py-5 text-[11px] font-black uppercase tracking-[0.3em] bg-[#fdf8f5] text-[#1a0f0a] hover:bg-[#f5ebe0] border-none rounded-2xl italic shadow-2xl transition-all flex items-center gap-3"
                        >
                          <HiOutlineSave className="w-5 h-5" /> Save Changes
                        </button>
                        <button 
                          onClick={() => setIsEditing(false)}
-                         className="px-10 py-5 text-[11px] font-black uppercase tracking-[0.3em] bg-[#1a0f0a]/40 border border-[#fdf8f5]/10 text-[#fdf8f5] hover:border-[#fdf8f5]/40 transition-all rounded-none flex items-center gap-4 italic shadow-2xl"
+                         className="px-10 py-5 text-[11px] font-black uppercase tracking-[0.3em] bg-[#1a0f0a]/40 border border-[#fdf8f5]/10 text-[#fdf8f5] hover:border-[#fdf8f5]/40 transition-all rounded-2xl flex items-center gap-4 italic shadow-2xl"
                        >
                          <HiOutlineX className="w-5 h-5" /> Cancel
                        </button>
@@ -173,13 +173,13 @@ export default function Profile() {
                    ) : (
                      <button 
                        onClick={() => setIsEditing(true)}
-                       className="px-12 py-5 text-[11px] font-black uppercase tracking-[0.3em] bg-[#fdf8f5] text-[#1a0f0a] hover:bg-[#f5ebe0] border-none rounded-none italic shadow-2xl transition-all"
+                       className="px-12 py-5 text-[11px] font-black uppercase tracking-[0.3em] bg-[#fdf8f5] text-[#1a0f0a] hover:bg-[#f5ebe0] border-none rounded-2xl italic shadow-2xl transition-all"
                      >
                        Edit Profile
                      </button>
                    )}
                    {!isEditing && (
-                     <button className="px-10 py-5 text-[11px] font-black uppercase tracking-[0.3em] bg-[#1a0f0a]/40 border border-[#fdf8f5]/10 text-[#fdf8f5] hover:border-[#fdf8f5]/40 transition-all rounded-none flex items-center gap-4 italic shadow-2xl">
+                     <button className="px-10 py-5 text-[11px] font-black uppercase tracking-[0.3em] bg-[#1a0f0a]/40 border border-[#fdf8f5]/10 text-[#fdf8f5] hover:border-[#fdf8f5]/40 transition-all rounded-2xl flex items-center gap-4 italic shadow-2xl">
                         <HiOutlineCog className="w-5 h-5" />
                         Security Settings
                      </button>
@@ -197,10 +197,10 @@ export default function Profile() {
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.1 }}
-                className="saas-card p-12 group hover:border-[#fdf8f5]/30 transition-all cursor-default bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden"
+                className="saas-card p-12 group hover:border-[#fdf8f5]/30 transition-all cursor-default bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden"
               >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-[#fdf8f5]/5 blur-[60px] pointer-events-none" />
-                  <div className="w-16 h-16 rounded-none bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[#fdf8f5] flex items-center justify-center text-3xl mb-10 group-hover:bg-[#fdf8f5] group-hover:text-[#1a0f0a] transition-all shadow-xl">
+                  <div className="w-16 h-16 rounded-2xl bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[#fdf8f5] flex items-center justify-center text-3xl mb-10 group-hover:bg-[#fdf8f5] group-hover:text-[#1a0f0a] transition-all shadow-xl">
                       <stat.icon className="w-8 h-8" />
                   </div>
                   <div>
@@ -218,7 +218,7 @@ export default function Profile() {
           
           {/* Bio & Bio Metrics */}
           <motion.div className="lg:col-span-4 space-y-10">
-              <div className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group">
+              <div className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden group">
                   <div className="absolute top-0 left-0 w-1 bg-[#fdf8f5] h-full opacity-20 group-hover:opacity-100 transition-opacity" />
                   <h3 className="text-xl font-black text-[#fdf8f5] mb-10 border-b border-[#fdf8f5]/10 pb-6 uppercase italic tracking-tighter">User Bio</h3>
                   {isEditing ? (
@@ -239,7 +239,7 @@ export default function Profile() {
                              <span>Account Level</span>
                              <span className="text-[#fdf8f5] italic underline decoration-[#fdf8f5]/20">SENIOR ANALYST</span>
                           </div>
-                          <div className="h-2 w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden relative border border-[#fdf8f5]/5 shadow-inner">
+                          <div className="h-2 w-full bg-[#fdf8f5]/5 rounded-2xl overflow-hidden relative border border-[#fdf8f5]/5 shadow-inner">
                               <motion.div 
                                 initial={{ width: 0 }}
                                 animate={{ width: "85%" }}
@@ -251,7 +251,7 @@ export default function Profile() {
                   </div>
               </div>
 
-              <div className="glass-card p-12 text-center bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-none relative overflow-hidden group shadow-2xl">
+              <div className="glass-card p-12 text-center bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-2xl relative overflow-hidden group shadow-2xl">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f5]/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                   <HiOutlineUser className="w-14 h-14 text-[#fdf8f5]/20 mx-auto mb-8 transform group-hover:scale-110 transition-transform duration-700" />
                   <p className="text-[11px] font-black text-[#8d7b68] uppercase tracking-[0.3em] leading-relaxed italic">
@@ -262,7 +262,7 @@ export default function Profile() {
           </motion.div>
 
           {/* Activity Timeline */}
-          <motion.div className="lg:col-span-8 saas-card bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none flex flex-col shadow-2xl overflow-hidden group">
+          <motion.div className="lg:col-span-8 saas-card bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl flex flex-col shadow-2xl overflow-hidden group">
               <div className="p-10 border-b border-[#fdf8f5]/5 flex items-center justify-between bg-[#fdf8f5]/[0.01]">
                   <div>
                       <h3 className="text-2xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Recent Activity</h3>
@@ -276,7 +276,7 @@ export default function Profile() {
                         Synchronizing analysis history...
                     </div>
                   ) : activities.length > 0 ? activities.map((activity) => (
-                      <div key={activity.id} className="flex items-center justify-between p-6 hover:bg-[#fdf8f5]/[0.03] rounded-none transition-all cursor-pointer group/row relative overflow-hidden border border-transparent hover:border-[#fdf8f5]/10 shadow-sm hover:shadow-xl">
+                      <div key={activity.id} className="flex items-center justify-between p-6 hover:bg-[#fdf8f5]/[0.03] rounded-2xl transition-all cursor-pointer group/row relative overflow-hidden border border-transparent hover:border-[#fdf8f5]/10 shadow-sm hover:shadow-xl">
                            <div className="flex items-center gap-8 relative z-10">
                                 <div className="w-2.5 h-2.5 bg-[#fdf8f5] group-hover/row:scale-150 transition-transform shadow-[0_0_12px_rgba(253,248,245,0.8)] opacity-40 group-hover/row:opacity-100" />
                                 <div>

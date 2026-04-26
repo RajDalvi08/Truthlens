@@ -70,7 +70,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] mesh-bg">
-        <div className="w-12 h-12 border-4 border-[#fdf8f5] border-t-transparent rounded-none animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-[#fdf8f5] border-t-transparent rounded-2xl animate-spin"></div>
       </div>
     );
   }
@@ -115,9 +115,9 @@ export default function Dashboard() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.1 }}
-                className="saas-card p-8 flex items-center gap-6 hover:border-[#fdf8f5]/30 transition-all cursor-default bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-xl"
+                className="saas-card p-8 flex items-center gap-6 hover:border-[#fdf8f5]/30 transition-all cursor-default bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-xl"
               >
-                  <div className={`w-16 h-16 rounded-none ${stat.bg} ${stat.color} flex items-center justify-center text-3xl border border-[#fdf8f5]/10 shadow-[0_0_15px_rgba(253,248,245,0.05)]`}>
+                  <div className={`w-16 h-16 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center text-3xl border border-[#fdf8f5]/10 shadow-[0_0_15px_rgba(253,248,245,0.05)]`}>
                       <stat.icon className="w-8 h-8" />
                   </div>
                   <div>
@@ -133,7 +133,7 @@ export default function Dashboard() {
           
           {/* Large Trend Chart */}
           <motion.div 
-            className="lg:col-span-8 saas-card p-10 min-h-[450px] bg-[#261a14]/40 border-[#fdf8f5]/10 rounded-none shadow-2xl"
+            className="lg:col-span-8 saas-card p-10 min-h-[450px] bg-[#261a14]/40 border-[#fdf8f5]/10 rounded-2xl shadow-2xl"
             whileHover={{ borderColor: 'rgba(253,248,245,0.2)' }}
           >
             <div className="flex items-center justify-between mb-10 pb-6 border-b border-[#fdf8f5]/5">
@@ -163,7 +163,7 @@ export default function Dashboard() {
           </motion.div>
 
           {/* Side Pie Chart Small Bento */}
-          <motion.div className="lg:col-span-4 glass-card p-10 flex flex-col items-center justify-center overflow-hidden border-[#fdf8f5]/10 bg-[#261a14]/60 rounded-none shadow-2xl">
+          <motion.div className="lg:col-span-4 glass-card p-10 flex flex-col items-center justify-center overflow-hidden border-[#fdf8f5]/10 bg-[#261a14]/60 rounded-2xl shadow-2xl">
                 <h3 className="text-2xl font-black text-[#fdf8f5] mb-8 w-full text-center uppercase italic tracking-tighter">Bias Distribution</h3>
                 <div className="h-[260px] w-full relative">
                   {isMounted && (
@@ -196,7 +196,7 @@ export default function Dashboard() {
                 <div className="mt-10 grid grid-cols-3 gap-4 w-full border-t border-[#fdf8f5]/5 pt-8">
                     {pieData.map((d, i) => (
                         <div key={i} className="flex flex-col items-center gap-2">
-                            <div className="w-full h-1.5 rounded-none" style={{ backgroundColor: COLORS[i] }} />
+                            <div className="w-full h-1.5 rounded-2xl" style={{ backgroundColor: COLORS[i] }} />
                             <span className="text-[9px] font-black text-[#8d7b68] uppercase italic">{d.name}</span>
                         </div>
                     ))}
@@ -207,7 +207,7 @@ export default function Dashboard() {
 
       {/* Recent Intelligence Bento */}
       <motion.div 
-        className="saas-card p-0 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl overflow-hidden"
+        className="saas-card p-0 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl overflow-hidden"
       >
         <div className="p-10 border-b border-[#fdf8f5]/10 flex items-center justify-between bg-[#fdf8f5]/[0.02]">
            <h3 className="text-2xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Recently Analyzed Articles</h3>
@@ -247,7 +247,7 @@ export default function Dashboard() {
                   </td>
                   <td className="px-10 py-8">
                     <div className="flex items-center gap-4">
-                      <div className="flex-1 h-1 w-20 bg-[#fdf8f5]/5 rounded-none overflow-hidden">
+                      <div className="flex-1 h-1 w-20 bg-[#fdf8f5]/5 rounded-2xl overflow-hidden">
                         <div 
                           className="h-full bg-[#fdf8f5] shadow-[0_0_10px_rgba(253,248,245,0.4)]" 
                           style={{ width: `${Math.min(100, Math.abs((item.bias_score || 0) * 100))}%` }} 
@@ -257,7 +257,7 @@ export default function Dashboard() {
                     </div>
                   </td>
                   <td className="px-10 py-8">
-                    <span className="inline-flex whitespace-nowrap items-center gap-3 text-[9px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic border border-[#fdf8f5]/10 px-4 py-2 rounded-none bg-[#fdf8f5]/[0.03]">
+                    <span className="inline-flex whitespace-nowrap items-center gap-3 text-[9px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic border border-[#fdf8f5]/10 px-4 py-2 rounded-2xl bg-[#fdf8f5]/[0.03]">
                       <div className="w-2 h-2 rounded-full bg-[#fdf8f5] animate-pulse shadow-[0_0_8px_rgba(253,248,245,0.8)]" />
                       Analyzed
                     </span>

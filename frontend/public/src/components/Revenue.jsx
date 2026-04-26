@@ -98,7 +98,7 @@ export default function Revenue() {
             </div>
             <div className="flex gap-6">
               <button 
-                className="px-10 py-4 rounded-none border border-[#fdf8f5]/10 bg-[#fdf8f5]/5 hover:bg-[#fdf8f5]/10 transition-all font-black text-[10px] uppercase tracking-[0.3em] text-[#8d7b68] hover:text-[#fdf8f5] italic shadow-xl"
+                className="px-10 py-4 rounded-2xl border border-[#fdf8f5]/10 bg-[#fdf8f5]/5 hover:bg-[#fdf8f5]/10 transition-all font-black text-[10px] uppercase tracking-[0.3em] text-[#8d7b68] hover:text-[#fdf8f5] italic shadow-xl"
               >
                 Download Report
               </button>
@@ -116,9 +116,9 @@ export default function Revenue() {
               <motion.div 
                 key={i}
                 variants={itemVariants}
-                className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-none p-10 relative overflow-hidden group transition-all duration-700 hover:border-[#fdf8f5]/40 shadow-2xl"
+                className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-2xl p-10 relative overflow-hidden group transition-all duration-700 hover:border-[#fdf8f5]/40 shadow-2xl"
               >
-                <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-[#fdf8f5]/5 rounded-none blur-[60px] group-hover:bg-[#fdf8f5]/10 transition-all duration-1000"></div>
+                <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-[#fdf8f5]/5 rounded-2xl blur-[60px] group-hover:bg-[#fdf8f5]/10 transition-all duration-1000"></div>
                 
                 <h3 className="text-[9px] text-[#8d7b68] font-black uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">{stat.label}</h3>
                 <div className="flex items-end justify-between relative z-10">
@@ -134,7 +134,7 @@ export default function Revenue() {
           {/* Main Chart */}
           <motion.div 
             variants={itemVariants}
-            className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-none p-12 relative overflow-hidden mt-12 shadow-2xl group"
+            className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-2xl p-12 relative overflow-hidden mt-12 shadow-2xl group"
           >
             <div className="absolute top-0 left-0 w-2 h-full bg-[#fdf8f5]/5 group-hover:bg-[#fdf8f5]/20 transition-all" />
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
@@ -144,11 +144,11 @@ export default function Revenue() {
               </div>
               <div className="flex items-center gap-10">
                 <div className="flex items-center gap-4">
-                  <div className="w-2.5 h-2.5 rounded-none bg-[#10b981] shadow-[0_0_12px_rgba(16,185,129,0.6)]"></div>
+                  <div className="w-2.5 h-2.5 rounded-2xl bg-[#10b981] shadow-[0_0_12px_rgba(16,185,129,0.6)]"></div>
                   <span className="text-[10px] text-[#d6c2b8] font-black uppercase tracking-[0.3em] italic">Revenue</span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="w-2.5 h-2.5 rounded-none bg-[#ef4444] shadow-[0_0_12px_rgba(239,68,68,0.4)]"></div>
+                  <div className="w-2.5 h-2.5 rounded-2xl bg-[#ef4444] shadow-[0_0_12px_rgba(239,68,68,0.4)]"></div>
                   <span className="text-[10px] text-[#d6c2b8] font-black uppercase tracking-[0.3em] italic">Protocol Costs</span>
                 </div>
               </div>
@@ -161,7 +161,7 @@ export default function Revenue() {
           {/* Recent Transactions Table */}
           <motion.div 
             variants={itemVariants}
-            className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-none overflow-hidden mt-12 shadow-2xl"
+            className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-2xl overflow-hidden mt-12 shadow-2xl"
           >
             <div className="p-10 border-b border-[#fdf8f5]/10 bg-[#fdf8f5]/[0.02]">
               <h3 className="text-2xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Recent Subscriptions</h3>
@@ -193,7 +193,7 @@ export default function Revenue() {
                       <td className="px-10 py-8 text-[#fdf8f5] font-black uppercase text-sm italic tracking-tighter leading-none group-hover:translate-x-2 transition-transform">{row.plan}</td>
                       <td className="px-10 py-8 font-black text-[#fdf8f5] tabular-nums text-lg italic tracking-tighter shadow-2xl">{row.amount}</td>
                       <td className="px-10 py-8">
-                        <span className={`px-5 py-2 rounded-none text-[9px] font-black uppercase tracking-[0.3em] italic shadow-xl transition-all ${
+                        <span className={`px-5 py-2 rounded-2xl text-[9px] font-black uppercase tracking-[0.3em] italic shadow-xl transition-all ${
                           row.status === 'Active' ? 'bg-[#fdf8f5] text-[#1a0f0a]' : 'bg-[#fdf8f5]/5 text-[#8d7b68] border border-[#fdf8f5]/10 group-hover:border-[#fdf8f5]/30 group-hover:text-[#fdf8f5]'
                         }`}>
                           {row.status}

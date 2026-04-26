@@ -32,7 +32,7 @@ export default function CaseStudies() {
                 key={c.id} 
                 variants={itemVariants} 
                 whileHover={{ y: -15, borderColor: 'rgba(253,248,245,0.4)' }}
-                className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-none p-12 relative overflow-hidden transition-all duration-700 group shadow-2xl"
+                className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-2xl p-12 relative overflow-hidden transition-all duration-700 group shadow-2xl"
               >
                 <div className="absolute top-0 right-0 w-48 h-48 bg-[#fdf8f5]/5 blur-[80px] group-hover:bg-[#fdf8f5]/10 transition-all duration-1000" />
                 <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#fdf8f5]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>

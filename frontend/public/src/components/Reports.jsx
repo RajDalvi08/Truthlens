@@ -155,7 +155,7 @@ export default function Reports() {
   if (loading && !isDeepScanning) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] mesh-bg">
-        <div className="w-12 h-12 border-4 border-[#fdf8f5] border-t-transparent rounded-none animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-[#fdf8f5] border-t-transparent rounded-2xl animate-spin"></div>
       </div>
     );
   }
@@ -182,7 +182,7 @@ export default function Reports() {
 
       {/* Reports Table Bento */}
       <motion.div 
-        className="saas-card overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl"
+        className="saas-card overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -207,7 +207,7 @@ export default function Reports() {
                             <td className="px-10 py-10 relative z-10">
                                 <div className="absolute inset-y-0 left-0 w-1 bg-[#fdf8f5] opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <div className="flex items-center gap-8">
-                                    <div className="w-16 h-16 rounded-none bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 flex items-center justify-center text-[#fdf8f5] group-hover:bg-[#fdf8f5] group-hover:text-[#1a0f0a] transition-all shadow-xl flex-shrink-0">
+                                    <div className="w-16 h-16 rounded-2xl bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 flex items-center justify-center text-[#fdf8f5] group-hover:bg-[#fdf8f5] group-hover:text-[#1a0f0a] transition-all shadow-xl flex-shrink-0">
                                         <HiOutlineDocumentText className="w-8 h-8" />
                                     </div>
                                     <div>
@@ -222,7 +222,7 @@ export default function Reports() {
                                 {report.timestamp ? new Date(report.timestamp).toLocaleDateString() : "Pending"}
                             </td>
                             <td className="px-10 py-10 text-center">
-                                <span className={`px-6 py-2.5 rounded-none ${Math.abs(report.bias_score) < 0.2 ? 'bg-[#10b981] text-[#fdf8f5]' : 'bg-[#f5ebe0] text-[#1a0f0a]'} text-[10px] font-black uppercase tracking-[0.3em] italic shadow-xl`}>
+                                <span className={`px-6 py-2.5 rounded-2xl ${Math.abs(report.bias_score) < 0.2 ? 'bg-[#10b981] text-[#fdf8f5]' : 'bg-[#f5ebe0] text-[#1a0f0a]'} text-[10px] font-black uppercase tracking-[0.3em] italic shadow-xl`}>
                                     {Math.abs(report.bias_score) < 0.2 ? 'Balanced' : 'Flagged'}
                                 </span>
                             </td>
@@ -230,7 +230,7 @@ export default function Reports() {
                                 <div className="flex items-center justify-end gap-4 text-[#4d3c2e]">
                                     <button 
                                         onClick={(e) => handleDownload(report, e)}
-                                        className="p-4 hover:bg-[#fdf8f5]/10 rounded-none transition-colors border border-transparent hover:border-[#fdf8f5]/20 shadow-xl group-hover:text-[#fdf8f5]"
+                                        className="p-4 hover:bg-[#fdf8f5]/10 rounded-2xl transition-colors border border-transparent hover:border-[#fdf8f5]/20 shadow-xl group-hover:text-[#fdf8f5]"
                                         title="Download Report"
                                     >
                                         <HiOutlineDownload className="w-6 h-6" />
@@ -238,7 +238,7 @@ export default function Reports() {
                                     <div className="relative">
                                         <button 
                                             onClick={(e) => toggleMenu(report.id || i, e)}
-                                            className={`p-4 rounded-none transition-colors border border-transparent shadow-xl ${activeMenu === (report.id || i) ? 'bg-[#fdf8f5]/10 text-[#fdf8f5] border-[#fdf8f5]/20' : 'hover:bg-[#fdf8f5]/10 hover:border-[#fdf8f5]/20 group-hover:text-[#fdf8f5]'}`}
+                                            className={`p-4 rounded-2xl transition-colors border border-transparent shadow-xl ${activeMenu === (report.id || i) ? 'bg-[#fdf8f5]/10 text-[#fdf8f5] border-[#fdf8f5]/20' : 'hover:bg-[#fdf8f5]/10 hover:border-[#fdf8f5]/20 group-hover:text-[#fdf8f5]'}`}
                                         >
                                             <HiOutlineDotsVertical className="w-6 h-6" />
                                         </button>
@@ -248,7 +248,7 @@ export default function Reports() {
                                                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                                    className="absolute right-0 mt-2 w-48 bg-[#1a0f0a] border border-[#fdf8f5]/10 shadow-2xl z-50 rounded-none overflow-hidden"
+                                                    className="absolute right-0 mt-2 w-48 bg-[#1a0f0a] border border-[#fdf8f5]/10 shadow-2xl z-50 rounded-2xl overflow-hidden"
                                                     onClick={(e) => e.stopPropagation()}
                                                 >
                                                     <button 

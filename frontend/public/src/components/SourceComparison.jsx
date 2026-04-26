@@ -50,7 +50,7 @@ export default function SourceComparison() {
 
       {/* Control Card */}
        <motion.div 
-          className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 relative overflow-hidden rounded-none shadow-2xl group"
+          className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 relative overflow-hidden rounded-2xl shadow-2xl group"
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
        >
@@ -65,7 +65,7 @@ export default function SourceComparison() {
                         value={url1}
                         onChange={(e) => setUrl1(e.target.value)}
                         placeholder="PRIMARY ARTICLE URL..."
-                        className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+                        className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-2xl text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
                       />
                   </div>
               </div>
@@ -77,7 +77,7 @@ export default function SourceComparison() {
                         value={url2}
                         onChange={(e) => setUrl2(e.target.value)}
                         placeholder="COMPARISON ARTICLE URL..."
-                        className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+                        className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-2xl text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
                       />
                   </div>
               </div>
@@ -91,7 +91,7 @@ export default function SourceComparison() {
               >
                 {isLoading ? (
                     <>
-                        <span className="w-5 h-5 border-3 border-[#1a0f0a]/30 border-t-[#1a0f0a] rounded-none animate-spin" />
+                        <span className="w-5 h-5 border-3 border-[#1a0f0a]/30 border-t-[#1a0f0a] rounded-2xl animate-spin" />
                         COMPARING...
                     </>
                 ) : (
@@ -110,7 +110,7 @@ export default function SourceComparison() {
             <motion.div 
                initial={{ opacity: 0, y: 15 }}
                animate={{ opacity: 1, y: 0 }}
-               className="p-8 glass-card bg-[#fdf8f5]/5 border border-[#fdf8f5]/20 text-[#fdf8f5] flex items-center gap-6 rounded-none shadow-2xl"
+               className="p-8 glass-card bg-[#fdf8f5]/5 border border-[#fdf8f5]/20 text-[#fdf8f5] flex items-center gap-6 rounded-2xl shadow-2xl"
             >
                <HiOutlineExclamationCircle className="w-10 h-10 text-[#fdf8f5] animate-pulse" />
                <span className="font-black text-[11px] tracking-[0.2em] uppercase italic">ERROR: {error}</span>
@@ -124,7 +124,7 @@ export default function SourceComparison() {
                className="grid grid-cols-1 lg:grid-cols-12 gap-10"
             >
                {/* Delta summary - Top Wide Bento */}
-               <div className="lg:col-span-12 glass-card p-12 flex flex-col md:flex-row md:items-center justify-between gap-10 bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 shadow-2xl rounded-none relative overflow-hidden group">
+               <div className="lg:col-span-12 glass-card p-12 flex flex-col md:flex-row md:items-center justify-between gap-10 bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 shadow-2xl rounded-2xl relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-[#fdf8f5]/5 blur-[80px] group-hover:bg-[#fdf8f5]/10 transition-all duration-1000" />
                     <div>
                         <h3 className="text-3xl font-black text-[#fdf8f5] uppercase tracking-tighter italic">Comparison Result</h3>
@@ -142,7 +142,7 @@ export default function SourceComparison() {
                ].map((item, idx) => (
                  <motion.div
                    key={idx}
-                   className="lg:col-span-6 saas-card p-10 group hover:border-[#fdf8f5]/30 transition-all bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden"
+                   className="lg:col-span-6 saas-card p-10 group hover:border-[#fdf8f5]/30 transition-all bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden"
                    initial={{ opacity: 0, x: item.side === "left" ? -30 : 30 }}
                    animate={{ opacity: 1, x: 0 }}
                    transition={{ delay: 0.2 + (idx * 0.1) }}

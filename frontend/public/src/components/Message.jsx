@@ -53,7 +53,7 @@ export default function Message() {
         <motion.div 
           initial={{ x: -30, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          className="w-96 flex flex-col bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-none overflow-hidden shadow-2xl relative"
+          className="w-96 flex flex-col bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-2xl overflow-hidden shadow-2xl relative"
         >
           <div className="absolute top-0 left-0 w-2 h-full bg-[#fdf8f5]/5 pointer-events-none" />
           <div className="p-10 border-b border-[#fdf8f5]/10 bg-[#fdf8f5]/[0.02]">
@@ -68,7 +68,7 @@ export default function Message() {
                 whileHover={{ scale: 1.02, backgroundColor: "rgba(253,248,245,0.05)" }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveContact(contact)}
-                className={`p-6 rounded-none cursor-pointer transition-all flex items-center gap-6 border-2 relative overflow-hidden group ${
+                className={`p-6 rounded-2xl cursor-pointer transition-all flex items-center gap-6 border-2 relative overflow-hidden group ${
                   activeContact.id === contact.id ? "bg-[#fdf8f5]/5 border-[#fdf8f5]/20 shadow-xl" : "bg-transparent border-transparent"
                 }`}
               >
@@ -76,12 +76,12 @@ export default function Message() {
                     <div className="absolute left-0 top-0 w-1.5 h-full bg-[#fdf8f5]" />
                 )}
                 <div className="relative">
-                  <div className={`w-14 h-14 rounded-none flex items-center justify-center font-black text-xs border-2 transition-all duration-500 ${
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xs border-2 transition-all duration-500 ${
                     activeContact.id === contact.id ? "bg-[#fdf8f5] text-[#1a0f0a] border-[#fdf8f5]" : "bg-[#fdf8f5]/5 text-[#8d7b68] border-[#fdf8f5]/10 group-hover:border-[#fdf8f5]/30 group-hover:text-[#fdf8f5]"
                   }`}>
                     {contact.avatar}
                   </div>
-                  <div className={`absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-none border-2 border-[#1a0f0a] shadow-xl ${
+                  <div className={`absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-2xl border-2 border-[#1a0f0a] shadow-xl ${
                     contact.status === "online" ? "bg-[#fdf8f5] animate-pulse" : "bg-[#4d3c2e]"
                   }`} />
                 </div>
@@ -100,7 +100,7 @@ export default function Message() {
         <motion.div 
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="flex-1 flex flex-col bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-none overflow-hidden relative shadow-2xl"
+          className="flex-1 flex flex-col bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-2xl overflow-hidden relative shadow-2xl"
         >
           {/* Subtle Background Mesh & Textures */}
           <div className="absolute inset-0 bg-[#fdf8f5]/[0.01] pointer-events-none" />
@@ -109,13 +109,13 @@ export default function Message() {
           {/* Chat Header */}
           <div className="p-10 border-b border-[#fdf8f5]/10 bg-[#fdf8f5]/[0.02] flex items-center justify-between z-10 shadow-xl">
             <div className="flex items-center gap-8">
-              <div className="w-16 h-16 rounded-none bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-sm shadow-2xl relative border-2 border-[#fdf8f5]">
+              <div className="w-16 h-16 rounded-2xl bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-sm shadow-2xl relative border-2 border-[#fdf8f5]">
                 {activeContact.avatar}
               </div>
               <div>
                 <h3 className="text-3xl font-black text-[#fdf8f5] uppercase italic tracking-tighter leading-none mb-3">{activeContact.name}</h3>
                 <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] flex items-center gap-3 italic">
-                  <span className="w-2.5 h-2.5 rounded-none bg-[#fdf8f5] animate-pulse shadow-[0_0_10px_rgba(253,248,245,0.6)]" />
+                  <span className="w-2.5 h-2.5 rounded-2xl bg-[#fdf8f5] animate-pulse shadow-[0_0_10px_rgba(253,248,245,0.6)]" />
                   CONNECTED
                 </p>
               </div>
@@ -138,7 +138,7 @@ export default function Message() {
                 variants={messageVariants}
                 className={`flex flex-col ${msg.isMine ? "items-end" : "items-start"}`}
               >
-                <div className={`max-w-[70%] p-8 rounded-none relative transition-all shadow-2xl border-2 ${
+                <div className={`max-w-[70%] p-8 rounded-2xl relative transition-all shadow-2xl border-2 ${
                   msg.isMine 
                     ? "bg-[#fdf8f5] text-[#1a0f0a] border-[#fdf8f5] font-black uppercase italic tracking-tight" 
                     : "bg-[#261a14] border-[#fdf8f5]/10 text-[#d6c2b8] font-black uppercase tracking-tight"
@@ -164,13 +164,13 @@ export default function Message() {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="TYPE A MESSAGE..."
-                className="flex-1 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none px-8 py-5 text-xs font-black text-[#fdf8f5] focus:outline-none focus:border-[#fdf8f5] transition-all placeholder:text-[#4d3c2e] uppercase tracking-[0.2em] italic shadow-inner"
+                className="flex-1 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-2xl px-8 py-5 text-xs font-black text-[#fdf8f5] focus:outline-none focus:border-[#fdf8f5] transition-all placeholder:text-[#4d3c2e] uppercase tracking-[0.2em] italic shadow-inner"
               />
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 type="submit"
-                className="bg-[#fdf8f5] text-[#1a0f0a] px-14 rounded-none font-black uppercase tracking-[0.3em] text-[11px] shadow-2xl hover:bg-[#f5ebe0] transition-all italic border-none"
+                className="bg-[#fdf8f5] text-[#1a0f0a] px-14 rounded-2xl font-black uppercase tracking-[0.3em] text-[11px] shadow-2xl hover:bg-[#f5ebe0] transition-all italic border-none"
               >
                 SEND
               </motion.button>

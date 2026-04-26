@@ -41,7 +41,7 @@ export default function GlobePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] mesh-bg">
-        <div className="w-12 h-12 border-4 border-[#fdf8f5] border-t-transparent rounded-none animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-[#fdf8f5] border-t-transparent rounded-2xl animate-spin"></div>
       </div>
     );
   }
@@ -68,7 +68,7 @@ export default function GlobePage() {
 
       {/* Main Globe Section - Large Bento */}
       <motion.div 
-        className="saas-card min-h-[700px] relative overflow-hidden group bg-[#1a0f0a] border-[#fdf8f5]/10 rounded-none shadow-[0_0_60px_rgba(0,0,0,0.6)]"
+        className="saas-card min-h-[700px] relative overflow-hidden group bg-[#1a0f0a] border-[#fdf8f5]/10 rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.6)]"
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
       >
@@ -83,7 +83,7 @@ export default function GlobePage() {
 
         <div className="absolute bottom-12 left-12 z-10 flex gap-6 pointer-events-none">
              {regionStats.length > 0 && (
-             <div className="glass-card bg-[#261a14]/80 border-[#fdf8f5]/10 p-6 flex items-center gap-8 rounded-none shadow-2xl">
+             <div className="glass-card bg-[#261a14]/80 border-[#fdf8f5]/10 p-6 flex items-center gap-8 rounded-2xl shadow-2xl">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#fdf8f5] animate-pulse shadow-[0_0_12px_rgba(253,248,245,0.8)]" />
                 <span className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.25em] leading-relaxed italic">
                    North America<br/>
@@ -96,7 +96,7 @@ export default function GlobePage() {
         <div className="absolute inset-0 z-0 bg-[#fdf8f5]/[0.01]">
             <Suspense fallback={
                 <div className="w-full h-full flex flex-col items-center justify-center bg-[#1a0f0a]">
-                    <div className="w-16 h-16 border-4 border-[#fdf8f5] border-t-transparent rounded-none animate-spin mb-8 shadow-2xl" />
+                    <div className="w-16 h-16 border-4 border-[#fdf8f5] border-t-transparent rounded-2xl animate-spin mb-8 shadow-2xl" />
                     <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50 animate-pulse">Loading World Map...</p>
                 </div>
             }>
@@ -113,12 +113,12 @@ export default function GlobePage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 + (i * 0.05) }}
-            className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none group hover:border-[#fdf8f5]/40 transition-all cursor-pointer shadow-xl relative overflow-hidden"
+            className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl group hover:border-[#fdf8f5]/40 transition-all cursor-pointer shadow-xl relative overflow-hidden"
           >
              <div className="absolute top-0 left-0 w-2 h-full bg-[#fdf8f5]/5 group-hover:bg-[#fdf8f5]/10 transition-colors" />
              <div className="flex justify-between items-start mb-10">
                 <h4 className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic group-hover:text-[#d6c2b8] transition-colors">{stat.region}</h4>
-                <div className="p-4 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-none group-hover:bg-[#fdf8f5] group-hover:text-[#1a0f0a] transition-all duration-300">
+                <div className="p-4 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-2xl group-hover:bg-[#fdf8f5] group-hover:text-[#1a0f0a] transition-all duration-300">
                     <HiOutlineTrendingUp className="w-6 h-6" />
                 </div>
              </div>
@@ -135,7 +135,7 @@ export default function GlobePage() {
              </div>
 
              <div className="mt-10 pt-10 border-t border-[#fdf8f5]/5">
-                <div className="h-2 w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden border border-[#fdf8f5]/5">
+                <div className="h-2 w-full bg-[#fdf8f5]/5 rounded-2xl overflow-hidden border border-[#fdf8f5]/5">
                     <motion.div 
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.min(100, (stat.bias_index || 0))}%` }}

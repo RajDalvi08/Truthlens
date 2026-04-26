@@ -90,7 +90,7 @@ export default function BiasAnalyzer() {
           <p className="text-[#8d7b68] text-[10px] mt-4 font-black uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10">Analyze news articles for bias and sentiment.</p>
         </div>
         <div className="hidden md:flex items-center gap-6">
-            <div className={`w-2.5 h-2.5 rounded-none ${isOnline ? 'bg-[#fdf8f5] animate-pulse shadow-[0_0_12px_rgba(253,248,245,0.6)]' : 'bg-[#ef4444] shadow-[0_0_12px_rgba(239,68,68,0.6)]'}`} />
+            <div className={`w-2.5 h-2.5 rounded-2xl ${isOnline ? 'bg-[#fdf8f5] animate-pulse shadow-[0_0_12px_rgba(253,248,245,0.6)]' : 'bg-[#ef4444] shadow-[0_0_12px_rgba(239,68,68,0.6)]'}`} />
             <span className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">
                 SYSTEM: <span className={isOnline ? "text-[#fdf8f5]" : "text-[#ef4444]"}>{isOnline ? "ONLINE" : "OFFLINE"}</span>
             </span>
@@ -102,7 +102,7 @@ export default function BiasAnalyzer() {
           {/* Input Control Center - Bento Left */}
           <div className="lg:col-span-12">
             <motion.div 
-                className="saas-card group relative overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl"
+                className="saas-card group relative overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
             >
@@ -123,14 +123,14 @@ export default function BiasAnalyzer() {
                                       value={headline}
                                       onChange={(e) => setHeadline(e.target.value)}
                                       placeholder="ARTICLE HEADLINE (OPTIONAL)..."
-                                      className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 px-6 py-4 text-[11px] font-black uppercase tracking-[0.2em] rounded-none outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+                                      className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 px-6 py-4 text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
                                     />
                                     <textarea
                                       value={text}
                                       onChange={(e) => setText(e.target.value)}
                                       placeholder="PASTE THE ARTICLE TEXT HERE FOR ANALYSIS..."
                                       rows={8}
-                                      className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 px-6 py-4 text-[11px] font-black uppercase tracking-[0.2em] rounded-none outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic resize-none leading-relaxed"
+                                      className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 px-6 py-4 text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic resize-none leading-relaxed"
                                     />
                                 </div>
                             </div>
@@ -150,7 +150,7 @@ export default function BiasAnalyzer() {
                                       value={url}
                                       onChange={(e) => setUrl(e.target.value)}
                                       placeholder="HTTPS://NEWS-SITE.COM/ARTICLE-LINK..."
-                                      className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 pl-16 pr-8 py-5 text-[11px] font-black uppercase tracking-[0.2em] rounded-none outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic shadow-2xl"
+                                      className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 pl-16 pr-8 py-5 text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic shadow-2xl"
                                     />
                                 </div>
                                 <p className="text-[10px] text-[#4d3c2e] mt-4 italic font-black uppercase tracking-widest opacity-60">URL analysis will take priority over manual text input.</p>
@@ -163,7 +163,7 @@ export default function BiasAnalyzer() {
                                       <button
                                         key={i}
                                         onClick={() => handleSampleClick(sample)}
-                                        className="flex-1 text-[10px] py-3.5 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[#8d7b68] hover:bg-[#fdf8f5]/10 hover:border-[#fdf8f5]/30 rounded-none transition-all uppercase font-black italic tracking-[0.25em]"
+                                        className="flex-1 text-[10px] py-3.5 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[#8d7b68] hover:bg-[#fdf8f5]/10 hover:border-[#fdf8f5]/30 rounded-2xl transition-all uppercase font-black italic tracking-[0.25em]"
                                       >
                                         Sample {i + 1}
                                       </button>
@@ -181,7 +181,7 @@ export default function BiasAnalyzer() {
                         >
                            {isAnalyzing ? (
                              <>
-                               <span className="w-6 h-6 border-3 border-[#1a0f0a]/30 border-t-[#1a0f0a] rounded-none animate-spin" />
+                               <span className="w-6 h-6 border-3 border-[#1a0f0a]/30 border-t-[#1a0f0a] rounded-2xl animate-spin" />
                                ANALYZING...
                              </>
                            ) : (
@@ -211,7 +211,7 @@ export default function BiasAnalyzer() {
                         <motion.div 
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="flex items-center gap-8 p-10 glass-card border-[#fdf8f5]/20 bg-[#fdf8f5]/5 text-[#fdf8f5] rounded-none shadow-2xl relative z-10"
+                            className="flex items-center gap-8 p-10 glass-card border-[#fdf8f5]/20 bg-[#fdf8f5]/5 text-[#fdf8f5] rounded-2xl shadow-2xl relative z-10"
                         >
                             <HiOutlineExclamationCircle className="w-12 h-12 text-[#fdf8f5] animate-pulse" />
                             <div>
@@ -229,12 +229,12 @@ export default function BiasAnalyzer() {
                         >
                             {/* Result Stats - Left Cluster */}
                             <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <div className="glass-card p-8 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 group rounded-none shadow-2xl relative overflow-hidden">
+                                <div className="glass-card p-8 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 group rounded-2xl shadow-2xl relative overflow-hidden">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#fdf8f5]/5 blur-[60px]" />
                                     <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">Bias Result</p>
                                     <div className="text-7xl font-black text-[#fdf8f5] mb-4 italic tracking-tighter tabular-nums leading-none">{results.bias_score}</div>
                                     <div className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.3em] mb-10 italic opacity-80">{results.bias_level}</div>
-                                    <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden relative border border-[#fdf8f5]/5 shadow-inner">
+                                    <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-2xl overflow-hidden relative border border-[#fdf8f5]/5 shadow-inner">
                                         <motion.div 
                                             initial={{ width: 0 }}
                                             animate={{ width: `${Math.abs(results.bias_score)}%` }}
@@ -248,7 +248,7 @@ export default function BiasAnalyzer() {
                                     </div>
                                 </div>
 
-                                <div className="glass-card p-10 md:col-span-2 flex flex-col justify-between bg-[#1a0f0a]/40 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden">
+                                <div className="glass-card p-10 md:col-span-2 flex flex-col justify-between bg-[#1a0f0a]/40 border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden">
                                      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-[#fdf8f5]/10" />
                                     <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-10 italic underline decoration-[#fdf8f5]/10">Analysis Breakdown</p>
                                     <div className="space-y-10">
@@ -262,7 +262,7 @@ export default function BiasAnalyzer() {
                                                     <span>{metric.label}</span>
                                                     <span className="text-[#fdf8f5] tabular-nums tracking-widest">{metric.value}</span>
                                                 </div>
-                                                <div className="h-[2px] w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden relative">
+                                                <div className="h-[2px] w-full bg-[#fdf8f5]/5 rounded-2xl overflow-hidden relative">
                                                     <motion.div 
                                                         initial={{ width: 0 }}
                                                         animate={{ width: `${(parseInt(metric.value)||50)}%` }}
@@ -278,11 +278,11 @@ export default function BiasAnalyzer() {
 
                             {/* Metadata Pane - Right Cluster */}
                             <div className="lg:col-span-4 space-y-6">
-                                <div className="glass-card p-8 h-full flex flex-col justify-between bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-none shadow-2xl relative group">
+                                <div className="glass-card p-8 h-full flex flex-col justify-between bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative group">
                                     <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                                     <div>
                                         <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-8 italic underline decoration-[#fdf8f5]/10">About the Source</p>
-                                        <div className="p-6 bg-[#1a0f0a] rounded-none border border-[#fdf8f5]/10 shadow-2xl relative z-10">
+                                        <div className="p-6 bg-[#1a0f0a] rounded-2xl border border-[#fdf8f5]/10 shadow-2xl relative z-10">
                                             <p className="text-base font-black text-[#fdf8f5] break-words italic tracking-tighter uppercase leading-[0.9]">
                                                 {results.source || "SYNTHETIC_TEXT_AGENT"}
                                             </p>
@@ -301,7 +301,7 @@ export default function BiasAnalyzer() {
                                 </div>
 
                                 {/* Explanation */}
-                                <div className="glass-card p-8 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group">
+                                <div className="glass-card p-8 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 w-40 h-40 bg-[#0EA5E9]/5 blur-[80px] group-hover:bg-[#0EA5E9]/10 transition-colors duration-1000" />
                                     <h3 className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.4em] mb-6 italic underline decoration-[#fdf8f5]/10">Logic_Trace Analysis</h3>
                                     
@@ -332,7 +332,7 @@ export default function BiasAnalyzer() {
                             <motion.div 
                                 animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }}
                                 transition={{ repeat: Infinity, duration: 4 }}
-                                className="w-32 h-32 rounded-none border-2 border-[#fdf8f5]/10 flex items-center justify-center mb-10 group-hover:border-[#fdf8f5]/30 transition-all duration-1000"
+                                className="w-32 h-32 rounded-2xl border-2 border-[#fdf8f5]/10 flex items-center justify-center mb-10 group-hover:border-[#fdf8f5]/30 transition-all duration-1000"
                             >
                                 <HiOutlineSearch className="w-14 h-14 text-[#fdf8f5]/20" />
                             </motion.div>

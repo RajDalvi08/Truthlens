@@ -47,7 +47,7 @@ export default function EventComparison() {
 
       {/* Discovery Input */}
       <motion.div 
-          className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group"
+          className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden group"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
       >
@@ -62,7 +62,7 @@ export default function EventComparison() {
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
                         placeholder="HTTPS://EXAMPLESITE.COM/NEWS-STORY..."
-                        className="w-full pl-16 pr-8 py-5 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic shadow-2xl"
+                        className="w-full pl-16 pr-8 py-5 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-2xl text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic shadow-2xl"
                       />
                   </div>
                   <button
@@ -72,7 +72,7 @@ export default function EventComparison() {
                   >
                     {isLoading ? (
                         <>
-                            <span className="w-5 h-5 border-3 border-[#1a0f0a]/30 border-t-[#1a0f0a] rounded-none animate-spin" />
+                            <span className="w-5 h-5 border-3 border-[#1a0f0a]/30 border-t-[#1a0f0a] rounded-2xl animate-spin" />
                             COMPARING...
                         </>
                     ) : (
@@ -93,7 +93,7 @@ export default function EventComparison() {
             <motion.div 
                initial={{ opacity: 0, y: 15 }}
                animate={{ opacity: 1, y: 0 }}
-               className="p-8 glass-card border-[#fdf8f5]/20 bg-[#fdf8f5]/5 text-[#fdf8f5] flex items-center gap-6 rounded-none shadow-2xl"
+               className="p-8 glass-card border-[#fdf8f5]/20 bg-[#fdf8f5]/5 text-[#fdf8f5] flex items-center gap-6 rounded-2xl shadow-2xl"
             >
                <HiOutlineExclamationCircle className="w-10 h-10 text-[#fdf8f5] animate-pulse" />
                <span className="font-black text-[11px] tracking-[0.2em] uppercase italic underline decoration-[#fdf8f5]/10">CRITICAL_FAULT: {error}</span>
@@ -107,10 +107,10 @@ export default function EventComparison() {
                className="space-y-12"
             >
                 {/* Event Summary Card */}
-                <div className="glass-card p-12 bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden group">
+                <div className="glass-card p-12 bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-80 h-80 bg-[#fdf8f5]/5 blur-[100px] pointer-events-none group-hover:bg-[#fdf8f5]/10 transition-all duration-1000" />
                     <div className="flex items-start gap-8 relative z-10">
-                        <div className="w-20 h-20 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-none flex items-center justify-center text-[#fdf8f5] shadow-2xl">
+                        <div className="w-20 h-20 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-2xl flex items-center justify-center text-[#fdf8f5] shadow-2xl">
                             <HiOutlineServer className="w-10 h-10" />
                         </div>
                         <div>
@@ -127,7 +127,7 @@ export default function EventComparison() {
                   {results.articles?.map((article, idx) => (
                     <motion.div 
                         key={idx}
-                        className="saas-card p-10 group hover:border-[#fdf8f5]/30 transition-all flex flex-col justify-between bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden"
+                        className="saas-card p-10 group hover:border-[#fdf8f5]/30 transition-all flex flex-col justify-between bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden"
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.2 + (idx * 0.1) }}
@@ -159,7 +159,7 @@ export default function EventComparison() {
                                        <p className="text-[8px] font-black text-[#8d7b68] uppercase tracking-[0.25em] mb-3 italic group-hover/stat:text-[#d6c2b8] transition-colors">{stat.l}</p>
                                        <div className="flex items-center gap-3">
                                           <p className="text-sm font-black text-[#fdf8f5] tabular-nums tracking-widest">{stat.v}</p>
-                                          <div className="flex-1 h-0.5 bg-[#fdf8f5]/5 rounded-none overflow-hidden">
+                                          <div className="flex-1 h-0.5 bg-[#fdf8f5]/5 rounded-2xl overflow-hidden">
                                              <motion.div 
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${(parseInt(stat.v)||50)}%` }}

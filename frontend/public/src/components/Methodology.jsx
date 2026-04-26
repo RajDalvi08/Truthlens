@@ -142,7 +142,7 @@ export default function Methodology() {
                   key={step.id}
                   layout
                   onClick={() => setActiveStep(isActive ? null : idx)}
-                  className="saas-card relative overflow-hidden group cursor-pointer bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl hover:border-[#fdf8f5]/25 transition-all duration-300"
+                  className="saas-card relative overflow-hidden group cursor-pointer bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl hover:border-[#fdf8f5]/25 transition-all duration-300"
                   style={{ borderLeft: `3px solid ${step.color}` }}
                   whileHover={{ x: 4 }}
                 >
@@ -221,7 +221,7 @@ export default function Methodology() {
                 <motion.div
                   key={tech.name}
                   variants={itemVariants}
-                  className="saas-card p-8 group hover:border-[#fdf8f5]/30 transition-all cursor-default bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden"
+                  className="saas-card p-8 group hover:border-[#fdf8f5]/30 transition-all cursor-default bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 w-24 h-24 bg-[#fdf8f5]/5 blur-[50px] pointer-events-none" />
                   <div className="w-12 h-12 mb-6 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 flex items-center justify-center text-[#fdf8f5] group-hover:bg-[#fdf8f5] group-hover:text-[#1a0f0a] transition-all shadow-xl">
@@ -236,7 +236,7 @@ export default function Methodology() {
         </motion.div>
 
         {/* ── Scoring Legend ── */}
-        <motion.div variants={itemVariants} className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl relative overflow-hidden">
+        <motion.div variants={itemVariants} className="saas-card p-12 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f5]/[0.02] to-transparent pointer-events-none" />
           <h2 className="text-3xl font-black text-[#fdf8f5] uppercase italic tracking-tighter mb-10">
             Bias Score Reference

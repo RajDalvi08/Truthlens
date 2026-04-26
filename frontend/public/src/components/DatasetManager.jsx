@@ -180,13 +180,13 @@ export default function DatasetManager() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="saas-card group relative overflow-hidden flex flex-col justify-between bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl"
+            className="saas-card group relative overflow-hidden flex flex-col justify-between bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl"
           >
              <div className="absolute top-0 right-0 w-48 h-48 bg-[#fdf8f5]/5 blur-[80px] group-hover:bg-[#fdf8f5]/10 transition-all duration-1000 pointer-events-none" />
              
              <div className="p-10">
                 <div className="flex justify-between items-start mb-10">
-                    <div className="w-16 h-16 bg-[#fdf8f5] text-[#1a0f0a] rounded-none flex items-center justify-center shadow-[0_10px_30px_rgba(253,248,245,0.15)]">
+                    <div className="w-16 h-16 bg-[#fdf8f5] text-[#1a0f0a] rounded-2xl flex items-center justify-center shadow-[0_10px_30px_rgba(253,248,245,0.15)]">
                         <HiOutlineDatabase className="w-8 h-8" />
                     </div>
                     <span className="px-5 py-2 bg-[#fdf8f5]/5 text-[#fdf8f5] border border-[#fdf8f5]/20 text-[9px] font-black uppercase tracking-[0.3em] italic">DATABASE V1</span>
@@ -210,7 +210,7 @@ export default function DatasetManager() {
              <div className="p-6 bg-[#fdf8f5]/[0.02] border-t border-[#fdf8f5]/5 grid grid-cols-2 gap-6 relative z-10">
                 <button 
                   onClick={() => setIsConfigOpen(true)}
-                  className="flex items-center justify-center gap-4 py-4 text-[10px] font-black uppercase tracking-[0.25em] italic bg-[#1a0f0a] border border-[#fdf8f5]/10 text-[#8d7b68] hover:text-[#fdf8f5] hover:border-[#fdf8f5] transition-all rounded-none shadow-xl"
+                  className="flex items-center justify-center gap-4 py-4 text-[10px] font-black uppercase tracking-[0.25em] italic bg-[#1a0f0a] border border-[#fdf8f5]/10 text-[#8d7b68] hover:text-[#fdf8f5] hover:border-[#fdf8f5] transition-all rounded-2xl shadow-xl"
                 >
                     <HiOutlineCog className="w-5 h-5" />
                     Configure Database
@@ -218,7 +218,7 @@ export default function DatasetManager() {
                 <button 
                   onClick={handleSyncCloud}
                   disabled={isSyncing}
-                  className="flex items-center justify-center gap-4 py-4 text-[10px] font-black uppercase tracking-[0.25em] italic bg-[#1a0f0a] border border-[#fdf8f5]/10 text-[#8d7b68] hover:text-[#fdf8f5] hover:border-[#fdf8f5] transition-all rounded-none shadow-xl disabled:opacity-50"
+                  className="flex items-center justify-center gap-4 py-4 text-[10px] font-black uppercase tracking-[0.25em] italic bg-[#1a0f0a] border border-[#fdf8f5]/10 text-[#8d7b68] hover:text-[#fdf8f5] hover:border-[#fdf8f5] transition-all rounded-2xl shadow-xl disabled:opacity-50"
                 >
                     <HiOutlineShare className={`w-5 h-5 ${isSyncing ? 'animate-spin' : ''}`} />
                     {isSyncing ? "Synchronizing..." : "Synchronize Cloud"}
@@ -229,7 +229,7 @@ export default function DatasetManager() {
 
       {/* Article Records Viewer */}
       <motion.div 
-          className="saas-card overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-[0_0_60px_rgba(0,0,0,0.6)] mt-12"
+          className="saas-card overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.6)] mt-12"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
       >
@@ -245,7 +245,7 @@ export default function DatasetManager() {
                   value={searchTerm} 
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="SEARCH DATABASE..." 
-                  className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 pl-16 pr-8 py-4 text-[10px] font-black uppercase tracking-[0.25em] rounded-none outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+                  className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 pl-16 pr-8 py-4 text-[10px] font-black uppercase tracking-[0.25em] rounded-2xl outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
                 />
              </div>
           </div>
@@ -310,7 +310,7 @@ export default function DatasetManager() {
             >
                <motion.div 
                   initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
-                  className="bg-[#261a14] border border-[#fdf8f5]/10 p-10 max-w-lg w-full rounded-none shadow-2xl relative"
+                  className="bg-[#261a14] border border-[#fdf8f5]/10 p-10 max-w-lg w-full rounded-2xl shadow-2xl relative"
                >
                   <div className="flex justify-between items-center mb-8">
                      <h3 className="text-2xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Ingest Article</h3>
@@ -349,7 +349,7 @@ export default function DatasetManager() {
             >
                <motion.div 
                   initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
-                  className="bg-[#261a14] border border-[#fdf8f5]/10 p-10 max-w-lg w-full rounded-none shadow-2xl relative"
+                  className="bg-[#261a14] border border-[#fdf8f5]/10 p-10 max-w-lg w-full rounded-2xl shadow-2xl relative"
                >
                   <h3 className="text-2xl font-black text-[#fdf8f5] mb-8 uppercase italic tracking-tighter">Database Configuration</h3>
                   

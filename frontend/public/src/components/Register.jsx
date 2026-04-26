@@ -51,7 +51,7 @@ export default function Register() {
     <div className="min-h-screen bg-[#1a0f0a] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans mesh-bg">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <Link to="/" className="inline-flex items-center gap-3 mb-8 group">
-          <div className="w-12 h-12 rounded-none bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-2xl shadow-2xl italic group-hover:scale-110 transition-transform">TL</div>
+          <div className="w-12 h-12 rounded-2xl bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-2xl shadow-2xl italic group-hover:scale-110 transition-transform">TL</div>
           <span className="text-3xl font-black text-[#fdf8f5] tracking-tighter uppercase italic">TruthLens</span>
         </Link>
         <h2 className="text-4xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Create Account</h2>
@@ -64,7 +64,7 @@ export default function Register() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="glass-card py-10 px-8 border border-[#fdf8f5]/10 sm:rounded-none sm:px-12 bg-[#261a14]/60 backdrop-blur-3xl shadow-[0_0_60px_rgba(0,0,0,0.6)]">
+        <div className="glass-card py-10 px-8 border border-[#fdf8f5]/10 sm:rounded-2xl sm:px-12 bg-[#261a14]/60 backdrop-blur-3xl shadow-[0_0_60px_rgba(0,0,0,0.6)]">
           
           {error && (
             <div className="mb-8 p-4 bg-[#fdf8f5]/5 border border-[#fdf8f5]/20 text-[#fdf8f5] text-[10px] font-black uppercase tracking-widest italic animate-pulse">
@@ -82,7 +82,7 @@ export default function Register() {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+                  className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-2xl text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
                   placeholder="YOUR FULL NAME"
                 />
               </div>
@@ -97,7 +97,7 @@ export default function Register() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+                  className="w-full pl-12 pr-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-2xl text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
                   placeholder="YOUR@EMAIL.COM"
                 />
               </div>
@@ -111,7 +111,7 @@ export default function Register() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+                  className="w-full px-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-2xl text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
                   placeholder="••••••••"
                 />
               </div>
@@ -122,7 +122,7 @@ export default function Register() {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+                  className="w-full px-6 py-4 bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-2xl text-xs font-black uppercase tracking-widest focus:border-[#fdf8f5] outline-none transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
                   placeholder="••••••••"
                 />
               </div>
@@ -150,7 +150,7 @@ export default function Register() {
             <div className="mt-10">
               <button
                 onClick={handleGoogleSignup}
-                className="w-full inline-flex justify-center py-4 px-6 border border-[#fdf8f5]/10 rounded-none bg-[#fdf8f5]/5 text-[10px] font-black uppercase tracking-[0.3em] italic text-[#fdf8f5] hover:bg-[#fdf8f5] hover:text-[#1a0f0a] transition-all shadow-xl"
+                className="w-full inline-flex justify-center py-4 px-6 border border-[#fdf8f5]/10 rounded-2xl bg-[#fdf8f5]/5 text-[10px] font-black uppercase tracking-[0.3em] italic text-[#fdf8f5] hover:bg-[#fdf8f5] hover:text-[#1a0f0a] transition-all shadow-xl"
               >
                 <svg className="h-5 w-5 mr-4" viewBox="0 0 24 24">
                   <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>

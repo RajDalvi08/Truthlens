@@ -92,7 +92,7 @@ export default function Journal() {
              value={searchQuery}
              onChange={(e) => setSearchQuery(e.target.value)}
              placeholder="SEARCH ARTICLES..." 
-             className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 pl-16 pr-8 py-5 text-[11px] font-black uppercase tracking-[0.25em] rounded-none outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+             className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 pl-16 pr-8 py-5 text-[11px] font-black uppercase tracking-[0.25em] rounded-2xl outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
            />
         </div>
       </div>
@@ -102,7 +102,7 @@ export default function Journal() {
         {filteredArticles.length > 0 ? (
           <motion.div 
             key={filteredArticles[0].id}
-            className="glass-card shadow-2xl overflow-hidden group cursor-pointer bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none"
+            className="glass-card shadow-2xl overflow-hidden group cursor-pointer bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl"
             whileHover={{ y: -8, borderColor: 'rgba(253,248,245,0.3)' }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -134,7 +134,7 @@ export default function Journal() {
                     </div>
                     <div className="flex items-center justify-between pt-8 border-t border-[#fdf8f5]/10 mt-auto">
                         <div className="flex items-center gap-5">
-                            <div className="w-14 h-14 rounded-none bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center text-sm font-black italic shadow-xl">
+                            <div className="w-14 h-14 rounded-2xl bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center text-sm font-black italic shadow-xl">
                               {(filteredArticles[0].author || "U").split(" ").map(n => n[0]).join("")}
                             </div>
                             <div>
@@ -151,7 +151,7 @@ export default function Journal() {
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="p-20 text-center glass-card border-[#fdf8f5]/10 bg-[#261a14]/60 rounded-none"
+            className="p-20 text-center glass-card border-[#fdf8f5]/10 bg-[#261a14]/60 rounded-2xl"
           >
             <h3 className="text-3xl font-black text-[#fdf8f5] uppercase italic tracking-tighter opacity-20">No matching articles found</h3>
             <p className="text-[10px] text-[#8d7b68] mt-4 font-black uppercase tracking-widest italic">Try adjusting your search or category filters.</p>
@@ -165,7 +165,7 @@ export default function Journal() {
               <button 
                 key={cat}
                 onClick={() => setActiveTab(cat)}
-                className={`whitespace-nowrap pl-8 pr-12 py-3.5 rounded-none text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-300 relative group/btn ${
+                className={`whitespace-nowrap pl-8 pr-12 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-300 relative group/btn ${
                     activeTab === cat 
                     ? "bg-[#fdf8f5] text-[#1a0f0a] italic shadow-2xl" 
                     : "bg-[#fdf8f5]/5 text-[#8d7b68] border border-[#fdf8f5]/10 hover:border-[#fdf8f5]/40"
@@ -188,7 +188,7 @@ export default function Journal() {
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: i * 0.1 }}
-                        className="saas-card group hover:border-[#fdf8f5]/40 transition-all cursor-pointer flex flex-col bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-xl"
+                        className="saas-card group hover:border-[#fdf8f5]/40 transition-all cursor-pointer flex flex-col bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-xl"
                     >
                         <div className="h-60 overflow-hidden relative">
                             <img src={article.image} className="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-105" alt={article.title} />
@@ -216,7 +216,7 @@ export default function Journal() {
 
           {/* Side Panels */}
           <div className="lg:col-span-4 space-y-8 lg:space-y-10">
-              <div className="saas-card p-8 lg:p-10 bg-[#1a0f0a]/80 text-[#fdf8f5] relative overflow-hidden border-[#fdf8f5]/10 rounded-none shadow-2xl flex flex-col">
+              <div className="saas-card p-8 lg:p-10 bg-[#1a0f0a]/80 text-[#fdf8f5] relative overflow-hidden border-[#fdf8f5]/10 rounded-2xl shadow-2xl flex flex-col">
                   <div className="absolute top-0 right-0 w-48 h-48 bg-[#fdf8f5]/5 blur-[100px]" />
                   <div className="relative z-10 flex-grow">
                       <h3 className="text-xl lg:text-2xl font-black mb-8 flex items-center gap-4 uppercase italic tracking-tighter border-b border-[#fdf8f5]/10 pb-4">
@@ -239,7 +239,7 @@ export default function Journal() {
                   </div>
               </div>
 
-              <div className="glass-card p-8 lg:p-10 text-center bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-none relative overflow-hidden shadow-2xl group flex flex-col justify-center">
+              <div className="glass-card p-8 lg:p-10 text-center bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-2xl relative overflow-hidden shadow-2xl group flex flex-col justify-center">
                   <div className="absolute inset-0 bg-gradient-to-b from-[#fdf8f5]/5 to-transparent pointer-events-none" />
                   <HiOutlineNewspaper className="w-12 h-12 lg:w-16 lg:h-16 text-[#fdf8f5]/10 mx-auto mb-6 group-hover:scale-110 transition-transform duration-1000" />
                   <h3 className="text-xl lg:text-2xl font-black text-[#fdf8f5] mb-3 uppercase italic tracking-tighter">Newsletter Signup</h3>
@@ -260,9 +260,9 @@ export default function Journal() {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="YOUR@EMAIL.COM"
-                          className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] outline-none focus:border-[#fdf8f5] text-[#fdf8f5] transition-all placeholder:text-[#4d3c2e] italic"
+                          className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-2xl px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] outline-none focus:border-[#fdf8f5] text-[#fdf8f5] transition-all placeholder:text-[#4d3c2e] italic"
                         />
-                        <button className="btn-primary w-full py-5 text-[10px] font-black uppercase tracking-[0.3em] italic bg-[#fdf8f5] text-[#1a0f0a] hover:bg-[#f5ebe0] border-none rounded-none shadow-xl transition-all">Subscribe</button>
+                        <button className="btn-primary w-full py-5 text-[10px] font-black uppercase tracking-[0.3em] italic bg-[#fdf8f5] text-[#1a0f0a] hover:bg-[#f5ebe0] border-none rounded-2xl shadow-xl transition-all">Subscribe</button>
                     </form>
                   )}
               </div>

@@ -96,7 +96,7 @@ export default function TopHeader() {
           placeholder="SEARCH ANALYSIS..." 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-none pl-14 pr-6 py-3.5 text-[11px] font-black uppercase tracking-[0.2em] focus:outline-none focus:border-[#fdf8f5] transition-all shadow-2xl text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+          className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 rounded-2xl pl-14 pr-6 py-3.5 text-[11px] font-black uppercase tracking-[0.2em] focus:outline-none focus:border-[#fdf8f5] transition-all shadow-2xl text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
         />
       </div>
 
@@ -109,7 +109,7 @@ export default function TopHeader() {
           >
             <HiOutlineBell className="w-6 h-6" />
             {unreadCount > 0 && (
-              <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-[#fdf8f5] rounded-none border-2 border-[#1a0f0a] animate-pulse"></span>
+              <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-[#fdf8f5] rounded-2xl border-2 border-[#1a0f0a] animate-pulse"></span>
             )}
           </button>
 

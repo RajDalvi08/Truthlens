@@ -22,7 +22,7 @@ export default function Home() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="inline-flex items-center gap-3 px-6 py-2.5 glass-card bg-[#fdf8f5]/5 backdrop-blur-3xl border-[#fdf8f5]/10 rounded-none shadow-2xl"
+                className="inline-flex items-center gap-3 px-6 py-2.5 glass-card bg-[#fdf8f5]/5 backdrop-blur-3xl border-[#fdf8f5]/10 rounded-2xl shadow-2xl"
               >
                   <span className="flex h-2.5 w-2.5 rounded-full bg-[#fdf8f5] animate-ping" />
                   <span className="text-[10px] font-black text-[#fdf8f5] uppercase tracking-[0.3em] italic">System Live: TruthLens v1.0</span>
@@ -57,7 +57,7 @@ export default function Home() {
                       Start Analysis
                       <HiOutlineArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                   </Link>
-                  <Link to="/login" className="px-12 py-6 text-[11px] font-black uppercase tracking-[0.3em] italic bg-[#fdf8f5]/5 backdrop-blur-md border border-[#fdf8f5]/10 text-[#fdf8f5] hover:bg-[#fdf8f5]/10 hover:border-[#fdf8f5]/30 rounded-none transition-all">
+                  <Link to="/login" className="px-12 py-6 text-[11px] font-black uppercase tracking-[0.3em] italic bg-[#fdf8f5]/5 backdrop-blur-md border border-[#fdf8f5]/10 text-[#fdf8f5] hover:bg-[#fdf8f5]/10 hover:border-[#fdf8f5]/30 rounded-2xl transition-all">
                       Login / Sign Up
                   </Link>
               </motion.div>
@@ -67,7 +67,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-48">
               
               <motion.div 
-                className="md:col-span-8 glass-card p-12 bg-gradient-to-br from-[#fdf8f5]/5 to-transparent relative overflow-hidden group border-[#fdf8f5]/10 rounded-none shadow-2xl"
+                className="md:col-span-8 glass-card p-12 bg-gradient-to-br from-[#fdf8f5]/5 to-transparent relative overflow-hidden group border-[#fdf8f5]/10 rounded-2xl shadow-2xl"
                 initial={{ opacity: 0, scale: 0.98 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
@@ -81,7 +81,7 @@ export default function Home() {
                   <div className="mt-16 flex items-center gap-10">
                       <div className="flex -space-x-4">
                           {[1,2,3,4].map(i => (
-                              <div key={i} className="w-12 h-12 rounded-none border-2 border-[#1a0f0a] bg-[#261a14] flex items-center justify-center text-[10px] font-black text-[#fdf8f5] italic">0{i}</div>
+                              <div key={i} className="w-12 h-12 rounded-2xl border-2 border-[#1a0f0a] bg-[#261a14] flex items-center justify-center text-[10px] font-black text-[#fdf8f5] italic">0{i}</div>
                           ))}
                       </div>
                       <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">+14K Analysts Connected</p>
@@ -89,13 +89,13 @@ export default function Home() {
               </motion.div>
 
               <motion.div 
-                className="md:col-span-4 saas-card p-12 flex flex-col justify-between group overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl hover:border-[#fdf8f5]/30 transition-all"
+                className="md:col-span-4 saas-card p-12 flex flex-col justify-between group overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl hover:border-[#fdf8f5]/30 transition-all"
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
               >
                   <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#fdf8f5]/5 blur-3xl pointer-events-none" />
-                  <div className="w-16 h-16 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-none flex items-center justify-center text-[#fdf8f5] mb-12 shadow-[0_0_15px_rgba(253,248,245,0.05)]">
+                  <div className="w-16 h-16 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-2xl flex items-center justify-center text-[#fdf8f5] mb-12 shadow-[0_0_15px_rgba(253,248,245,0.05)]">
                       <HiOutlineLightningBolt className="w-8 h-8" />
                   </div>
                   <div>
@@ -107,12 +107,12 @@ export default function Home() {
               </motion.div>
 
               <motion.div 
-                className="md:col-span-4 saas-card p-12 flex flex-col justify-between group bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl hover:border-[#fdf8f5]/30 transition-all"
+                className="md:col-span-4 saas-card p-12 flex flex-col justify-between group bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl hover:border-[#fdf8f5]/30 transition-all"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
               >
-                  <div className="w-16 h-16 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-none flex items-center justify-center text-[#fdf8f5] mb-12 shadow-[0_0_15px_rgba(253,248,245,0.05)]">
+                  <div className="w-16 h-16 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 rounded-2xl flex items-center justify-center text-[#fdf8f5] mb-12 shadow-[0_0_15px_rgba(253,248,245,0.05)]">
                       <HiOutlineShieldCheck className="w-8 h-8" />
                   </div>
                   <div>
@@ -124,7 +124,7 @@ export default function Home() {
               </motion.div>
 
               <motion.div 
-                className="md:col-span-8 glass-card p-12 bg-[#fdf8f5]/[0.02] text-[#fdf8f5] relative overflow-hidden group border-[#fdf8f5]/10 rounded-none shadow-2xl"
+                className="md:col-span-8 glass-card p-12 bg-[#fdf8f5]/[0.02] text-[#fdf8f5] relative overflow-hidden group border-[#fdf8f5]/10 rounded-2xl shadow-2xl"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -136,7 +136,7 @@ export default function Home() {
                           <h3 className="text-4xl font-black leading-tight uppercase italic tracking-tighter">Measure News <br/>Differences.</h3>
                       </div>
                       <div className="flex-1 max-w-sm space-y-6">
-                          <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden border border-[#fdf8f5]/10">
+                          <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-2xl overflow-hidden border border-[#fdf8f5]/10">
                               <motion.div 
                                 initial={{ width: 0 }}
                                 whileInView={{ width: "85%" }}
@@ -144,7 +144,7 @@ export default function Home() {
                                 transition={{ duration: 1.5, ease: "easeOut" }}
                               />
                           </div>
-                           <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden border border-[#fdf8f5]/10">
+                           <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-2xl overflow-hidden border border-[#fdf8f5]/10">
                               <motion.div 
                                 initial={{ width: 0 }}
                                 whileInView={{ width: "55%" }}
@@ -152,7 +152,7 @@ export default function Home() {
                                 transition={{ duration: 1.5, delay: 0.2, ease: "easeOut" }}
                               />
                           </div>
-                           <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-none overflow-hidden border border-[#fdf8f5]/10">
+                           <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-2xl overflow-hidden border border-[#fdf8f5]/10">
                               <motion.div 
                                 initial={{ width: 0 }}
                                 whileInView={{ width: "70%" }}

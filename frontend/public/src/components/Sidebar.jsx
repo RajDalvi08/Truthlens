@@ -51,12 +51,12 @@ export default function Sidebar({ isCollapsed, onToggle }) {
       {/* Logo & Toggle */}
       <div className={`border-b border-[#fdf8f5]/10 flex transition-all duration-300 ${isCollapsed ? 'flex-col items-center p-4 gap-4' : 'items-center justify-between px-6 py-6'}`}>
         <Link to="/home" className="flex items-center gap-4 min-w-0 group">
-          <div className="w-10 h-10 min-w-[40px] rounded-none bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-xl shrink-0 italic shadow-[0_0_20px_rgba(253,248,245,0.2)] group-hover:scale-110 transition-transform">TL</div>
+          <div className="w-10 h-10 min-w-[40px] rounded-2xl bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-xl shrink-0 italic shadow-[0_0_20px_rgba(253,248,245,0.2)] group-hover:scale-110 transition-transform">TL</div>
           {!isCollapsed && <span className="text-xl font-black tracking-tighter uppercase italic whitespace-nowrap overflow-visible">TruthLens</span>}
         </Link>
         <button 
           onClick={onToggle}
-          className={`p-2 hover:bg-[#fdf8f5]/5 rounded-none text-[#8d7b68] transition-all hidden md:flex shrink-0 border border-transparent hover:border-[#fdf8f5]/20 ${isCollapsed ? 'mt-2' : ''}`}
+          className={`p-2 hover:bg-[#fdf8f5]/5 rounded-2xl text-[#8d7b68] transition-all hidden md:flex shrink-0 border border-transparent hover:border-[#fdf8f5]/20 ${isCollapsed ? 'mt-2' : ''}`}
         >
           {isCollapsed ? <HiOutlineChevronRight className="w-5 h-5" /> : <HiOutlineChevronLeft className="w-5 h-5" />}
         </button>
@@ -80,8 +80,8 @@ export default function Sidebar({ isCollapsed, onToggle }) {
                     to={item.path}
                     className={`flex items-center transition-all group relative overflow-hidden ${
                       isCollapsed 
-                        ? "w-full h-12 justify-center rounded-none" 
-                        : "gap-4 px-4 py-3 rounded-none w-full"
+                        ? "w-full h-12 justify-center rounded-2xl" 
+                        : "gap-4 px-4 py-3 rounded-2xl w-full"
                     } ${
                       isActive 
                         ? "bg-[#fdf8f5] text-[#1a0f0a] italic shadow-[0_0_30px_rgba(253,248,245,0.1)]" 
@@ -136,7 +136,7 @@ export default function Sidebar({ isCollapsed, onToggle }) {
             navigate("/login");
           }}
           className={`flex items-center text-[11px] font-black uppercase tracking-widest text-[#8d7b68] hover:text-[#1a0f0a] hover:bg-[#fdf8f5] transition-all group italic ${
-            isCollapsed ? 'w-full h-12 justify-center rounded-none' : 'w-full gap-4 px-4 py-3 rounded-none'
+            isCollapsed ? 'w-full h-12 justify-center rounded-2xl' : 'w-full gap-4 px-4 py-3 rounded-2xl'
           }`}
           title={isCollapsed ? "Logout" : ""}
         >

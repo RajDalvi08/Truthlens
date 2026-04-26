@@ -347,7 +347,8 @@ def get_recent_articles(limit: int = 10, user_id: str = None) -> list:
     else:
         conn = _sql()
         where_clause = "WHERE user_id = ?" if user_id else ""
-        params = (user_id,) if user_id else (limit,)
+        limit = 100
+        params = (user_id, limit) if user_id else (limit,)
         if user_id:
             params = (user_id, limit)
             
@@ -420,11 +421,8 @@ def get_sentiment_correlation(user_id: str = None) -> list:
     else:
         conn = _sql()
         where_clause = "WHERE user_id = ?" if user_id else ""
-        params = (user_id,) if user_id else (limit,) # limit is not defined here but we can assume 100
-        if user_id:
-            params = (user_id, 100)
-        else:
-            params = (100,)
+        limit = 100
+        params = (user_id, limit) if user_id else (limit,)
             
         rows = conn.execute(f"SELECT bias_score,linguistic_bias,framing_bias,sentiment FROM analyzed_articles {where_clause} ORDER BY id DESC LIMIT ?", params).fetchall()
         conn.close()

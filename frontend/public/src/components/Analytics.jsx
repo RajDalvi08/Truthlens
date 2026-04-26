@@ -73,7 +73,7 @@ export default function Analytics() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] mesh-bg">
-        <div className="w-12 h-12 border-4 border-[#fdf8f5] border-t-transparent rounded-none animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-[#fdf8f5] border-t-transparent rounded-2xl animate-spin"></div>
       </div>
     );
   }
@@ -195,7 +195,7 @@ export default function Analytics() {
         <div className="flex gap-4">
           <button 
             onClick={handleFilterToggle}
-            className={`flex items-center gap-3 text-[10px] font-black uppercase tracking-widest border px-8 py-4 transition-all italic rounded-none ${
+            className={`flex items-center gap-3 text-[10px] font-black uppercase tracking-widest border px-8 py-4 transition-all italic rounded-2xl ${
               filterType !== "all" 
                 ? "bg-[#fdf8f5] text-[#1a0f0a] border-[#fdf8f5]" 
                 : "bg-[#fdf8f5]/5 border-[#fdf8f5]/10 text-[#fdf8f5] hover:bg-[#fdf8f5]/10 hover:border-[#fdf8f5]/30"
@@ -218,7 +218,7 @@ export default function Analytics() {
         
         {/* 3D Bias Network - Large Bento */}
         <motion.div 
-          className="lg:col-span-8 saas-card min-h-[600px] relative group overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+          className="lg:col-span-8 saas-card min-h-[600px] relative group overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)]"
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
         >
@@ -229,7 +229,7 @@ export default function Analytics() {
                 Bias Map
               </h3>
               <div className="flex items-center gap-4 px-4 py-1.5 bg-[#1a0f0a]/80 border border-[#fdf8f5]/10 w-fit backdrop-blur-xl">
-                  <div className="w-2 h-2 bg-emerald-500 animate-pulse rounded-none shadow-[0_0_10px_#10b981]" />
+                  <div className="w-2 h-2 bg-emerald-500 animate-pulse rounded-2xl shadow-[0_0_10px_#10b981]" />
                   <span className="text-[8px] text-[#8d7b68] font-black uppercase tracking-[0.3em] italic">Live Intelligence</span>
               </div>
           </div>
@@ -242,24 +242,24 @@ export default function Analytics() {
           {/* Interaction Control - Bottom Left */}
           <div className="absolute bottom-10 left-10 z-20">
               <div className="flex items-center gap-8 text-[9px] font-black text-[#4d3c2e] uppercase tracking-[0.4em] italic bg-[#1a0f0a]/60 backdrop-blur-xl px-8 py-3 border border-[#fdf8f5]/10 shadow-2xl">
-                  <span className="flex items-center gap-3 group-hover:text-[#8d7b68] transition-all cursor-default"><div className="w-1.5 h-1.5 bg-[#4d3c2e] group-hover:bg-[#8d7b68] rounded-none" /> Rotate</span>
-                  <span className="flex items-center gap-3 group-hover:text-[#8d7b68] transition-all cursor-default"><div className="w-1.5 h-1.5 bg-[#4d3c2e] group-hover:bg-[#8d7b68] rounded-none" /> Zoom</span>
-                  <span className="flex items-center gap-3 group-hover:text-[#8d7b68] transition-all cursor-default"><div className="w-1.5 h-1.5 bg-[#4d3c2e] group-hover:bg-[#8d7b68] rounded-none" /> Pan</span>
+                  <span className="flex items-center gap-3 group-hover:text-[#8d7b68] transition-all cursor-default"><div className="w-1.5 h-1.5 bg-[#4d3c2e] group-hover:bg-[#8d7b68] rounded-2xl" /> Rotate</span>
+                  <span className="flex items-center gap-3 group-hover:text-[#8d7b68] transition-all cursor-default"><div className="w-1.5 h-1.5 bg-[#4d3c2e] group-hover:bg-[#8d7b68] rounded-2xl" /> Zoom</span>
+                  <span className="flex items-center gap-3 group-hover:text-[#8d7b68] transition-all cursor-default"><div className="w-1.5 h-1.5 bg-[#4d3c2e] group-hover:bg-[#8d7b68] rounded-2xl" /> Pan</span>
               </div>
           </div>
 
           {/* Bottom-Right: Legend */}
           <div className="absolute bottom-10 right-10 z-20 flex items-center gap-8 bg-[#1a0f0a]/90 backdrop-blur-xl px-8 py-4 border border-[#fdf8f5]/10 shadow-2xl">
               <div className="flex items-center gap-3 border-r border-[#fdf8f5]/5 pr-8">
-                  <div className="w-2.5 h-2.5 bg-[#3b82f6] shadow-[0_0_10px_#3b82f6] rounded-none" />
+                  <div className="w-2.5 h-2.5 bg-[#3b82f6] shadow-[0_0_10px_#3b82f6] rounded-2xl" />
                   <span className="text-[9px] font-black text-[#fdf8f5] uppercase italic tracking-widest leading-none">Left</span>
               </div>
               <div className="flex items-center gap-3 border-r border-[#fdf8f5]/5 pr-8">
-                  <div className="w-2.5 h-2.5 bg-[#10b981] shadow-[0_0_10px_#10b981] rounded-none" />
+                  <div className="w-2.5 h-2.5 bg-[#10b981] shadow-[0_0_10px_#10b981] rounded-2xl" />
                   <span className="text-[9px] font-black text-[#fdf8f5] uppercase italic tracking-widest leading-none">Neutral</span>
               </div>
               <div className="flex items-center gap-3">
-                  <div className="w-2.5 h-2.5 bg-[#f59e0b] shadow-[0_0_10px_#f59e0b] rounded-none" />
+                  <div className="w-2.5 h-2.5 bg-[#f59e0b] shadow-[0_0_10px_#f59e0b] rounded-2xl" />
                   <span className="text-[9px] font-black text-[#fdf8f5] uppercase italic tracking-widest leading-none">Right</span>
               </div>
           </div>
@@ -274,7 +274,7 @@ export default function Analytics() {
         {/* Sentiment Column - Right Side Bento */}
         <div className="lg:col-span-4 space-y-8">
             <motion.div 
-              className="saas-card p-10 flex flex-col justify-between h-[284px] bg-[#1a0f0a] border-[#fdf8f5]/10 rounded-none group hover:border-[#fdf8f5]/30 transition-all shadow-2xl"
+              className="saas-card p-10 flex flex-col justify-between h-[284px] bg-[#1a0f0a] border-[#fdf8f5]/10 rounded-2xl group hover:border-[#fdf8f5]/30 transition-all shadow-2xl"
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
             >
@@ -302,12 +302,12 @@ export default function Analytics() {
             </motion.div>
 
             <motion.div 
-              className="glass-card p-10 h-[284px] flex flex-col justify-center text-center bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-none group hover:bg-[#fdf8f5]/[0.05] transition-all shadow-2xl"
+              className="glass-card p-10 h-[284px] flex flex-col justify-center text-center bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-2xl group hover:bg-[#fdf8f5]/[0.05] transition-all shadow-2xl"
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-                <div className="w-16 h-16 bg-[#fdf8f5] text-[#1a0f0a] rounded-none flex items-center justify-center mx-auto mb-8 shadow-[0_0_25px_rgba(253,248,245,0.1)]">
+                <div className="w-16 h-16 bg-[#fdf8f5] text-[#1a0f0a] rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-[0_0_25px_rgba(253,248,245,0.1)]">
                     <HiOutlinePresentationChartBar className="w-8 h-8" />
                 </div>
                 <h3 className="text-2xl font-black text-[#fdf8f5] mb-4 uppercase italic tracking-tighter">Analysis Speed</h3>
@@ -320,7 +320,7 @@ export default function Analytics() {
 
         {/* Scatter Chart - Sentiment vs Bias */}
         <motion.div 
-          className="lg:col-span-12 saas-card p-12 bg-[#261a14]/40 border-[#fdf8f5]/10 rounded-none shadow-2xl"
+          className="lg:col-span-12 saas-card p-12 bg-[#261a14]/40 border-[#fdf8f5]/10 rounded-2xl shadow-2xl"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
         >
@@ -332,11 +332,11 @@ export default function Analytics() {
             <div className="flex gap-4">
                 <div className="flex items-center gap-6 px-6 py-2.5 bg-[#1a0f0a]/60 border border-[#fdf8f5]/10">
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-[#ef4444] rounded-none" />
+                        <div className="w-2 h-2 bg-[#ef4444] rounded-2xl" />
                         <span className="text-[8px] font-black text-[#8d7b68] uppercase tracking-widest">Negative</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-[#10b981] rounded-none" />
+                        <div className="w-2 h-2 bg-[#10b981] rounded-2xl" />
                         <span className="text-[8px] font-black text-[#8d7b68] uppercase tracking-widest">Positive</span>
                     </div>
                 </div>
@@ -404,7 +404,7 @@ export default function Analytics() {
                       const data = payload[0].payload;
                       const isNegative = data.sentiment < 0;
                       return (
-                        <div className="bg-[#1a0f0a] border border-[#fdf8f5]/20 p-8 shadow-[0_40px_80px_rgba(0,0,0,0.9)] rounded-none min-w-[280px] backdrop-blur-xl">
+                        <div className="bg-[#1a0f0a] border border-[#fdf8f5]/20 p-8 shadow-[0_40px_80px_rgba(0,0,0,0.9)] rounded-2xl min-w-[280px] backdrop-blur-xl">
                           <div className="flex items-center justify-between mb-4 border-b border-[#fdf8f5]/10 pb-4">
                              <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic">Article Intelligence</p>
                              <div className={`w-2.5 h-2.5 ${isNegative ? 'bg-[#ef4444]' : 'bg-[#10b981]'}`} />
@@ -457,7 +457,7 @@ export default function Analytics() {
 
         {/* Intelligence Archive Bento */}
         <motion.div 
-          className="lg:col-span-12 saas-card overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-[0_0_60px_rgba(0,0,0,0.6)]"
+          className="lg:col-span-12 saas-card overflow-hidden bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.6)]"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
         >
@@ -476,7 +476,7 @@ export default function Analytics() {
                   value={searchQuery} 
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="QUERY SEMANTIC DATABASE..." 
-                  className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 pl-16 pr-8 py-5 text-[11px] font-black uppercase tracking-[0.25em] rounded-none outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+                  className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 pl-16 pr-8 py-5 text-[11px] font-black uppercase tracking-[0.25em] rounded-2xl outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
                 />
              </div>
           </div>
@@ -513,7 +513,7 @@ export default function Analytics() {
                          </td>
                          <td className="px-12 py-10">
                             <div className="flex items-center gap-6">
-                               <div className="flex-1 w-28 h-2 bg-[#fdf8f5]/5 rounded-none overflow-hidden border border-[#fdf8f5]/5">
+                               <div className="flex-1 w-28 h-2 bg-[#fdf8f5]/5 rounded-2xl overflow-hidden border border-[#fdf8f5]/5">
                                   <div className="h-full bg-[#fdf8f5] shadow-[0_0_12px_rgba(253,248,245,0.5)]" style={{ width: `${Math.abs(item.bias_score)}%` }} />
                                 </div>
                                <span className="text-[10px] font-black text-[#fdf8f5] tabular-nums tracking-tighter italic">{item.bias_score > 0 ? `+${item.bias_score.toFixed(1)}` : item.bias_score.toFixed(1)}</span>

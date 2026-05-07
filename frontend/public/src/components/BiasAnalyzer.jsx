@@ -225,19 +225,20 @@ export default function BiasAnalyzer() {
                         <motion.div 
                             initial={{ opacity: 0, y: 40 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10"
+                            className="w-full space-y-8 relative z-10"
                         >
-                            {/* Result Stats - Left Cluster */}
-                            <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <div className="glass-card p-8 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 group rounded-2xl shadow-2xl relative overflow-hidden">
+                            {/* Top Row: Core Metrics */}
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-stretch">
+                                {/* Card 1: Sentiment Polarity */}
+                                <div className="glass-card p-8 md:col-span-1 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 group rounded-2xl shadow-2xl relative overflow-hidden flex flex-col justify-between text-center">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#fdf8f5]/5 blur-[60px]" />
-                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">Bias Result</p>
-                                    <div className="text-7xl font-black text-[#fdf8f5] mb-4 italic tracking-tighter tabular-nums leading-none">{results.bias_score}</div>
-                                    <div className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.3em] mb-10 italic opacity-80">{results.bias_level}</div>
-                                    <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-2xl overflow-hidden relative border border-[#fdf8f5]/5 shadow-inner">
+                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10 mx-auto">Sentiment Polarity</p>
+                                    <div className="text-7xl font-black text-[#fdf8f5] mb-4 italic tracking-tight tabular-nums leading-none">{results.bias_score}</div>
+                                    <div className="text-[11px] font-black text-[#fdf8f5] uppercase tracking-[0.4em] mb-10 italic opacity-80">{results.bias_level}</div>
+                                    <div className="h-3 w-full bg-[#fdf8f5]/5 rounded-2xl overflow-hidden relative border border-[#fdf8f5]/5 shadow-inner mt-2">
                                         <motion.div 
                                             initial={{ width: 0 }}
-                                            animate={{ width: `${Math.abs(results.bias_score)}%` }}
+                                            animate={{ width: `${Math.min(100, Math.max(0, results.bias_score))}%` }}
                                             className="h-full bg-gradient-to-r from-[#F97316] to-[#EC4899] shadow-[0_0_20px_rgba(236,72,153,0.4)]" 
                                             transition={{ duration: 2, ease: "easeOut" }}
                                         />
@@ -248,81 +249,85 @@ export default function BiasAnalyzer() {
                                     </div>
                                 </div>
 
-                                <div className="glass-card p-10 md:col-span-2 flex flex-col justify-between bg-[#1a0f0a]/40 border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden">
-                                     <div className="absolute bottom-0 left-0 w-full h-[1px] bg-[#fdf8f5]/10" />
-                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-10 italic underline decoration-[#fdf8f5]/10">Analysis Breakdown</p>
-                                    <div className="space-y-10">
-                                        {[
-                                            { label: "Language Style", value: results.linguistic_bias, color: "bg-[#0EA5E9]", shadow: "shadow-[0_0_12px_rgba(14,165,233,0.4)]" },
-                                            { label: "Topic Leaning", value: results.framing_bias, color: "#8B5CF6", shadow: "shadow-[0_0_12px_rgba(139,92,246,0.3)]" },
-                                            { label: "People & Places", value: results.entity_bias, color: "bg-[#10B981]", shadow: "shadow-[0_0_12px_rgba(16,185,129,0.3)]" },
-                                        ].map((metric, i) => (
-                                            <div key={i} className="space-y-4 group/metric">
-                                                <div className="flex justify-between items-center text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic group-hover/metric:text-[#fdf8f5] transition-colors">
-                                                    <span>{metric.label}</span>
-                                                    <span className="text-[#fdf8f5] tabular-nums tracking-widest">{metric.value}</span>
+                                {/* Card 2: Bias Indicators */}
+                                <div className="glass-card p-8 md:col-span-2 bg-[#1a0f0a]/40 border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden">
+                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-8 italic underline decoration-[#fdf8f5]/10">Bias Indicators</p>
+                                    <div className="flex flex-wrap gap-4">
+                                        {results.indicators && results.indicators.length > 0 ? (
+                                            results.indicators.map((indicator, i) => (
+                                                <div key={i} className="px-6 py-3 bg-[#1a0f0a] border border-[#fdf8f5]/5 rounded-xl flex items-center gap-3 text-[10px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic shadow-2xl">
+                                                    <span className="text-[#8d7b68]">♦</span>
+                                                    {indicator}
                                                 </div>
-                                                <div className="h-[2px] w-full bg-[#fdf8f5]/5 rounded-2xl overflow-hidden relative">
-                                                    <motion.div 
-                                                        initial={{ width: 0 }}
-                                                        animate={{ width: `${(parseInt(metric.value)||50)}%` }}
-                                                        className={`h-full ${metric.color} ${metric.shadow}`}
-                                                        transition={{ delay: 0.8 + (i*0.2), duration: 1.5 }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        ))}
+                                            ))
+                                        ) : (
+                                            <div className="px-6 py-3 bg-[#1a0f0a] border border-[#fdf8f5]/5 rounded-xl text-[10px] text-[#4d3c2e] italic font-black uppercase tracking-widest opacity-60">No indicators detected</div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Card 3: Source Pulse Signature */}
+                                <div className="glass-card p-8 md:col-span-1 flex flex-col justify-between bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative group">
+                                    <div>
+                                        <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-8 italic underline decoration-[#fdf8f5]/10">Source Pulse Signature</p>
+                                        <div className="p-6 bg-[#1a0f0a] rounded-2xl border border-[#fdf8f5]/10 shadow-2xl relative z-10">
+                                            <p className="text-sm font-black text-[#fdf8f5] break-words italic tracking-tighter uppercase leading-tight">
+                                                {results.source || "MANUAL-ENTRY"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-4 pt-8 relative z-10">
+                                        <div className="flex items-center gap-4 text-[8px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic">
+                                            <HiOutlineCubeTransparent className="w-5 h-5 text-[#fdf8f5]/20" />
+                                            STATUS: <span className="text-[#8d7b68]">VERIFIED</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Metadata Pane - Right Cluster */}
-                            <div className="lg:col-span-4 space-y-6">
-                                <div className="glass-card p-8 h-full flex flex-col justify-between bg-[#fdf8f5]/[0.02] border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative group">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                                    <div>
-                                        <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-8 italic underline decoration-[#fdf8f5]/10">About the Source</p>
-                                        <div className="p-6 bg-[#1a0f0a] rounded-2xl border border-[#fdf8f5]/10 shadow-2xl relative z-10">
-                                            <p className="text-base font-black text-[#fdf8f5] break-words italic tracking-tighter uppercase leading-[0.9]">
-                                                {results.source || "SYNTHETIC_TEXT_AGENT"}
-                                            </p>
+                            {/* Bottom Row: Advanced Analysis */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                                {/* Card 4: Neural Entity Salience */}
+                                <div className="glass-card p-8 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl">
+                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-10 italic underline decoration-[#fdf8f5]/10">Neural Entity Salience</p>
+                                    <div className="grid grid-cols-2 gap-8">
+                                        <div className="space-y-6">
+                                            <p className="text-[8px] font-black text-[#4d3c2e] uppercase tracking-[0.4em] italic border-l-2 border-[#8d7b68]/30 pl-4 ml-1">Subject:_Personae</p>
+                                            <div className="p-5 bg-[#1a0f0a] rounded-xl border border-[#fdf8f5]/5 shadow-2xl">
+                                                <p className="text-[10px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic">
+                                                    {(results.entities?.personae && results.entities.personae.length > 0) 
+                                                        ? results.entities.personae[0] 
+                                                        : "NULL_DETECTION"}
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="flex flex-col gap-6 pt-10 relative z-10">
-                                        <div className="flex items-center gap-4 text-[9px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic">
-                                            <HiOutlineCubeTransparent className="w-6 h-6 text-[#fdf8f5]/20" />
-                                            STATUS: <span className="text-[#8d7b68]">VERIFIED</span>
-                                        </div>
-                                        <div className="flex items-center gap-4 text-[9px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic">
-                                            <HiOutlineChartSquareBar className="w-6 h-6 text-[#fdf8f5]/20" />
-                                            SPEED: <span className="text-[#8d7b68]">Normal</span>
+                                        <div className="space-y-6">
+                                            <p className="text-[8px] font-black text-[#4d3c2e] uppercase tracking-[0.4em] italic border-l-2 border-[#8d7b68]/30 pl-4 ml-1">Subject:_Organization</p>
+                                            <div className="p-5 bg-[#1a0f0a] rounded-xl border border-[#fdf8f5]/5 shadow-2xl">
+                                                <p className="text-[10px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic">
+                                                    {(results.entities?.organization && results.entities.organization.length > 0) 
+                                                        ? results.entities.organization[0] 
+                                                        : "NULL_DETECTION"}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Explanation */}
-                                <div className="glass-card p-8 bg-[#1a0f0a]/60 border-[#fdf8f5]/10 rounded-2xl shadow-2xl relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 w-40 h-40 bg-[#0EA5E9]/5 blur-[80px] group-hover:bg-[#0EA5E9]/10 transition-colors duration-1000" />
-                                    <h3 className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.4em] mb-6 italic underline decoration-[#fdf8f5]/10">Logic_Trace Analysis</h3>
-                                    
-                                    <div className="space-y-3 mt-2">
-                                      {results.explanation && results.explanation.length > 0 ? (
-                                        results.explanation.map((line, i) => (
-                                          <div
-                                            key={i}
-                                            className="p-4 border border-[#fdf8f5]/5 bg-[#1a0f0a] rounded-xl backdrop-blur-sm"
-                                          >
-                                            <p className="text-[12px] text-[#fdf8f5] leading-relaxed font-medium tracking-wide">
-                                              <span className="text-[#0EA5E9] mr-2 font-bold">»</span>
-                                              {line}
+                                {/* Card 5: Logic Trace Analysis */}
+                                <div className="glass-card p-8 bg-[#1a0f0a]/40 border-[#fdf8f5]/10 rounded-2xl shadow-2xl">
+                                    <p className="text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-8 italic underline decoration-[#fdf8f5]/10">Logic_Trace Analysis</p>
+                                    <div className="p-8 bg-[#1a0f0a] rounded-2xl border border-[#fdf8f5]/5 shadow-2xl min-h-[140px] flex items-center">
+                                        {results.explanation && results.explanation.length > 0 ? (
+                                            <p className="text-[11px] font-medium text-[#fdf8f5]/90 tracking-wide leading-relaxed">
+                                                <span className="text-[#0EA5E9] mr-3 font-black">»</span>
+                                                {results.explanation[0]}
                                             </p>
-                                          </div>
-                                        ))
-                                      ) : (
-                                        <div className="text-[11px] text-[#4d3c2e] italic">
-                                          No explanation available
-                                        </div>
-                                      )}
+                                        ) : (
+                                            <p className="text-[11px] font-black text-[#4d3c2e] uppercase tracking-[0.15em] italic leading-relaxed opacity-60">
+                                                Neural analysis stream processing...
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </div>

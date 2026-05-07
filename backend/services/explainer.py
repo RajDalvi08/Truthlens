@@ -27,7 +27,7 @@ def extract_key_sentences(text, indicators):
                 matched.append(sent.strip())
                 break
 
-    return matched[:2]
+    return [s[:150] + "..." if len(s) > 150 else s for s in matched[:2]]
 
 def generate_explanation(text, indicators, score):
     explanation = []

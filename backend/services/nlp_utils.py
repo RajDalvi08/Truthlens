@@ -56,6 +56,32 @@ def has_named_entities(text: str) -> bool:
     return False
 
 
+def extract_entities(text: str) -> dict:
+    """
+    Extract persons and organizations from text for UI display and entity bias breakdown.
+    """
+    if not text.strip():
+        return {"persons": [], "organizations": []}
+        
+    doc = nlp(text)
+    persons = []
+    organizations = []
+    
+    for ent in doc.ents:
+        ent_text = ent.text.strip()
+        if not ent_text or len(ent_text) < 2:
+            continue
+        if ent.label_ == "PERSON" and ent_text not in persons:
+            persons.append(ent_text)
+        elif ent.label_ in {"ORG", "NORP", "GPE"} and ent_text not in organizations:
+            organizations.append(ent_text)
+            
+    return {
+        "persons": persons[:8],
+        "organizations": organizations[:8]
+    }
+
+
 def split_text(text: str, max_chars: int = 1500) -> List[str]:
     """
     Simplistic text splitter that breaks text into chunks of max_chars.

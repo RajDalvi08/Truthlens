@@ -23,8 +23,8 @@ import Settings from "./components/Settings.jsx";
 import Journal from "./components/Journal.jsx";
 import GlobePage from "./components/GlobePage.jsx";
 import { AuthProvider } from "./AuthContext";
-import { SearchProvider } from "./SearchContext";
 import { NotificationProvider } from "./NotificationContext";
+import { SearchProvider } from "./SearchContext";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
@@ -40,10 +40,10 @@ function App() {
     : (isSidebarCollapsed ? 'var(--sidebar-width-collapsed)' : 'var(--sidebar-width)');
 
   return (
-    <NotificationProvider>
-    <SearchProvider>
     <AuthProvider>
-      <div className={`flex min-h-screen mesh-bg transition-colors duration-300 font-sans text-white`}>
+      <NotificationProvider>
+        <SearchProvider>
+          <div className={`flex min-h-screen mesh-bg transition-colors duration-300 font-sans text-white`}>
           
           {!isSidebarHidden && (
             <Sidebar 
@@ -88,9 +88,9 @@ function App() {
             </main>
           </div>
       </div>
+        </SearchProvider>
+      </NotificationProvider>
     </AuthProvider>
-    </SearchProvider>
-    </NotificationProvider>
   );
 }
 

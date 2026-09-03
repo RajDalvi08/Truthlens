@@ -14,9 +14,7 @@ import {
   HiOutlineBookOpen,
   HiOutlineLogout,
   HiOutlineChevronLeft,
-  HiOutlineChevronRight,
-  HiOutlineGlobeAlt,
-  HiOutlineLightBulb
+  HiOutlineChevronRight
 } from "react-icons/hi";
 
 const navItems = [
@@ -27,14 +25,14 @@ const navItems = [
     { name: "Source Compare", path: "/compare", icon: HiOutlineScale },
   ]},
   { group: "Research", items: [
-    { name: 'Dashboard', path: '/analytics', icon: HiOutlineChartBar }, // Changed from "Analytics"
-    { name: 'News Comparison', path: '/event', icon: HiOutlineGlobeAlt }, // Changed from "Event Timeline", icon changed
-    { name: 'Reports', path: '/reports', icon: HiOutlineDocumentReport }, // New item, replaces "Global Map"
-    { name: 'Article Database', path: '/datasets', icon: HiOutlineDatabase }, // Changed from "Datasets"
+    { name: "Analytics", path: "/analytics", icon: HiOutlineDocumentReport },
+    { name: "Event Timeline", path: "/event", icon: HiOutlineCalendar },
+    { name: "Global Map", path: "/globe", icon: HiOutlineMap },
+    { name: "Datasets", path: "/datasets", icon: HiOutlineDatabase },
   ]},
   { group: "Resources", items: [
     { name: "Journal", path: "/journal", icon: HiOutlineBookOpen },
-    { name: 'How it Works', path: '/methodology', icon: HiOutlineLightBulb }, // Changed from "Methodology", icon changed
+    { name: "Methodology", path: "/methodology", icon: HiOutlineScale },
   ]}
 ];
 
@@ -49,16 +47,16 @@ export default function Sidebar({ isCollapsed, onToggle }) {
       style={{ width: isCollapsed ? 'var(--sidebar-width-collapsed)' : 'var(--sidebar-width)' }}
     >
       {/* Logo & Toggle */}
-      <div className={`border-b border-[#fdf8f5]/10 flex transition-all duration-300 ${isCollapsed ? 'flex-col items-center p-4 gap-4' : 'items-center justify-between px-6 py-6'}`}>
-        <Link to="/home" className="flex items-center gap-4 min-w-0 group">
-          <div className="w-10 h-10 min-w-[40px] rounded-2xl bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-xl shrink-0 italic shadow-[0_0_20px_rgba(253,248,245,0.2)] group-hover:scale-110 transition-transform">TL</div>
-          {!isCollapsed && <span className="text-xl font-black tracking-tighter uppercase italic whitespace-nowrap overflow-visible">TruthLens</span>}
+      <div className={`border-b border-[#fdf8f5]/10 flex transition-all duration-300 ${isCollapsed ? 'flex-col items-center p-4 gap-4' : 'items-center justify-between p-8'}`}>
+        <Link to="/home" className="flex items-center gap-4 overflow-hidden group">
+          <div className="w-10 h-10 min-w-[40px] rounded-none bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-xl shrink-0 italic shadow-[0_0_20px_rgba(253,248,245,0.2)] group-hover:scale-110 transition-transform">TL</div>
+          {!isCollapsed && <span className="text-xl font-black tracking-tighter uppercase italic whitespace-nowrap">TruthLens</span>}
         </Link>
         <button 
           onClick={onToggle}
-          className={`p-2 hover:bg-[#fdf8f5]/5 rounded-2xl text-[#8d7b68] transition-all hidden md:flex shrink-0 border border-transparent hover:border-[#fdf8f5]/20 ${isCollapsed ? 'mt-2' : ''}`}
+          className={`p-2 hover:bg-[#fdf8f5]/5 rounded-none text-[#8d7b68] transition-all hidden md:block border border-transparent hover:border-[#fdf8f5]/20 ${isCollapsed ? 'mt-4' : ''}`}
         >
-          {isCollapsed ? <HiOutlineChevronRight className="w-5 h-5" /> : <HiOutlineChevronLeft className="w-5 h-5" />}
+          {isCollapsed ? <HiOutlineChevronRight className="w-6 h-6" /> : <HiOutlineChevronLeft className="w-6 h-6" />}
         </button>
       </div>
 
@@ -80,8 +78,8 @@ export default function Sidebar({ isCollapsed, onToggle }) {
                     to={item.path}
                     className={`flex items-center transition-all group relative overflow-hidden ${
                       isCollapsed 
-                        ? "w-full h-12 justify-center rounded-2xl" 
-                        : "gap-4 px-4 py-3 rounded-2xl w-full"
+                        ? "w-full h-12 justify-center rounded-none" 
+                        : "gap-4 px-4 py-3 rounded-none w-full"
                     } ${
                       isActive 
                         ? "bg-[#fdf8f5] text-[#1a0f0a] italic shadow-[0_0_30px_rgba(253,248,245,0.1)]" 
@@ -105,29 +103,6 @@ export default function Sidebar({ isCollapsed, onToggle }) {
         ))}
       </nav>
 
-      {/* Ticker / Scrolling Line */}
-      {!isCollapsed && (
-        <div className="px-6 py-4 bg-[#fdf8f5]/[0.02] border-t border-[#fdf8f5]/5 overflow-hidden">
-          <motion.div 
-            animate={{ x: [0, -400] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="whitespace-nowrap flex items-center gap-8"
-          >
-            {[
-              "SYSTEM STATUS: OPTIMAL",
-              "BIAS DETECTION: ACTIVE",
-              "NEURAL ENGINE: SYNCHRONIZED",
-              "DATA PIPELINE: LIVE"
-            ].map((text, i) => (
-              <span key={i} className="text-[8px] font-black text-[#4d3c2e] uppercase tracking-[0.3em] italic flex items-center gap-2">
-                <div className="w-1 h-1 bg-[#fdf8f5] rounded-full animate-pulse" />
-                {text}
-              </span>
-            ))}
-          </motion.div>
-        </div>
-      )}
-
       {/* Footer */}
       <div className={`border-t border-[#fdf8f5]/10 space-y-2 transition-all duration-300 ${isCollapsed ? 'p-0' : 'p-6'}`}>
         <button
@@ -136,28 +111,13 @@ export default function Sidebar({ isCollapsed, onToggle }) {
             navigate("/login");
           }}
           className={`flex items-center text-[11px] font-black uppercase tracking-widest text-[#8d7b68] hover:text-[#1a0f0a] hover:bg-[#fdf8f5] transition-all group italic ${
-            isCollapsed ? 'w-full h-12 justify-center rounded-2xl' : 'w-full gap-4 px-4 py-3 rounded-2xl'
+            isCollapsed ? 'w-full h-12 justify-center rounded-none' : 'w-full gap-4 px-4 py-3 rounded-none'
           }`}
           title={isCollapsed ? "Logout" : ""}
         >
           <HiOutlineLogout className="w-5 h-5 shrink-0" />
           {!isCollapsed && <span className="whitespace-nowrap">Logout Analytics</span>}
         </button>
-      </div>
-
-      {/* Animated Scrolling Line */}
-      <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-[#fdf8f5]/5 overflow-hidden pointer-events-none">
-        <motion.div 
-          animate={{ 
-            y: ['-100%', '100%'] 
-          }}
-          transition={{ 
-            duration: 8, 
-            repeat: Infinity, 
-            ease: "linear" 
-          }}
-          className="w-full h-64 bg-gradient-to-b from-transparent via-[#fdf8f5]/30 to-transparent"
-        />
       </div>
     </aside>
   );

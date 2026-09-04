@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Sidebar from "./components/Sidebar.jsx";
@@ -29,13 +29,35 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== "undefined" ? window.innerWidth >= 768 : true
+  );
   const location = useLocation();
+
+  // Track window resizing to dynamically update layout margins
+  useEffect(() => {
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 768;
+      setIsDesktop(desktop);
+      if (desktop) {
+        setIsMobileSidebarOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Auto-close mobile sidebar when navigating routes
+  useEffect(() => {
+    setIsMobileSidebarOpen(false);
+  }, [location.pathname]);
 
   // Hide sidebar on Auth pages AND Home page
   const isSidebarHidden = ["/", "/login", "/register", "/home"].includes(location.pathname);
 
-  // Dynamic sidebar width for margin
-  const sidebarMargin = isSidebarHidden 
+  // Dynamic sidebar width for margin on desktop; 0px on mobile
+  const sidebarMargin = isSidebarHidden || !isDesktop
     ? '0px' 
     : (isSidebarCollapsed ? 'var(--sidebar-width-collapsed)' : 'var(--sidebar-width)');
 
@@ -43,22 +65,28 @@ function App() {
     <AuthProvider>
       <NotificationProvider>
         <SearchProvider>
-          <div className={`flex min-h-screen mesh-bg transition-colors duration-300 font-sans text-white`}>
+          <div className="flex min-h-screen mesh-bg transition-colors duration-300 font-sans text-white relative overflow-x-hidden">
           
           {!isSidebarHidden && (
             <Sidebar 
               isCollapsed={isSidebarCollapsed} 
               onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
+              isMobileOpen={isMobileSidebarOpen}
+              onCloseMobile={() => setIsMobileSidebarOpen(false)}
             />
           )}
 
           <div 
-            className="flex-1 flex flex-col layout-transition" 
+            className="flex-1 flex flex-col layout-transition min-w-0" 
             style={{ marginLeft: sidebarMargin }}
           >
-            {!isSidebarHidden && <TopHeader />}
+            {!isSidebarHidden && (
+              <TopHeader 
+                onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
+              />
+            )}
 
-            <main className={`flex-1 ${!isSidebarHidden ? 'p-10' : ''}`}>
+            <main className={`flex-1 ${!isSidebarHidden ? 'p-4 sm:p-6 md:p-8 lg:p-10' : ''} overflow-x-hidden`}>
               <AnimatePresence mode="wait">
                 <Routes location={location} key={location.pathname}>
                   <Route path="/" element={<Login />} />

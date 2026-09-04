@@ -91,19 +91,19 @@ export default function Revenue() {
           className="relative z-10"
         >
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-[#fdf8f5]/10 pb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 border-b border-[#fdf8f5]/10 pb-8 sm:pb-12">
             <div>
-              <h1 className="text-5xl font-black text-[#fdf8f5] tracking-tighter uppercase italic leading-none">Revenue Overview</h1>
-              <p className="text-[#8d7b68] text-[10px] mt-4 font-black uppercase tracking-[0.3em] italic underline decoration-[#fdf8f5]/10 leading-relaxed">Status: OPERATIONAL // Neural Node Secure Flux</p>
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#fdf8f5] tracking-tighter uppercase italic leading-none">Revenue Overview</h1>
+              <p className="text-[#8d7b68] text-[9px] sm:text-[10px] mt-3 sm:mt-4 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] italic underline decoration-[#fdf8f5]/10 leading-relaxed">Status: OPERATIONAL // Neural Node Secure Flux</p>
             </div>
-            <div className="flex gap-6">
+            <div className="flex flex-wrap gap-3 sm:gap-6">
               <button 
-                className="px-10 py-4 rounded-2xl border border-[#fdf8f5]/10 bg-[#fdf8f5]/5 hover:bg-[#fdf8f5]/10 transition-all font-black text-[10px] uppercase tracking-[0.3em] text-[#8d7b68] hover:text-[#fdf8f5] italic shadow-xl"
+                className="w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 rounded-2xl border border-[#fdf8f5]/10 bg-[#fdf8f5]/5 hover:bg-[#fdf8f5]/10 transition-all font-black text-[9px] sm:text-[10px] uppercase tracking-[0.25em] sm:tracking-[0.3em] text-[#8d7b68] hover:text-[#fdf8f5] italic shadow-xl"
               >
                 Download Report
               </button>
               <button 
-                className="btn-primary px-10 py-4 shadow-2xl transition-all italic"
+                className="btn-primary w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 text-[9px] sm:text-[10px] shadow-2xl transition-all italic"
               >
                 Create Summary
               </button>
@@ -111,19 +111,19 @@ export default function Revenue() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-10 mt-6 sm:mt-12">
             {stats.map((stat, i) => (
               <motion.div 
                 key={i}
                 variants={itemVariants}
-                className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-2xl p-10 relative overflow-hidden group transition-all duration-700 hover:border-[#fdf8f5]/40 shadow-2xl"
+                className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-2xl p-5 sm:p-8 md:p-10 relative overflow-hidden group transition-all duration-700 hover:border-[#fdf8f5]/40 shadow-2xl"
               >
                 <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-[#fdf8f5]/5 rounded-2xl blur-[60px] group-hover:bg-[#fdf8f5]/10 transition-all duration-1000"></div>
                 
-                <h3 className="text-[9px] text-[#8d7b68] font-black uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">{stat.label}</h3>
+                <h3 className="text-[8px] sm:text-[9px] text-[#8d7b68] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-4 sm:mb-6 italic underline decoration-[#fdf8f5]/10">{stat.label}</h3>
                 <div className="flex items-end justify-between relative z-10">
-                  <span className="text-4xl font-black text-[#fdf8f5] tracking-tighter tabular-nums italic shadow-2xl">{stat.value}</span>
-                  <span className={`text-[10px] font-black italic flex items-center gap-2 uppercase tracking-widest ${stat.isPositive ? 'text-[#fdf8f5]' : 'text-[#8d7b68]'}`}>
+                  <span className="text-2xl sm:text-3xl md:text-4xl font-black text-[#fdf8f5] tracking-tighter tabular-nums italic shadow-2xl">{stat.value}</span>
+                  <span className={`text-[9px] sm:text-[10px] font-black italic flex items-center gap-1 sm:gap-2 uppercase tracking-widest ${stat.isPositive ? 'text-[#fdf8f5]' : 'text-[#8d7b68]'}`}>
                     {stat.isPositive ? '▲' : '▼'} {stat.change}
                   </span>
                 </div>
@@ -134,26 +134,26 @@ export default function Revenue() {
           {/* Main Chart */}
           <motion.div 
             variants={itemVariants}
-            className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-2xl p-12 relative overflow-hidden mt-12 shadow-2xl group"
+            className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-2xl p-4 sm:p-8 md:p-12 relative overflow-hidden mt-6 sm:mt-12 shadow-2xl group"
           >
             <div className="absolute top-0 left-0 w-2 h-full bg-[#fdf8f5]/5 group-hover:bg-[#fdf8f5]/20 transition-all" />
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-16 gap-4 sm:gap-8">
               <div>
-                <h3 className="text-3xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Revenue Trends</h3>
-                <p className="text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.3em] mt-3 italic underline decoration-[#fdf8f5]/10">Earnings vs Expenses</p>
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Revenue Trends</h3>
+                <p className="text-[9px] sm:text-[10px] text-[#8d7b68] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] mt-1 sm:mt-3 italic underline decoration-[#fdf8f5]/10">Earnings vs Expenses</p>
               </div>
-              <div className="flex items-center gap-10">
-                <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-4 sm:gap-10">
+                <div className="flex items-center gap-2 sm:gap-4">
                   <div className="w-2.5 h-2.5 rounded-2xl bg-[#10b981] shadow-[0_0_12px_rgba(16,185,129,0.6)]"></div>
-                  <span className="text-[10px] text-[#d6c2b8] font-black uppercase tracking-[0.3em] italic">Revenue</span>
+                  <span className="text-[9px] sm:text-[10px] text-[#d6c2b8] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] italic">Revenue</span>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
                   <div className="w-2.5 h-2.5 rounded-2xl bg-[#ef4444] shadow-[0_0_12px_rgba(239,68,68,0.4)]"></div>
-                  <span className="text-[10px] text-[#d6c2b8] font-black uppercase tracking-[0.3em] italic">Protocol Costs</span>
+                  <span className="text-[9px] sm:text-[10px] text-[#d6c2b8] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] italic">Protocol Costs</span>
                 </div>
               </div>
             </div>
-            <div className="w-full h-[400px] relative z-10">
+            <div className="w-full h-[240px] sm:h-[320px] md:h-[400px] relative z-10">
               <AreaChart data={revenueData} />
             </div>
           </motion.div>
@@ -161,20 +161,20 @@ export default function Revenue() {
           {/* Recent Transactions Table */}
           <motion.div 
             variants={itemVariants}
-            className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-2xl overflow-hidden mt-12 shadow-2xl"
+            className="bg-[#261a14]/60 border border-[#fdf8f5]/10 rounded-2xl overflow-hidden mt-6 sm:mt-12 shadow-2xl"
           >
-            <div className="p-10 border-b border-[#fdf8f5]/10 bg-[#fdf8f5]/[0.02]">
-              <h3 className="text-2xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Recent Subscriptions</h3>
-              <p className="text-[9px] text-[#8d7b68] uppercase tracking-[0.3em] mt-2 italic">Subscription History</p>
+            <div className="p-4 sm:p-6 md:p-10 border-b border-[#fdf8f5]/10 bg-[#fdf8f5]/[0.02]">
+              <h3 className="text-lg sm:text-2xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Recent Subscriptions</h3>
+              <p className="text-[8px] sm:text-[9px] text-[#8d7b68] uppercase tracking-[0.2em] sm:tracking-[0.3em] mt-1 sm:mt-2 italic">Subscription History</p>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead className="bg-[#1a0f0a]/80 text-[#8d7b68] font-black text-[10px] uppercase tracking-[0.3em] italic border-b border-[#fdf8f5]/5">
+            <div className="overflow-x-auto custom-scrollbar">
+              <table className="w-full text-left min-w-[500px]">
+                <thead className="bg-[#1a0f0a]/80 text-[#8d7b68] font-black text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] italic border-b border-[#fdf8f5]/5">
                   <tr>
-                    <th className="px-10 py-6 font-black">User ID</th>
-                    <th className="px-10 py-6 font-black">Subscription Plan</th>
-                    <th className="px-10 py-6 font-black">Price</th>
-                    <th className="px-10 py-6 font-black">Status</th>
+                    <th className="px-4 sm:px-6 md:px-10 py-4 sm:py-6 font-black">User ID</th>
+                    <th className="px-4 sm:px-6 md:px-10 py-4 sm:py-6 font-black">Subscription Plan</th>
+                    <th className="px-4 sm:px-6 md:px-10 py-4 sm:py-6 font-black">Price</th>
+                    <th className="px-4 sm:px-6 md:px-10 py-4 sm:py-6 font-black">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#fdf8f5]/5">
@@ -189,11 +189,11 @@ export default function Revenue() {
                       whileHover={{ backgroundColor: "rgba(253,248,245,0.03)" }}
                       className="transition-all group relative"
                     >
-                      <td className="px-10 py-8 font-black text-[#4d3c2e] text-[11px] tracking-widest italic group-hover:text-[#8d7b68] transition-colors">{row.id}</td>
-                      <td className="px-10 py-8 text-[#fdf8f5] font-black uppercase text-sm italic tracking-tighter leading-none group-hover:translate-x-2 transition-transform">{row.plan}</td>
-                      <td className="px-10 py-8 font-black text-[#fdf8f5] tabular-nums text-lg italic tracking-tighter shadow-2xl">{row.amount}</td>
-                      <td className="px-10 py-8">
-                        <span className={`px-5 py-2 rounded-2xl text-[9px] font-black uppercase tracking-[0.3em] italic shadow-xl transition-all ${
+                      <td className="px-4 sm:px-6 md:px-10 py-4 sm:py-6 md:py-8 font-black text-[#4d3c2e] text-[10px] sm:text-[11px] tracking-widest italic group-hover:text-[#8d7b68] transition-colors">{row.id}</td>
+                      <td className="px-4 sm:px-6 md:px-10 py-4 sm:py-6 md:py-8 text-[#fdf8f5] font-black uppercase text-xs sm:text-sm italic tracking-tighter leading-none group-hover:translate-x-2 transition-transform">{row.plan}</td>
+                      <td className="px-4 sm:px-6 md:px-10 py-4 sm:py-6 md:py-8 font-black text-[#fdf8f5] tabular-nums text-sm sm:text-lg italic tracking-tighter shadow-2xl">{row.amount}</td>
+                      <td className="px-4 sm:px-6 md:px-10 py-4 sm:py-6 md:py-8">
+                        <span className={`px-3 sm:px-5 py-1 sm:py-2 rounded-2xl text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] italic shadow-xl transition-all ${
                           row.status === 'Active' ? 'bg-[#fdf8f5] text-[#1a0f0a]' : 'bg-[#fdf8f5]/5 text-[#8d7b68] border border-[#fdf8f5]/10 group-hover:border-[#fdf8f5]/30 group-hover:text-[#fdf8f5]'
                         }`}>
                           {row.status}

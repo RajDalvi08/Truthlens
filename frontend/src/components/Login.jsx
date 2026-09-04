@@ -36,14 +36,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1a0f0a] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans mesh-bg">
+    <div className="min-h-screen bg-[#1a0f0a] flex flex-col justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8 font-sans mesh-bg">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <Link to="/" className="inline-flex items-center gap-3 mb-8 group">
-          <div className="w-12 h-12 rounded-2xl bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-2xl shadow-2xl italic group-hover:scale-110 transition-transform">TL</div>
-          <span className="text-3xl font-black text-[#fdf8f5] tracking-tighter uppercase italic">TruthLens</span>
+        <Link to="/" className="inline-flex items-center gap-3 mb-6 sm:mb-8 group">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center font-black text-xl sm:text-2xl shadow-2xl italic group-hover:scale-110 transition-transform">TL</div>
+          <span className="text-2xl sm:text-3xl font-black text-[#fdf8f5] tracking-tighter uppercase italic">TruthLens</span>
         </Link>
-        <h2 className="text-4xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">User Login</h2>
-        <p className="mt-3 text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic underline decoration-[#fdf8f5]/10">
+        <h2 className="text-3xl sm:text-4xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">User Login</h2>
+        <p className="mt-2 sm:mt-3 text-[9px] sm:text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic underline decoration-[#fdf8f5]/10">
           Or{' '}
           <Link to="/register" className="text-[#fdf8f5] hover:tracking-widest transition-all">
             Create New Account
@@ -51,8 +51,8 @@ export default function Login() {
         </p>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="glass-card py-10 px-8 border border-[#fdf8f5]/10 sm:rounded-2xl sm:px-12 bg-[#261a14]/60 backdrop-blur-3xl shadow-[0_0_60px_rgba(0,0,0,0.6)]">
+      <div className="mt-8 sm:mt-10 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="glass-card py-8 sm:py-10 px-4 sm:px-12 border border-[#fdf8f5]/10 rounded-2xl bg-[#261a14]/60 backdrop-blur-3xl shadow-[0_0_60px_rgba(0,0,0,0.6)]">
           
           {error && (
             <div className="mb-8 p-4 bg-[#fdf8f5]/5 border border-[#fdf8f5]/20 text-[#fdf8f5] text-[10px] font-black uppercase tracking-widest italic animate-pulse">

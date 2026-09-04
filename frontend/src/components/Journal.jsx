@@ -75,24 +75,24 @@ export default function Journal() {
     <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-24 mesh-bg">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-[#fdf8f5]/10 pb-10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 sm:gap-8 border-b border-[#fdf8f5]/10 pb-8 sm:pb-10">
         <div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-[#fdf8f5] flex items-center gap-5 uppercase italic">
-            <HiOutlineBookOpen className="w-10 h-10 md:w-12 md:h-12 text-[#fdf8f5] shadow-[0_0_20px_rgba(253,248,245,0.2)]" />
-            Research & Insights
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter text-[#fdf8f5] flex items-center gap-3 sm:gap-5 uppercase italic">
+            <HiOutlineBookOpen className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-[#fdf8f5] shadow-[0_0_20px_rgba(253,248,245,0.2)] shrink-0" />
+            <span>Research & Insights</span>
           </h1>
-          <p className="text-[#8d7b68] text-[10px] mt-4 font-black max-w-xl uppercase tracking-[0.25em] italic underline decoration-[#fdf8f5]/10 leading-relaxed">
+          <p className="text-[#8d7b68] text-[9px] sm:text-[10px] mt-3 sm:mt-4 font-black max-w-xl uppercase tracking-[0.2em] sm:tracking-[0.25em] italic underline decoration-[#fdf8f5]/10 leading-relaxed">
             In-depth research and insights into news bias and storytelling.
           </p>
         </div>
         <div className="relative w-full md:w-96 flex-shrink-0">
-           <HiOutlineSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-[#8d7b68] w-6 h-6" />
+           <HiOutlineSearch className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 text-[#8d7b68] w-5 h-5 sm:w-6 sm:h-6" />
            <input 
              type="text" 
              value={searchQuery}
              onChange={(e) => setSearchQuery(e.target.value)}
              placeholder="SEARCH ARTICLES..." 
-             className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 pl-16 pr-8 py-5 text-[11px] font-black uppercase tracking-[0.25em] rounded-2xl outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
+             className="w-full bg-[#1a0f0a] border border-[#fdf8f5]/10 pl-12 sm:pl-16 pr-4 sm:pr-8 py-3.5 sm:py-5 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] rounded-2xl outline-none focus:border-[#fdf8f5] transition-all text-[#fdf8f5] placeholder:text-[#4d3c2e] italic"
            />
         </div>
       </div>
@@ -109,40 +109,40 @@ export default function Journal() {
             exit={{ opacity: 0, scale: 0.95 }}
           >
             <div className="flex flex-col lg:flex-row h-full">
-                <div className="lg:w-1/2 h-64 lg:h-auto min-h-[300px] overflow-hidden relative flex-shrink-0">
+                <div className="lg:w-1/2 h-52 sm:h-64 lg:h-auto min-h-[220px] sm:min-h-[300px] overflow-hidden relative flex-shrink-0">
                     <img 
                         src={filteredArticles[0].image}
                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 grayscale group-hover:grayscale-0 saturate-50"
                         alt="Featured"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1a0f0a] via-transparent to-transparent opacity-80" />
-                    <span className="absolute top-8 left-8 bg-[#fdf8f5] text-[#1a0f0a] px-6 py-2.5 font-black uppercase italic tracking-[0.3em] text-[10px] shadow-2xl">FEATURED ARTICLE</span>
+                    <span className="absolute top-4 left-4 sm:top-8 sm:left-8 bg-[#fdf8f5] text-[#1a0f0a] px-4 sm:px-6 py-1.5 sm:py-2.5 font-black uppercase italic tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] shadow-2xl">FEATURED ARTICLE</span>
                 </div>
-                <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-between flex-grow">
+                <div className="lg:w-1/2 p-5 sm:p-8 lg:p-12 flex flex-col justify-between flex-grow">
                     <div>
-                        <div className="flex flex-wrap items-center gap-4 text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] mb-6 italic underline decoration-[#fdf8f5]/10">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[9px] sm:text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-4 sm:mb-6 italic underline decoration-[#fdf8f5]/10">
                             <span>{filteredArticles[0].tag}</span>
                             <span className="text-[#fdf8f5]/20 hidden sm:inline">•</span>
                             <span>{filteredArticles[0].readTime}</span>
                         </div>
-                        <h2 className="text-3xl lg:text-4xl xl:text-5xl font-black text-[#fdf8f5] leading-tight mb-6 uppercase tracking-tighter italic group-hover:text-[#fdf8f5]/90 transition-colors">
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-[#fdf8f5] leading-tight mb-4 sm:mb-6 uppercase tracking-tighter italic group-hover:text-[#fdf8f5]/90 transition-colors">
                             {filteredArticles[0].title}
                         </h2>
-                        <p className="text-[#d6c2b8] leading-relaxed font-black uppercase tracking-tight mb-8 opacity-80 line-clamp-4">
+                        <p className="text-[#d6c2b8] leading-relaxed font-black uppercase tracking-tight mb-6 sm:mb-8 opacity-80 line-clamp-4 text-xs sm:text-sm">
                             {filteredArticles[0].abstract}
                         </p>
                     </div>
-                    <div className="flex items-center justify-between pt-8 border-t border-[#fdf8f5]/10 mt-auto">
-                        <div className="flex items-center gap-5">
-                            <div className="w-14 h-14 rounded-2xl bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center text-sm font-black italic shadow-xl">
+                    <div className="flex items-center justify-between pt-6 sm:pt-8 border-t border-[#fdf8f5]/10 mt-auto">
+                        <div className="flex items-center gap-3 sm:gap-5">
+                            <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl bg-[#fdf8f5] text-[#1a0f0a] flex items-center justify-center text-xs sm:text-sm font-black italic shadow-xl shrink-0">
                               {(filteredArticles[0].author || "U").split(" ").map(n => n[0]).join("")}
                             </div>
                             <div>
-                                <p className="text-sm font-black text-[#fdf8f5] uppercase italic tracking-tighter">{filteredArticles[0].author}</p>
-                                <p className="text-[10px] text-[#4d3c2e] font-black uppercase tracking-[0.25em] mt-1">{filteredArticles[0].date}</p>
+                                <p className="text-xs sm:text-sm font-black text-[#fdf8f5] uppercase italic tracking-tighter">{filteredArticles[0].author}</p>
+                                <p className="text-[9px] sm:text-[10px] text-[#4d3c2e] font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] mt-1">{filteredArticles[0].date}</p>
                             </div>
                         </div>
-                        <HiOutlineExternalLink className="w-8 h-8 text-[#8d7b68] group-hover:text-[#fdf8f5] group-hover:rotate-45 transition-all duration-500" />
+                        <HiOutlineExternalLink className="w-6 h-6 sm:w-8 sm:h-8 text-[#8d7b68] group-hover:text-[#fdf8f5] group-hover:rotate-45 transition-all duration-500 shrink-0" />
                     </div>
                 </div>
             </div>

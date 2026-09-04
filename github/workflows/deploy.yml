@@ -1,0 +1,55 @@
+name: Deploy TruthLens to Heroku
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Heroku Container Registry
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+        run: |
+          echo "${{ secrets.HEROKU_API_KEY }}" | docker login --username="${{ secrets.HEROKU_EMAIL }}" --password-stdin registry.heroku.com
+
+      - name: Build and Push Docker Image
+        env:
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        run: |
+          # Build unified multi-stage image
+          docker build \
+            -t registry.heroku.com/${HEROKU_APP_NAME}/web \
+            -f Dockerfile .
+
+          # Push to Heroku Container Registry
+          docker push registry.heroku.com/${HEROKU_APP_NAME}/web
+
+      - name: Release Container Dyno
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        run: |
+          curl -n -X PATCH https://api.heroku.com/apps/${HEROKU_APP_NAME}/formation \
+            -d '{
+              "updates": [
+                {
+                  "type": "web",
+                  "docker_image": "'$(docker inspect registry.heroku.com/${HEROKU_APP_NAME}/web --format='{{index .RepoDigests 0}}')'"
+                }
+              ]
+            }' \
+            -H "Content-Type: application/json" \
+            -H "Accept: application/vnd.heroku+json; version=3.docker-releases" \
+            -H "Authorization: Bearer ${HEROKU_API_KEY}"

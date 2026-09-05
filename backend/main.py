@@ -24,7 +24,7 @@ app = FastAPI(
 # CORS (allow frontend)
 # ---------------------
 origins = [
-    "https://truthlens-frontend-7z98.onrender.com",
+    "https://truthlens-frontend-7t98.onrender.com",
     "http://localhost",
     "http://localhost:3000",
     "http://localhost:5173",
@@ -36,7 +36,6 @@ origins = [
     "http://127.0.0.1:8000",
     "http://127.0.0.1:8080",
 ]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

@@ -5,7 +5,7 @@
  * No mock data.
  */
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+import { API_BASE } from "./api";
 
 // ---------------------------------------------------------------------------
 // Dashboard overview (total articles, avg bias, active sources, articles/hr)

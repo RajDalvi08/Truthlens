@@ -1,0 +1,9 @@
+# Conversion and verification only. These packages are intentionally separate
+# from backend/requirements.txt and are not required by the deployed backend.
+# 1.20.x is compatible with the project's PyTorch 2.5.x conversion baseline.
+# Later ORT releases require torch.int4, unavailable in that baseline.
+optimum-onnx
+onnxruntime==1.20.1
+torch
+transformers
+psutil

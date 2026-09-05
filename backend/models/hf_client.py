@@ -132,9 +132,18 @@ def query_hf_classification(
     parsed_label = None
     parsed_score = None
 
-    # Load model locally and run inference (single-model, offloaded after use)
+    backend = os.getenv("TRUTHLENS_INFERENCE_BACKEND", "onnx").strip().lower()
+
+    # ONNX is the production default. PyTorch remains an explicit local rollback
+    # path until the migration is proven in production.
     try:
-        raw_label, raw_score = _infer_with_pipeline(model_id, truncated_text, token)
+        if backend == "onnx":
+            from models.onnx_client import infer_onnx_classification
+            raw_label, raw_score = infer_onnx_classification(model_id, truncated_text)
+        elif backend == "pytorch":
+            raw_label, raw_score = _infer_with_pipeline(model_id, truncated_text, token)
+        else:
+            raise RuntimeError("TRUTHLENS_INFERENCE_BACKEND must be 'onnx' or 'pytorch'.")
 
         # Determine biased-class probability from the returned label
         if "1" in raw_label or "BIAS" in raw_label or raw_label == "POSITIVE":

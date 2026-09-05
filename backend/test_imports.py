@@ -1,10 +1,8 @@
 try:
     import fastapi
     print("FastAPI: OK")
-    import torch
-    print("Torch: OK")
-    import transformers
-    print("Transformers: OK")
+    import requests
+    print("Requests: OK")
     import spacy
     print("SpaCy: OK")
     import feedparser
@@ -23,3 +21,4 @@ try:
     print("\nAll imports successful!")
 except Exception as e:
     print(f"\nImport failed: {e}")
+

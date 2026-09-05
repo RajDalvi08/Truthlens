@@ -1,66 +1,29 @@
 """
 Linguistic Bias Model
 =====================
-Loads the fine-tuned DistilBERT model for linguistic bias detection
-from the private Hugging Face repository.
+Queries the fine-tuned DistilBERT model for linguistic bias detection
+hosted on Hugging Face using the Serverless Inference API.
 """
 
-import os
-import torch
-from transformers import (
-    DistilBertTokenizerFast,
-    DistilBertForSequenceClassification,
-)
+from models.hf_client import query_hf_classification
 
 HF_REPO_ID = "vins01-07/truthlens-linguistic-bias"
-HF_TOKEN = os.getenv("HF_TOKEN")
-
-_DEVICE = torch.device(
-    "cuda" if torch.cuda.is_available() else "cpu"
-)
-
-tokenizer = DistilBertTokenizerFast.from_pretrained(
-    "distilbert-base-uncased"
-)
-
-model = DistilBertForSequenceClassification.from_pretrained(
-    HF_REPO_ID,
-    token=HF_TOKEN,
-)
-
-model.to(_DEVICE)
-model.eval()
 
 
 def predict(text: str) -> float:
-    inputs = tokenizer(
-        text,
-        return_tensors="pt",
-        truncation=True,
-        padding=True,
-        max_length=128,
-    )
+    """
+    Return the probability that the given text contains linguistic bias.
 
-    inputs = {
-        k: v.to(_DEVICE)
-        for k, v in inputs.items()
-    }
+    Args:
+        text: Preprocessed article text.
 
-    with torch.no_grad():
-        logits = model(**inputs).logits
-
-    temperature = 2.0
-
-    probs = torch.softmax(
-        logits / temperature,
-        dim=1
-    )
-
-    biased_prob = probs[0][1].item()
-
-    clamped_prob = max(
-        0.05,
-        min(0.95, biased_prob)
-    )
-
-    return round(clamped_prob, 4)
+    Returns:
+        float in [0.05, 0.95] — probability of linguistic bias.
+    """
+    return query_hf_classification(
+        model_id=HF_REPO_ID,
+        text=text,
+        temperature=2.0,
+        max_chars=512,
+        default_fallback=0.35,
+    )

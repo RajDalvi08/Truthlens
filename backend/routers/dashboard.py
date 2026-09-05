@@ -15,22 +15,25 @@ from services.persistence_service import DB_PATH, _ensure_db
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
 
-def _load_all_analyses() -> List[Dict[str, Any]]:
+def _load_all_analyses(user_id: Optional[str] = None) -> List[Dict[str, Any]]:
     _ensure_db()
     try:
         with open(DB_PATH, "r") as f:
             data = json.load(f)
-            return data.get("analyses", [])
+            analyses = data.get("analyses", [])
+            if user_id:
+                analyses = [a for a in analyses if a.get("user_id") == user_id]
+            return analyses
     except Exception:
         return []
 
 
 @router.get("/overview")
-def get_dashboard_overview():
+def get_dashboard_overview(user_id: Optional[str] = None):
     """
     Get aggregated dashboard stats: total articles, avg bias score, active sources, ingestion rate.
     """
-    analyses = _load_all_analyses()
+    analyses = _load_all_analyses(user_id=user_id)
     total = len(analyses)
     
     if total == 0:
@@ -64,11 +67,11 @@ def get_dashboard_overview():
 
 
 @router.get("/recent-ingestion")
-def get_recent_ingestion(limit: int = Query(10, ge=1, le=100)):
+def get_recent_ingestion(limit: int = Query(10, ge=1, le=100), user_id: Optional[str] = None):
     """
     Get the most recent article analyses with formatted topic, sentiment, and scores.
     """
-    analyses = _load_all_analyses()
+    analyses = _load_all_analyses(user_id=user_id)
     
     # Sort descending by timestamp
     sorted_analyses = sorted(
@@ -116,11 +119,11 @@ def get_recent_ingestion(limit: int = Query(10, ge=1, le=100)):
 
 
 @router.get("/bias-timeseries")
-def get_bias_timeseries(days: int = Query(30, ge=7, le=90)):
+def get_bias_timeseries(days: int = Query(30, ge=7, le=90), user_id: Optional[str] = None):
     """
     Get temporal bias drift aggregated over recent days.
     """
-    analyses = _load_all_analyses()
+    analyses = _load_all_analyses(user_id=user_id)
     now = datetime.utcnow()
     
     # Generate daily buckets
@@ -164,11 +167,11 @@ def get_bias_timeseries(days: int = Query(30, ge=7, le=90)):
 
 
 @router.get("/narrative-balance")
-def get_narrative_balance():
+def get_narrative_balance(user_id: Optional[str] = None):
     """
     Get narrative leaning proportions (neutral, left leaning, right leaning).
     """
-    analyses = _load_all_analyses()
+    analyses = _load_all_analyses(user_id=user_id)
     total = len(analyses)
     
     if total == 0:

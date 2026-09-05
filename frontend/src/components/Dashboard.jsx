@@ -3,11 +3,13 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { getAnalysisStats, getRecentAnalyses, getBiasTimeseries, getNarrativeBalance } from "../services/analysisService";
+import { useAuth } from "../AuthContext";
 import { HiOutlineTrendingUp, HiOutlineExternalLink, HiOutlineInformationCircle, HiOutlineLightningBolt, HiOutlineShieldCheck, HiOutlineCubeTransparent } from "react-icons/hi";
 
 const COLORS = ['#F97316', '#0EA5E9', '#8B5CF6', '#EC4899', '#10B981'];
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [recentAnalyses, setRecentAnalyses] = useState([]);
   const [biasTimeseries, setBiasTimeseries] = useState([]);
@@ -18,11 +20,12 @@ export default function Dashboard() {
   useEffect(() => {
     async function loadData() {
       try {
+        const userId = user?.uid;
         const [statsData, analysesData, timeseriesData, balanceData] = await Promise.all([
-          getAnalysisStats(),
-          getRecentAnalyses(5),
-          getBiasTimeseries(30),
-          getNarrativeBalance(),
+          getAnalysisStats(userId),
+          getRecentAnalyses(5, userId),
+          getBiasTimeseries(30, userId),
+          getNarrativeBalance(userId),
         ]);
         setStats(statsData);
         setRecentAnalyses(analysesData);
@@ -35,7 +38,7 @@ export default function Dashboard() {
       }
     }
     loadData();
-  }, []);
+  }, [user?.uid]);
 
   const pieData = narrativeBalance?.pieData || [
     { name: 'Neutral', value: 0 },

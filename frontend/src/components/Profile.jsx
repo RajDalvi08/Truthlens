@@ -1,9 +1,10 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import { useNotifications } from "../NotificationContext";
+import { getRecentAnalyses } from "../services/analysisService";
 import { 
   HiOutlineUser, 
   HiOutlineLightningBolt, 
@@ -26,18 +27,46 @@ export default function Profile() {
   const [customName, setCustomName] = useState(user?.username || "creative_ambition");
   const [customRole, setCustomRole] = useState(user?.role || "Lead Neural Analyst");
   const [copiedKey, setCopiedKey] = useState(false);
+  const [userAnalyses, setUserAnalyses] = useState([]);
+  const [loadingActivities, setLoadingActivities] = useState(true);
+
+  useEffect(() => {
+    if (user?.username) {
+      setCustomName(user.username);
+    }
+  }, [user?.username]);
+
+  useEffect(() => {
+    async function loadUserActivities() {
+      try {
+        setLoadingActivities(true);
+        const data = await getRecentAnalyses(10, user?.uid);
+        setUserAnalyses(data || []);
+      } catch (err) {
+        console.error("Failed to load user profile activities:", err);
+      } finally {
+        setLoadingActivities(false);
+      }
+    }
+    loadUserActivities();
+  }, [user?.uid]);
 
   const userStats = [
-    { label: "Articles Verified", value: "1,204", icon: HiOutlineShieldCheck },
-    { label: "Neural Contributions", value: "349", icon: HiOutlineLightningBolt },
-    { label: "Reputation Index", value: "9,840", icon: HiOutlineTrendingUp },
+    { label: "Articles Verified", value: String(userAnalyses.length), icon: HiOutlineShieldCheck },
+    { label: "Neural Contributions", value: String(userAnalyses.length * 3), icon: HiOutlineLightningBolt },
+    { label: "Reputation Index", value: String(1000 + userAnalyses.length * 150), icon: HiOutlineTrendingUp },
   ];
 
-  const recentActivity = [
+  const recentActivity = userAnalyses.length > 0 ? userAnalyses.map((a, idx) => ({
+    id: a.id || idx,
+    action: "Analyzed Article",
+    target: a.title || "Untitled Article",
+    time: a.date || "Recent",
+    status: a.biasLevel || "Completed"
+  })) : [
     { id: 1, action: "Verified Article", target: "Global Market Trends", time: "2h ago", status: "Approved" },
     { id: 2, action: "Submitted Analysis", target: "Tech Giants EU Regulations", time: "5h ago", status: "Pending" },
     { id: 3, action: "Flagged Bias", target: "Healthcare Reform Bill", time: "1d ago", status: "Reviewed" },
-    { id: 4, action: "System Ingestion", target: "Terminal Alpha-9", time: "1d ago", status: "Secure" },
   ];
 
   const handleCopyKey = () => {

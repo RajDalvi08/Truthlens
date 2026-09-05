@@ -10,8 +10,9 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
 // ---------------------------------------------------------------------------
 // Dashboard overview (total articles, avg bias, active sources, articles/hr)
 // ---------------------------------------------------------------------------
-export async function getAnalysisStats() {
-  const res = await fetch(`${API_BASE}/dashboard/overview`);
+export async function getAnalysisStats(userId) {
+  const url = userId ? `${API_BASE}/dashboard/overview?user_id=${userId}` : `${API_BASE}/dashboard/overview`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch overview stats");
   const data = await res.json();
   return {
@@ -25,8 +26,10 @@ export async function getAnalysisStats() {
 // ---------------------------------------------------------------------------
 // Recent articles list
 // ---------------------------------------------------------------------------
-export async function getRecentAnalyses(limit = 10) {
-  const res = await fetch(`${API_BASE}/dashboard/recent-ingestion?limit=${limit}`);
+export async function getRecentAnalyses(limit = 10, userId) {
+  let url = `${API_BASE}/dashboard/recent-ingestion?limit=${limit}`;
+  if (userId) url += `&user_id=${userId}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch recent analyses");
   const data = await res.json();
   return data.map((item) => ({
@@ -82,8 +85,10 @@ export async function getDatasetStats() {
 // ---------------------------------------------------------------------------
 // Temporal Bias Drift (line chart)
 // ---------------------------------------------------------------------------
-export async function getBiasTimeseries(days = 30) {
-  const res = await fetch(`${API_BASE}/dashboard/bias-timeseries?days=${days}`);
+export async function getBiasTimeseries(days = 30, userId) {
+  let url = `${API_BASE}/dashboard/bias-timeseries?days=${days}`;
+  if (userId) url += `&user_id=${userId}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch bias timeseries");
   const data = await res.json();
   return data.map((d) => ({
@@ -96,8 +101,9 @@ export async function getBiasTimeseries(days = 30) {
 // ---------------------------------------------------------------------------
 // Narrative Balance (pie chart)
 // ---------------------------------------------------------------------------
-export async function getNarrativeBalance() {
-  const res = await fetch(`${API_BASE}/dashboard/narrative-balance`);
+export async function getNarrativeBalance(userId) {
+  const url = userId ? `${API_BASE}/dashboard/narrative-balance?user_id=${userId}` : `${API_BASE}/dashboard/narrative-balance`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch narrative balance");
   const data = await res.json();
   return {

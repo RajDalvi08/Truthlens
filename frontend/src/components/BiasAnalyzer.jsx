@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { analyzeArticle } from "../services/api";
 import { useNotifications } from "../NotificationContext";
+import { useAuth } from "../AuthContext";
 import { HiOutlineSearch, HiOutlineLightningBolt, HiOutlineDocumentText, HiOutlineLink, HiOutlineExclamationCircle, HiOutlineCubeTransparent, HiOutlineChartSquareBar } from "react-icons/hi";
 
 const SAMPLE_URLS = [
@@ -11,6 +12,7 @@ const SAMPLE_URLS = [
 ];
 
 export default function BiasAnalyzer() {
+  const { user } = useAuth();
   const [headline, setHeadline] = useState("");
   const [text, setText] = useState("");
   const [url, setUrl] = useState("");
@@ -33,7 +35,8 @@ export default function BiasAnalyzer() {
       const response = await analyzeArticle({
         url: url.trim(),
         headline: headline.trim(),
-        text: text.trim()
+        text: text.trim(),
+        userId: user?.uid
       });
       console.log("API RESPONSE:", response);
       setResults(response);

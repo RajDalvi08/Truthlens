@@ -1,9 +1,9 @@
 """
 Hugging Face Inference Client
 =============================
-Provides lightweight HTTP querying to Hugging Face Serverless Inference API
-for DistilBERT classification models. Avoids loading PyTorch and Transformers
-into local memory, keeping memory consumption < 100 MB.
+Provides querying for DistilBERT classification models with server-side debug logging.
+Supports remote Hugging Face Inference endpoints with automatic local transformer execution
+fallback so that inference never fails or silently returns arbitrary default scores.
 """
 
 import os
@@ -28,34 +28,117 @@ if os.path.exists(_env_path):
 
 
 def _get_hf_token() -> str:
-    return os.getenv("HF_TOKEN", "").strip()
+    """Retrieve HF token from environment or local cache without exposing it."""
+    token = os.getenv("HF_TOKEN", "").strip()
+    if not token:
+        try:
+            from huggingface_hub import get_token
+            cached = get_token()
+            if cached:
+                token = cached.strip()
+        except Exception:
+            pass
+    if not token:
+        cache_path = os.path.expanduser("~/.cache/huggingface/token")
+        if os.path.exists(cache_path):
+            try:
+                with open(cache_path, "r", encoding="utf-8") as f:
+                    token = f.read().strip()
+            except Exception:
+                pass
+    return token
+
+
+# In-memory cache for local DistilBERT models and tokenizer
+_LOCAL_MODELS = {}
+_LOCAL_TOKENIZER = None
+
+
+def _get_local_tokenizer():
+    global _LOCAL_TOKENIZER
+    if _LOCAL_TOKENIZER is None:
+        from transformers import DistilBertTokenizerFast
+        _LOCAL_TOKENIZER = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
+    return _LOCAL_TOKENIZER
+
+
+def _get_local_model(model_id: str):
+    global _LOCAL_MODELS
+    if model_id not in _LOCAL_MODELS:
+        import torch
+        from transformers import DistilBertForSequenceClassification
+        token = _get_hf_token() or None
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = DistilBertForSequenceClassification.from_pretrained(model_id, token=token)
+        model.to(device)
+        model.eval()
+        _LOCAL_MODELS[model_id] = (model, device)
+    return _LOCAL_MODELS[model_id]
+
+
+def _infer_locally(model_id: str, text: str, max_chars: int = 512):
+    """Run model inference locally using cached fine-tuned DistilBERT weights."""
+    import torch
+    tokenizer = _get_local_tokenizer()
+    model, device = _get_local_model(model_id)
+    
+    inputs = tokenizer(
+        text,
+        return_tensors="pt",
+        truncation=True,
+        padding=True,
+        max_length=min(max_chars, 512),
+    )
+    inputs = {k: v.to(device) for k, v in inputs.items()}
+    
+    with torch.no_grad():
+        logits = model(**inputs).logits
+        
+    probs_unscaled = torch.softmax(logits, dim=1)
+    biased_prob_unscaled = probs_unscaled[0][1].item()
+    
+    raw_response = {
+        "source": "local_transformer",
+        "logits": logits[0].tolist(),
+        "probabilities": probs_unscaled[0].tolist(),
+        "classes": [{"label": "LABEL_0", "score": probs_unscaled[0][0].item()},
+                    {"label": "LABEL_1", "score": biased_prob_unscaled}]
+    }
+    return raw_response, "LABEL_1", biased_prob_unscaled
 
 
 def query_hf_classification(
     model_id: str,
     text: str,
     temperature: float = 2.0,
-    max_chars: int = 1500,
-    default_fallback: float = 0.35,
+    max_chars: int = 512,
+    model_name: str = "Bias Model",
 ) -> float:
     """
-    Query a Hugging Face binary sequence classification model via Serverless Inference API.
+    Query a binary classification model (via HF Inference API or local fallback).
     Applies temperature scaling and clamping [0.05, 0.95].
-
-    Args:
-        model_id: Hugging Face model repository (e.g. 'vins01-07/truthlens-framing-bias')
-        text: Input text to classify
-        temperature: Temperature scaling factor (default 2.0)
-        max_chars: Maximum characters to send (prevents oversized payloads)
-        default_fallback: Baseline probability if API is unavailable
+    Emits server-side debug logging for model auditing.
 
     Returns:
         float in [0.05, 0.95] representing biased class probability.
     """
     if not text or not text.strip():
-        return 0.05
+        # Clean empty input case
+        final_val = 0.05
+        print(f"\n==================================================")
+        print(f"MODEL NAME: {model_name}")
+        print(f"HF REPOSITORY: {model_id}")
+        print(f"INPUT TEXT LENGTH: 0")
+        print(f"RAW HF RESPONSE: EMPTY_INPUT")
+        print(f"PARSED LABEL: LABEL_0")
+        print(f"PARSED SCORE: 0.0")
+        print(f"FINAL FLOAT RETURNED BY predict(text): {final_val}")
+        print(f"==================================================")
+        return final_val
 
     token = _get_hf_token()
+    truncated_text = text.strip()[:max_chars]
+    
     headers = {
         "Content-Type": "application/json",
         "x-wait-for-model": "true",
@@ -63,85 +146,86 @@ def query_hf_classification(
     if token:
         headers["Authorization"] = f"Bearer {token}"
 
-    truncated_text = text.strip()[:max_chars]
     payload = {
         "inputs": truncated_text,
         "options": {"wait_for_model": True},
     }
 
-    # Primary HF inference router and fallback endpoint
-    endpoints = [
-        f"https://router.huggingface.co/hf-inference/models/{model_id}",
-        f"https://api-inference.huggingface.co/models/{model_id}",
-    ]
+    custom_endpoint = os.getenv(f"{model_name.upper().replace(' ', '_')}_ENDPOINT") or os.getenv("HF_INFERENCE_ENDPOINT")
+    endpoints = []
+    if custom_endpoint:
+        endpoints.append(custom_endpoint)
+    endpoints.append(f"https://router.huggingface.co/hf-inference/models/{model_id}")
 
-    data = None
-    last_error = None
+    raw_response = None
+    parsed_label = None
+    parsed_score = None
+    remote_success = False
 
+    # 1. Attempt remote HF Inference
     for url in endpoints:
         try:
-            resp = requests.post(url, headers=headers, json=payload, timeout=12)
+            resp = requests.post(url, headers=headers, json=payload, timeout=8)
             if resp.status_code == 200:
-                data = resp.json()
-                break
+                raw_response = resp.json()
+                items = []
+                if isinstance(raw_response, list):
+                    if len(raw_response) > 0 and isinstance(raw_response[0], list):
+                        items = raw_response[0]
+                    elif len(raw_response) > 0 and isinstance(raw_response[0], dict):
+                        items = raw_response
+
+                for item in items:
+                    lbl = str(item.get("label", "")).upper()
+                    scr = float(item.get("score", 0.0))
+                    if "1" in lbl or "BIAS" in lbl or lbl == "POSITIVE":
+                        parsed_label = lbl
+                        parsed_score = scr
+                        remote_success = True
+                        break
+                    elif "0" in lbl or "NEUTRAL" in lbl or lbl == "NEGATIVE":
+                        parsed_label = "LABEL_1 (derived from LABEL_0)"
+                        parsed_score = 1.0 - scr
+                        remote_success = True
+                if remote_success:
+                    break
             elif resp.status_code == 503:
-                # Model is loading; try once more with slight delay if needed
                 logger.info("Model %s is loading on HF (503)...", model_id)
-                last_error = f"503 Model Loading: {resp.text}"
             else:
-                last_error = f"HTTP {resp.status_code}: {resp.text}"
-                logger.warning("HF API error for %s on %s: %s", model_id, url, last_error)
+                logger.debug("HF remote endpoint %s returned %s: %s", url, resp.status_code, resp.text[:100])
         except Exception as exc:
-            last_error = str(exc)
-            logger.warning("HF connection exception for %s on %s: %s", model_id, url, exc)
+            logger.debug("HF remote query error on %s: %s", url, exc)
 
-    if not data:
-        logger.warning(
-            "Using fallback score (%s) for %s due to API error: %s",
-            default_fallback,
-            model_id,
-            last_error,
-        )
-        return default_fallback
+    # 2. If remote API did not yield a parsed score, run local model inference
+    if not remote_success or parsed_score is None:
+        try:
+            raw_response, parsed_label, parsed_score = _infer_locally(model_id, truncated_text, max_chars=max_chars)
+        except Exception as exc:
+            logger.error("Inference execution failed for %s (%s): %s", model_name, model_id, exc)
+            raise RuntimeError(f"Inference failure for {model_name} on {model_id}: {exc}")
 
-    # Hugging Face returns classification output as:
-    # [[{"label": "LABEL_0", "score": 0.3}, {"label": "LABEL_1", "score": 0.7}]]
-    # or [{"label": "LABEL_0", "score": 0.3}, {"label": "LABEL_1", "score": 0.7}]
-    items = []
-    if isinstance(data, list):
-        if len(data) > 0 and isinstance(data[0], list):
-            items = data[0]
-        elif len(data) > 0 and isinstance(data[0], dict):
-            items = data
-
-    biased_prob = None
-    for item in items:
-        label = str(item.get("label", "")).upper()
-        score = float(item.get("score", 0.0))
-
-        # Check for biased class indicator (LABEL_1, BIASED, 1, POSITIVE)
-        if "1" in label or "BIAS" in label or label == "POSITIVE":
-            biased_prob = score
-            break
-        elif "0" in label or "NEUTRAL" in label or label == "NEGATIVE":
-            # If we only have label 0 score, class 1 is (1 - score)
-            biased_prob = 1.0 - score
-
-    if biased_prob is None:
-        if items and "score" in items[0]:
-            biased_prob = float(items[0]["score"])
-        else:
-            return default_fallback
-
-    # Apply temperature scaling: p_T = sqrt(p) / (sqrt(p) + sqrt(1-p)) for T=2.0
-    # General formula: p_T = 1 / (1 + ((1 - p) / p) ** (1 / temperature))
-    biased_prob = max(1e-6, min(1.0 - 1e-6, biased_prob))
+    # 3. Apply Temperature Scaling (T=2.0)
+    # Scaled probability: p_T = 1 / (1 + ((1 - p) / p) ** (1 / temperature))
+    biased_prob = max(1e-6, min(1.0 - 1e-6, float(parsed_score)))
     if temperature > 0 and temperature != 1.0:
         ratio = (1.0 - biased_prob) / biased_prob
         scaled_prob = 1.0 / (1.0 + math.pow(ratio, 1.0 / temperature))
     else:
         scaled_prob = biased_prob
 
-    # Probability Clamping [0.05, 0.95] to avoid overconfidence
+    # 4. Probability Clamping [0.05, 0.95] and rounding
     clamped_prob = max(0.05, min(0.95, scaled_prob))
-    return round(clamped_prob, 4)
+    final_float = round(clamped_prob, 4)
+
+    # 5. Temporary Server-Side Debug Logging
+    print(f"\n==================================================")
+    print(f"MODEL NAME: {model_name}")
+    print(f"HF REPOSITORY: {model_id}")
+    print(f"INPUT TEXT LENGTH: {len(truncated_text)}")
+    print(f"RAW HF RESPONSE: {raw_response}")
+    print(f"PARSED LABEL: {parsed_label}")
+    print(f"PARSED SCORE: {parsed_score}")
+    print(f"FINAL FLOAT RETURNED BY predict(text): {final_float}")
+    print(f"==================================================")
+
+    return final_float

@@ -1,164 +1,186 @@
 """
 Explanation Generator Service
 ============================
-Provides human-readable explanations for bias scores.
+Provides deterministic bias indicator extraction and article-specific logic tracing.
 """
 
 import re
+from typing import List, Tuple, Dict
 
-def get_bias_label(score: float) -> str:
-    if score >= 80:
-        return "Strong Bias"
-    elif score >= 60:
-        return "Moderate-High Bias"
-    elif score >= 40:
-        return "Moderate Bias"
-    else:
-        return "Low Bias"
+# ---------------------------------------------------------------------------
+# Indicator Taxonomy: Categorized into Strong and Moderate lexical markers
+# ---------------------------------------------------------------------------
+STRONG_BIAS_TERMS = [
+    "disastrous", "catastrophic", "reckless", "irresponsible", "dangerous", "failure",
+    "crisis", "panic", "tyrant", "cowardly", "heroic", "scandalous", "appalling",
+    "collapse", "devastating", "disaster", "outrageous", "staggering", "drastic",
+    "unjust", "extreme", "radical", "corruption", "corrupt", "miserably", "unbelievable",
+    "shocking", "biased", "unfair", "poorly", "triumph", "miracle", "catastrophic failure",
+    "total failure", "complete disaster"
+]
 
-def extract_key_sentences(text, indicators):
-    sentences = re.split(r'(?<=[.!?])\s+', text)
+MODERATE_BIAS_TERMS = [
+    "concern", "concerns", "critic", "critics", "criticized", "criticism",
+    "suggests", "suggested", "argues", "argued", "claims", "claimed",
+    "questions", "questioned", "controversial", "debate", "debated",
+    "mixed", "uncertain", "doubt", "doubts", "appears", "seems", "likely",
+    "alleged", "allegedly", "purported", "purportedly", "supposedly",
+    "deeply concerning", "highly controversial", "unprecedented move"
+]
 
-    matched = []
 
-    for sent in sentences:
-        for word in indicators:
-            if re.search(rf'\b{re.escape(word)}\b', sent, re.IGNORECASE):
-                matched.append(sent.strip())
-                break
+def extract_bias_indicators(text: str) -> Tuple[List[str], float]:
+    """
+    Extracts bias indicators strictly from the ACTUAL ARTICLE TEXT using
+    deterministic case-insensitive matching with strict word boundaries.
+    
+    Preserves the distinction between strong and moderate indicators.
+    Calculates mathematical score boost (+0.08 strong, +0.03 moderate, max 0.15).
 
-    return [s[:150] + "..." if len(s) > 150 else s for s in matched[:2]]
+    Returns:
+        tuple of (list_of_detected_indicator_strings, score_boost_float)
+    """
+    if not text or not text.strip():
+        return [], 0.0
 
-def generate_explanation(text, indicators, score):
+    detected_strong = []
+    detected_moderate = []
+
+    # 1. Match Strong Indicators with word boundaries
+    for term in STRONG_BIAS_TERMS:
+        pattern = rf'\b{re.escape(term)}\b'
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            # Capitalize indicator nicely for display
+            detected_strong.append(term.title())
+
+    # 2. Match Moderate Indicators with word boundaries
+    for term in MODERATE_BIAS_TERMS:
+        pattern = rf'\b{re.escape(term)}\b'
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            term_title = term.title()
+            if term_title not in detected_strong:
+                detected_moderate.append(term_title)
+
+    # Combine unique indicators preserving order
+    all_detected = []
+    seen = set()
+    for item in detected_strong + detected_moderate:
+        if item.lower() not in seen:
+            seen.add(item.lower())
+            all_detected.append(item)
+
+    # 3. Calculate mathematical score boost
+    # Strong = +0.08, Moderate = +0.03, capped at 0.15
+    score_boost = 0.0
+    for item in all_detected:
+        if item.lower() in STRONG_BIAS_TERMS:
+            score_boost += 0.08
+        elif item.lower() in MODERATE_BIAS_TERMS:
+            score_boost += 0.03
+
+    score_boost = min(score_boost, 0.15)
+    return all_detected, round(score_boost, 4)
+
+
+def extract_key_sentences(text: str, indicators: List[str]) -> List[str]:
+    """
+    Extracts sentences from text that contain any of the detected indicators.
+    """
+    if not text or not text.strip():
+        return []
+
+    # Split on sentence terminals
+    raw_sentences = re.split(r'(?<=[.!?])\s+', text.strip())
+    matched_sentences = []
+
+    if indicators:
+        for sent in raw_sentences:
+            clean_sent = sent.strip()
+            if not clean_sent:
+                continue
+            for ind in indicators:
+                if re.search(rf'\b{re.escape(ind)}\b', clean_sent, re.IGNORECASE):
+                    if clean_sent not in matched_sentences:
+                        matched_sentences.append(clean_sent)
+                    break
+    
+    # If no indicator match or no indicators, select the leading informative sentences
+    if not matched_sentences and raw_sentences:
+        matched_sentences = [s.strip() for s in raw_sentences if len(s.strip()) > 15][:2]
+
+    # Truncate overly long individual sentences cleanly for explainability
+    formatted = []
+    for s in matched_sentences[:3]:
+        if len(s) > 180:
+            formatted.append(s[:177] + "...")
+        else:
+            formatted.append(s)
+    return formatted
+
+
+def generate_explanation(
+    text: str,
+    indicators: List[str],
+    score: float,
+    level: str = None
+) -> List[str]:
+    """
+    Deterministic fallback explanation generator derived directly from the
+    actual article text and detected indicators.
+    """
     explanation = []
-
     key_sentences = extract_key_sentences(text, indicators)
 
-    # 1. Use real article content if available
+    # 1. Evidence Citation from Actual Article
     if len(key_sentences) >= 2:
         explanation.append(
-            f'The article includes statements such as "{key_sentences[0]}" and "{key_sentences[1]}", indicating subjective or emotionally influenced language.'
+            f'The article employs targeted phrasing in statements such as "{key_sentences[0]}" and "{key_sentences[1]}".'
         )
     elif len(key_sentences) == 1:
         explanation.append(
-            f'The article includes statements such as "{key_sentences[0]}", indicating subjective or emotionally influenced language.'
+            f'The text establishes perspective in statements such as "{key_sentences[0]}".'
         )
 
-    # 2. If no sentence matched → fallback
-    if not key_sentences:
-        explanation.append(
-            "The article expresses bias through tone and framing rather than explicit keywords."
-        )
+    # 2. Indicator Discussion
+    if indicators:
+        strong_matches = [i for i in indicators if i.lower() in STRONG_BIAS_TERMS]
+        mod_matches = [i for i in indicators if i.lower() in MODERATE_BIAS_TERMS]
+        
+        detail_parts = []
+        if strong_matches:
+            quoted_strong = ", ".join(f'"{w}"' for w in strong_matches[:4])
+            detail_parts.append(f'explicit evaluative language ({quoted_strong})')
+        if mod_matches:
+            quoted_mod = ", ".join(f'"{w}"' for w in mod_matches[:4])
+            detail_parts.append(f'qualifying rhetoric ({quoted_mod})')
+            
+        if detail_parts:
+            explanation.append(
+                f'Specific lexical indicators including {" and ".join(detail_parts)} drive the assessed polarity.'
+            )
 
-    # 3. Score-based reasoning (clean, no templates)
+    # 3. Score-aligned concluding reasoning
     if score >= 75:
         explanation.append(
-            "The overall tone strongly pushes a one-sided perspective, resulting in high bias."
+            f"The dense concentration of emotionally charged descriptors produces a calibrated score of {score}/100 ('Strong Bias')."
         )
     elif score >= 60:
         explanation.append(
-            "The article leans toward a specific viewpoint, showing noticeable bias in presentation."
+            f"The framing leans noticeably toward an interpretive narrative, resulting in a score of {score}/100 ('Moderate-High Bias')."
         )
     elif score >= 40:
         explanation.append(
-            "Some selective emphasis and framing are present, indicating moderate bias."
+            f"Selective emphasis and subjective terminology yield a score of {score}/100 ('Moderate Bias')."
         )
     else:
+        if not explanation:
+            explanation.append(
+                "The text maintains an objective, descriptive reporting structure with neutral vocabulary and standard attribution."
+            )
         explanation.append(
-            "The article remains mostly neutral with minimal subjective influence."
-        )
-
-    # 4. FINAL SAFETY (never empty)
-    if not explanation:
-        explanation.append(
-            "The article shows measurable bias based on linguistic and framing analysis."
+            f"Minimal subjective markers and balanced sourcing result in a calibrated score of {score}/100 ('Low Bias')."
         )
 
     return explanation
-
-
-def extract_bias_indicators(text: str) -> tuple[list[str], float]:
-    """
-    Identifies emotionally strong words, subjective phrases, and repeated emphasis.
-    Returns highly impactful phrases based on an aggressive filter.
-    """
-    import re
-    from collections import Counter
-
-    indicators = []
-    text_lower = text.lower()
-
-    # 1. Emotionally strong words / Subjective markers
-    bias_keywords = [
-        "crisis", "shock", "panic", "war", "failure", "disastrous", "staggering",
-        "outrageous", "brave", "cowardly", "tyrant", "heroic", "unbelievable",
-        "obviously", "clearly", "radical", "extreme", "unjust", "drastic",
-        "catastrophic", "scandalous", "appalling", "triumph", "miracle",
-        "collapse", "dangerous", "devastating", "disaster", 
-        "reckless", "irresponsible", "shocking", "poorly", "biased", "unfair",
-        "concern", "concerns", "critic", "critics", "criticized",
-        "suggests", "suggested", "argues", "argued",
-        "claims", "claimed", "questions", "questioned",
-        "controversial", "debate", "debated",
-        "mixed", "uncertain", "doubt", "doubts",
-        "appears", "seems", "likely"
-    ]
-    
-    found_keywords = []
-    for word in bias_keywords:
-        if re.search(r'\b' + re.escape(word) + r'\b', text_lower):
-            found_keywords.append(word)
-
-    # 2. Subjective phrases (simplified regex)
-    subjective_patterns = [
-        r"everyone knows", r"it is obvious that", r"clearly showing",
-        r"without a doubt", r"total failure", r"complete success",
-        r"unprecedented move", r"deeply concerning", r"highly controversial"
-    ]
-    
-    found_phrases = []
-    for pattern in subjective_patterns:
-        if re.search(pattern, text_lower):
-            found_phrases.append(pattern)
-
-    # 3. Repeated emphasis
-    words = re.findall(r'\b\w{5,}\b', text_lower)
-    counts = Counter(words)
-    repeated = [word for word, count in counts.items() if count >= 3]
-
-    all_indicators = list(dict.fromkeys(found_phrases + found_keywords + repeated))
-    raw_indicators = [idx.title() for idx in all_indicators[:10]]
-    
-    STRONG_BIAS_WORDS = [
-        "failure", "disaster", "catastrophic", "radical",
-        "reckless", "dangerous", "irresponsible", "extreme",
-        "collapse", "crisis", "devastating", "shocking",
-        "poorly", "biased", "unfair", "outrageous"
-    ]
-    
-    MODERATE_BIAS_WORDS = [
-        "concern", "concerns", "critic", "critics", "criticized",
-        "suggests", "suggested", "argues", "argued",
-        "claims", "claimed", "questions", "questioned",
-        "controversial", "debate", "debated",
-        "mixed", "uncertain", "doubt", "doubts",
-        "appears", "seems", "likely"
-    ]
-    
-    ALL_BIAS_WORDS = STRONG_BIAS_WORDS + MODERATE_BIAS_WORDS
-    
-    filtered_indicators = [
-        word for word in raw_indicators if word.lower() in ALL_BIAS_WORDS
-    ]
-
-    score_boost = 0.0
-    for word in filtered_indicators:
-        w_lower = word.lower()
-        if w_lower in STRONG_BIAS_WORDS:
-            score_boost += 0.08
-        elif w_lower in MODERATE_BIAS_WORDS:
-            score_boost += 0.03
-            
-    score_boost = min(score_boost, 0.15)
-    
-    return filtered_indicators, score_boost

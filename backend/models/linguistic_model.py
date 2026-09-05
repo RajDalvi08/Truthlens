@@ -1,8 +1,7 @@
 """
 Linguistic Bias Model
 =====================
-Queries the fine-tuned DistilBERT model for linguistic bias detection
-hosted on Hugging Face using the Serverless Inference API.
+Queries the fine-tuned DistilBERT model for linguistic bias detection.
 """
 
 from models.hf_client import query_hf_classification
@@ -25,5 +24,5 @@ def predict(text: str) -> float:
         text=text,
         temperature=2.0,
         max_chars=512,
-        default_fallback=0.35,
-    )
+        model_name="Linguistic Bias",
+    )

@@ -1,15 +1,20 @@
 """
 Hugging Face Inference Client
 =============================
-Provides querying for DistilBERT classification models with server-side debug logging.
-Supports remote Hugging Face Inference endpoints with automatic local transformer execution
-fallback so that inference never fails or silently returns arbitrary default scores.
+Provides querying for fine-tuned DistilBERT classification models.
+
+Production inference strategy:
+  - Loads each model locally on demand (lazy loading).
+  - Only ONE model is held in memory at a time to stay within Render's 512 MB limit.
+  - After inference the loaded model is immediately deleted and memory cleared.
+  - Peak RAM per request: ~240 MB (single DistilBERT model).
+  - Falls back to a RuntimeError on load/inference failure so the caller can handle it.
 """
 
+import gc
 import os
 import math
 import logging
-import requests
 
 logger = logging.getLogger("truthlens.hf_client")
 
@@ -49,62 +54,43 @@ def _get_hf_token() -> str:
     return token
 
 
-# In-memory cache for local DistilBERT models and tokenizer
-_LOCAL_MODELS = {}
-_LOCAL_TOKENIZER = None
+def _infer_with_pipeline(model_id: str, text: str, token: str):
+    """
+    Load the model via transformers.pipeline, run inference, then immediately
+    unload to free memory. Only one model is in memory at any point in time.
 
-
-def _get_local_tokenizer():
-    global _LOCAL_TOKENIZER
-    if _LOCAL_TOKENIZER is None:
-        from transformers import DistilBertTokenizerFast
-        _LOCAL_TOKENIZER = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
-    return _LOCAL_TOKENIZER
-
-
-def _get_local_model(model_id: str):
-    global _LOCAL_MODELS
-    if model_id not in _LOCAL_MODELS:
-        import torch
-        from transformers import DistilBertForSequenceClassification
-        token = _get_hf_token() or None
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model = DistilBertForSequenceClassification.from_pretrained(model_id, token=token)
-        model.to(device)
-        model.eval()
-        _LOCAL_MODELS[model_id] = (model, device)
-    return _LOCAL_MODELS[model_id]
-
-
-def _infer_locally(model_id: str, text: str, max_chars: int = 512):
-    """Run model inference locally using cached fine-tuned DistilBERT weights."""
+    Returns:
+        (raw_label: str, raw_score: float)
+    """
     import torch
-    tokenizer = _get_local_tokenizer()
-    model, device = _get_local_model(model_id)
-    
-    inputs = tokenizer(
-        text,
-        return_tensors="pt",
-        truncation=True,
-        padding=True,
-        max_length=min(max_chars, 512),
-    )
-    inputs = {k: v.to(device) for k, v in inputs.items()}
-    
-    with torch.no_grad():
-        logits = model(**inputs).logits
-        
-    probs_unscaled = torch.softmax(logits, dim=1)
-    biased_prob_unscaled = probs_unscaled[0][1].item()
-    
-    raw_response = {
-        "source": "local_transformer",
-        "logits": logits[0].tolist(),
-        "probabilities": probs_unscaled[0].tolist(),
-        "classes": [{"label": "LABEL_0", "score": probs_unscaled[0][0].item()},
-                    {"label": "LABEL_1", "score": biased_prob_unscaled}]
-    }
-    return raw_response, "LABEL_1", biased_prob_unscaled
+    from transformers import pipeline
+
+    device = 0 if torch.cuda.is_available() else -1  # GPU if available, else CPU
+
+    try:
+        pipe = pipeline(
+            "text-classification",
+            model=model_id,
+            token=token or None,
+            device=device,
+        )
+        results = pipe(text, truncation=True, max_length=512)
+        # results is a list of dicts: [{'label': 'LABEL_1', 'score': 0.97}, ...]
+        if results and isinstance(results, list):
+            top = results[0]
+            label = str(top.get("label", "LABEL_0")).upper()
+            score = float(top.get("score", 0.0))
+            return label, score
+        raise ValueError(f"Unexpected pipeline output: {results}")
+    finally:
+        # Aggressively unload model from memory
+        try:
+            del pipe
+        except Exception:
+            pass
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        gc.collect()
 
 
 def query_hf_classification(
@@ -115,21 +101,25 @@ def query_hf_classification(
     model_name: str = "Bias Model",
 ) -> float:
     """
-    Query a binary classification model (via HF Inference API or local fallback).
+    Run local on-demand inference for a fine-tuned DistilBERT classification model.
     Applies temperature scaling and clamping [0.05, 0.95].
     Emits server-side debug logging for model auditing.
+
+    Strategy:
+      1. Load model via transformers.pipeline (lazy, single-model, offloaded after use).
+      2. Apply Temperature Scaling (T=2.0) to calibrate probabilities.
+      3. Clamp result to [0.05, 0.95].
 
     Returns:
         float in [0.05, 0.95] representing biased class probability.
     """
     if not text or not text.strip():
-        # Clean empty input case
         final_val = 0.05
         print(f"\n==================================================")
         print(f"MODEL NAME: {model_name}")
         print(f"HF REPOSITORY: {model_id}")
         print(f"INPUT TEXT LENGTH: 0")
-        print(f"RAW HF RESPONSE: EMPTY_INPUT")
+        print(f"RAW RESPONSE: EMPTY_INPUT")
         print(f"PARSED LABEL: LABEL_0")
         print(f"PARSED SCORE: 0.0")
         print(f"FINAL FLOAT RETURNED BY predict(text): {final_val}")
@@ -138,74 +128,36 @@ def query_hf_classification(
 
     token = _get_hf_token()
     truncated_text = text.strip()[:max_chars]
-    
-    headers = {
-        "Content-Type": "application/json",
-        "x-wait-for-model": "true",
-    }
-    if token:
-        headers["Authorization"] = f"Bearer {token}"
 
-    payload = {
-        "inputs": truncated_text,
-        "options": {"wait_for_model": True},
-    }
-
-    custom_endpoint = os.getenv(f"{model_name.upper().replace(' ', '_')}_ENDPOINT") or os.getenv("HF_INFERENCE_ENDPOINT")
-    endpoints = []
-    if custom_endpoint:
-        endpoints.append(custom_endpoint)
-    endpoints.append(f"https://router.huggingface.co/hf-inference/models/{model_id}")
-
-    raw_response = None
     parsed_label = None
     parsed_score = None
-    remote_success = False
 
-    # 1. Attempt remote HF Inference
-    for url in endpoints:
-        try:
-            resp = requests.post(url, headers=headers, json=payload, timeout=8)
-            if resp.status_code == 200:
-                raw_response = resp.json()
-                items = []
-                if isinstance(raw_response, list):
-                    if len(raw_response) > 0 and isinstance(raw_response[0], list):
-                        items = raw_response[0]
-                    elif len(raw_response) > 0 and isinstance(raw_response[0], dict):
-                        items = raw_response
+    # Load model locally and run inference (single-model, offloaded after use)
+    try:
+        raw_label, raw_score = _infer_with_pipeline(model_id, truncated_text, token)
 
-                for item in items:
-                    lbl = str(item.get("label", "")).upper()
-                    scr = float(item.get("score", 0.0))
-                    if "1" in lbl or "BIAS" in lbl or lbl == "POSITIVE":
-                        parsed_label = lbl
-                        parsed_score = scr
-                        remote_success = True
-                        break
-                    elif "0" in lbl or "NEUTRAL" in lbl or lbl == "NEGATIVE":
-                        parsed_label = "LABEL_1 (derived from LABEL_0)"
-                        parsed_score = 1.0 - scr
-                        remote_success = True
-                if remote_success:
-                    break
-            elif resp.status_code == 503:
-                logger.info("Model %s is loading on HF (503)...", model_id)
-            else:
-                logger.debug("HF remote endpoint %s returned %s: %s", url, resp.status_code, resp.text[:100])
-        except Exception as exc:
-            logger.debug("HF remote query error on %s: %s", url, exc)
+        # Determine biased-class probability from the returned label
+        if "1" in raw_label or "BIAS" in raw_label or raw_label == "POSITIVE":
+            parsed_label = raw_label
+            parsed_score = raw_score
+        elif "0" in raw_label or "NEUTRAL" in raw_label or raw_label == "NEGATIVE":
+            # LABEL_0 is the "not-biased" class; derive LABEL_1 probability
+            parsed_label = "LABEL_1 (derived from LABEL_0)"
+            parsed_score = 1.0 - raw_score
+        else:
+            parsed_label = raw_label
+            parsed_score = raw_score
 
-    # 2. If remote API did not yield a parsed score, run local model inference
-    if not remote_success or parsed_score is None:
-        try:
-            raw_response, parsed_label, parsed_score = _infer_locally(model_id, truncated_text, max_chars=max_chars)
-        except Exception as exc:
-            logger.error("Inference execution failed for %s (%s): %s", model_name, model_id, exc)
-            raise RuntimeError(f"Inference failure for {model_name} on {model_id}: {exc}")
+    except Exception as exc:
+        logger.error(
+            "Inference execution failed for %s (%s): %s", model_name, model_id, exc
+        )
+        raise RuntimeError(
+            f"Inference failure for {model_name} on {model_id}: {exc}"
+        )
 
-    # 3. Apply Temperature Scaling (T=2.0)
-    # Scaled probability: p_T = 1 / (1 + ((1 - p) / p) ** (1 / temperature))
+    # Apply Temperature Scaling (T=2.0)
+    # p_T = 1 / (1 + ((1 - p) / p) ** (1 / T))
     biased_prob = max(1e-6, min(1.0 - 1e-6, float(parsed_score)))
     if temperature > 0 and temperature != 1.0:
         ratio = (1.0 - biased_prob) / biased_prob
@@ -213,18 +165,18 @@ def query_hf_classification(
     else:
         scaled_prob = biased_prob
 
-    # 4. Probability Clamping [0.05, 0.95] and rounding
+    # Probability Clamping [0.05, 0.95] and rounding
     clamped_prob = max(0.05, min(0.95, scaled_prob))
     final_float = round(clamped_prob, 4)
 
-    # 5. Temporary Server-Side Debug Logging
+    # Server-Side Debug Logging
     print(f"\n==================================================")
     print(f"MODEL NAME: {model_name}")
     print(f"HF REPOSITORY: {model_id}")
     print(f"INPUT TEXT LENGTH: {len(truncated_text)}")
-    print(f"RAW HF RESPONSE: {raw_response}")
     print(f"PARSED LABEL: {parsed_label}")
-    print(f"PARSED SCORE: {parsed_score}")
+    print(f"PARSED SCORE (raw): {parsed_score}")
+    print(f"SCALED PROB (T={temperature}): {scaled_prob:.4f}")
     print(f"FINAL FLOAT RETURNED BY predict(text): {final_float}")
     print(f"==================================================")
 

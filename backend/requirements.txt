@@ -9,4 +9,8 @@ newspaper3k
 lxml_html_clean
 firebase-admin
 python-dotenv
+huggingface_hub>=0.21.0
+transformers>=4.35.0
+torch>=2.0.0
+accelerate>=0.24.0
 

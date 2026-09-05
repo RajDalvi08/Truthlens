@@ -1,0 +1,259 @@
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { getAnalysisStats, getRecentAnalyses, getBiasTimeseries, getNarrativeBalance } from "../services/analysisService";
+import { useAuth } from "../AuthContext";
+import { HiOutlineTrendingUp, HiOutlineExternalLink, HiOutlineInformationCircle, HiOutlineLightningBolt, HiOutlineShieldCheck, HiOutlineCubeTransparent } from "react-icons/hi";
+
+const COLORS = ['#F97316', '#0EA5E9', '#8B5CF6', '#EC4899', '#10B981'];
+
+export default function Dashboard() {
+  const { user } = useAuth();
+  const [stats, setStats] = useState(null);
+  const [recentAnalyses, setRecentAnalyses] = useState([]);
+  const [biasTimeseries, setBiasTimeseries] = useState([]);
+  const [narrativeBalance, setNarrativeBalance] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const userId = user?.uid;
+        const [statsData, analysesData, timeseriesData, balanceData] = await Promise.all([
+          getAnalysisStats(userId),
+          getRecentAnalyses(5, userId),
+          getBiasTimeseries(30, userId),
+          getNarrativeBalance(userId),
+        ]);
+        setStats(statsData);
+        setRecentAnalyses(analysesData);
+        setBiasTimeseries(timeseriesData);
+        setNarrativeBalance(balanceData);
+      } catch (error) {
+        console.error("Dashboard data load failure:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [user?.uid]);
+
+  const pieData = narrativeBalance?.pieData || [
+    { name: 'Neutral', value: 0 },
+    { name: 'Left Leaning', value: 0 },
+    { name: 'Right Leaning', value: 0 },
+  ];
+
+  const neutralPct = narrativeBalance?.neutralPct ?? 0;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] mesh-bg">
+        <div className="w-12 h-12 border-4 border-[#fdf8f5] border-t-transparent rounded-none animate-spin"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-10 md:space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-16">
+      
+      {/* Header with Glass Effect */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="glass-card p-6 sm:p-8 md:p-12 relative overflow-hidden group border-[#fdf8f5]/10 bg-[#261a14]/40"
+      >
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#fdf8f5]/5 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-[#fdf8f5]/10 transition-all duration-1000" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 sm:gap-8">
+          <div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-[#fdf8f5] uppercase italic">Neural Overview</h1>
+            <p className="text-[#d6c2b8] mt-2 sm:mt-3 font-black uppercase tracking-widest text-[9px] sm:text-[10px] italic underline decoration-[#fdf8f5]/20">Real-time intelligence stream from the TruthLens core.</p>
+          </div>
+          <div className="flex gap-4">
+            <button 
+              onClick={() => navigate("/bias-analyzer")}
+              className="btn-primary gap-3 shadow-[0_0_30px_rgba(245,235,224,0.1)] w-full sm:w-auto text-center"
+            >
+              <HiOutlineLightningBolt className="w-5 h-5 shrink-0" />
+              Initialize Analysis
+            </button>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Bento Grid Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+          {[
+              { label: "Total Articles", value: stats?.totalArticles?.toLocaleString() || "0", icon: HiOutlineCubeTransparent, color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
+              { label: "Avg Bias Score", value: stats?.avgBias ?? "0", icon: HiOutlineTrendingUp, color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
+              { label: "Articles / Hr", value: stats?.articlesPerHour ?? "0", icon: HiOutlineShieldCheck, color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
+              { label: "Active Sources", value: stats?.activeSources ?? "0", icon: HiOutlineInformationCircle, color: "text-[#fdf8f5]", bg: "bg-[#fdf8f5]/5" },
+          ].map((stat, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.1 }}
+                className="saas-card p-5 sm:p-6 md:p-8 flex items-center gap-4 sm:gap-6 hover:border-[#fdf8f5]/30 transition-all cursor-default bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-xl"
+              >
+                  <div className={`w-12 sm:w-16 h-12 sm:h-16 rounded-none ${stat.bg} ${stat.color} flex items-center justify-center text-2xl sm:text-3xl border border-[#fdf8f5]/10 shadow-[0_0_15px_rgba(253,248,245,0.05)] shrink-0`}>
+                      <stat.icon className="w-6 sm:w-8 h-6 sm:h-8" />
+                  </div>
+                  <div className="min-w-0">
+                      <p className="text-[9px] uppercase font-black text-[#8d7b68] tracking-[0.2em] mb-1 italic truncate">{stat.label}</p>
+                      <h3 className="text-2xl sm:text-3xl font-black text-[#fdf8f5] italic tracking-tighter tabular-nums">{stat.value}</h3>
+                  </div>
+              </motion.div>
+          ))}
+      </div>
+
+      {/* Main Analysis Bento Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+          
+          {/* Large Trend Chart */}
+          <motion.div 
+            className="lg:col-span-8 saas-card p-5 sm:p-8 md:p-10 min-h-[380px] sm:min-h-[450px] bg-[#261a14]/40 border-[#fdf8f5]/10 rounded-none shadow-2xl flex flex-col justify-between"
+            whileHover={{ borderColor: 'rgba(253,248,245,0.2)' }}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-6 sm:mb-10 pb-4 sm:pb-6 border-b border-[#fdf8f5]/5">
+                <h3 className="text-xl sm:text-2xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Temporal Bias Drift</h3>
+                <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#fdf8f5]/10 text-[#fdf8f5] border border-[#fdf8f5]/20 text-[8px] sm:text-[9px] font-black uppercase tracking-widest italic animate-pulse">LIVE STREAM</span>
+            </div>
+            <div className="h-[250px] sm:h-[320px] w-full">
+              {biasTimeseries.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={biasTimeseries} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(253,248,245,0.05)" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#8d7b68', fontSize: 9, fontWeight: 900}} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{fill: '#8d7b68', fontSize: 9, fontWeight: 900}} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1a0f0a', borderRadius: '0', border: '1px solid rgba(253,248,245,0.2)', boxShadow: '0 20px 40px rgba(0,0,0,0.6)', padding: '10px sm:padding: 15px' }}
+                    itemStyle={{ color: '#fdf8f5', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase' }}
+                  />
+                  <Line type="monotone" dataKey="value" stroke="#ff9d6c" strokeWidth={3} dot={{ r: 4, fill: '#1a0f0a', strokeWidth: 2, stroke: '#ff9d6c' }} activeDot={{ r: 6, fill: '#ff9d6c' }} />
+                </LineChart>
+              </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50 text-center">Analyze articles to populate drift data</p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+
+          {/* Side Pie Chart Small Bento */}
+          <motion.div className="lg:col-span-4 glass-card p-6 sm:p-8 md:p-10 flex flex-col items-center justify-center overflow-hidden border-[#fdf8f5]/10 bg-[#261a14]/60 rounded-none shadow-2xl">
+                <h3 className="text-xl sm:text-2xl font-black text-[#fdf8f5] mb-6 sm:mb-8 w-full text-center uppercase italic tracking-tighter">Narrative Balance</h3>
+                <div className="h-[220px] sm:h-[260px] w-full relative">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={pieData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={55}
+                            outerRadius={85}
+                            paddingAngle={8}
+                            dataKey="value"
+                            stroke="none"
+                          >
+                            {pieData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                    </ResponsiveContainer>
+                    {/* Center Text overlay */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span className="text-3xl sm:text-4xl font-black text-[#fdf8f5] italic tracking-tighter">{neutralPct}%</span>
+                        <span className="text-[8px] sm:text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic">Neutral</span>
+                    </div>
+                </div>
+                <div className="mt-6 sm:mt-10 grid grid-cols-3 gap-2 sm:gap-4 w-full border-t border-[#fdf8f5]/5 pt-6 sm:pt-8 text-center">
+                    {pieData.map((d, i) => (
+                        <div key={i} className="flex flex-col items-center gap-1.5 sm:gap-2">
+                            <div className="w-full h-1.5 rounded-none" style={{ backgroundColor: COLORS[i] }} />
+                            <span className="text-[8px] sm:text-[9px] font-black text-[#8d7b68] uppercase italic truncate w-full">{d.name}</span>
+                        </div>
+                    ))}
+                </div>
+          </motion.div>
+
+      </div>
+
+      {/* Recent Intelligence Bento */}
+      <motion.div 
+        className="saas-card p-0 bg-[#261a14]/60 border-[#fdf8f5]/10 rounded-none shadow-2xl overflow-hidden"
+      >
+        <div className="p-5 sm:p-8 md:p-10 border-b border-[#fdf8f5]/10 flex flex-wrap items-center justify-between gap-4 bg-[#fdf8f5]/[0.02]">
+           <h3 className="text-xl sm:text-2xl font-black text-[#fdf8f5] uppercase italic tracking-tighter">Recent Intelligence Ingestion</h3>
+           <button 
+             onClick={() => navigate("/reports")}
+             className="text-[9px] sm:text-[10px] font-black text-[#fdf8f5] hover:text-[#d6c2b8] flex items-center gap-2 sm:gap-3 tracking-[0.2em] uppercase italic transition-all group"
+           >
+               VIEW FULL ARCHIVE <HiOutlineExternalLink className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+           </button>
+        </div>
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left min-w-[650px]">
+            <thead>
+              <tr className="bg-[#fdf8f5]/[0.03] text-[9px] font-black uppercase tracking-[0.3em] text-[#8d7b68] italic border-b border-[#fdf8f5]/10">
+                <th className="px-5 sm:px-8 py-4 border-r border-[#fdf8f5]/5">Intel Package</th>
+                <th className="px-5 sm:px-8 py-4 border-r border-[#fdf8f5]/5">Origin</th>
+                <th className="px-5 sm:px-8 py-4 border-r border-[#fdf8f5]/5">Topic</th>
+                <th className="px-5 sm:px-8 py-4 border-r border-[#fdf8f5]/5">Bias Flux</th>
+                <th className="px-5 sm:px-8 py-4">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#fdf8f5]/5">
+              {recentAnalyses.length > 0 ? recentAnalyses.map((item) => (
+                <tr key={item.id} className="group hover:bg-[#fdf8f5]/[0.04] transition-all duration-300 cursor-pointer">
+                  <td className="px-5 sm:px-8 py-4 sm:py-5 border-r border-[#fdf8f5]/5">
+                    <p className="text-[12px] sm:text-[13px] font-black text-[#d6c2b8] group-hover:text-[#fdf8f5] group-hover:italic transition-all leading-tight max-w-md uppercase tracking-tight">
+                      {item.title}
+                    </p>
+                  </td>
+                  <td className="px-5 sm:px-8 py-4 sm:py-5 border-r border-[#fdf8f5]/5">
+                    <span className="px-2.5 sm:px-3 py-1 bg-[#fdf8f5]/5 border border-[#fdf8f5]/10 text-[8px] sm:text-[9px] font-black text-[#8d7b68] group-hover:text-[#fdf8f5] group-hover:border-[#fdf8f5]/30 transition-all uppercase tracking-widest italic">
+                      {item.source}
+                    </span>
+                  </td>
+                  <td className="px-5 sm:px-8 py-4 sm:py-5 border-r border-[#fdf8f5]/5">
+                     <span className="text-[8px] sm:text-[9px] font-black text-[#8d7b68] uppercase tracking-[0.2em] italic group-hover:text-[#d6c2b8] transition-colors">{item.topic}</span>
+                  </td>
+                  <td className="px-5 sm:px-8 py-4 sm:py-5 border-r border-[#fdf8f5]/5">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="flex-1 h-1 w-14 sm:w-20 bg-[#fdf8f5]/5 rounded-none overflow-hidden">
+                        <div 
+                          className="h-full bg-[#fdf8f5] shadow-[0_0_10px_rgba(253,248,245,0.4)]" 
+                          style={{ width: `${Math.abs(item.biasScore * 100)}%` }} 
+                        />
+                      </div>
+                      <span className="text-[9px] sm:text-[10px] font-black text-[#fdf8f5] tabular-nums italic">{item.biasScore > 0 ? `+${item.biasScore.toFixed(2)}` : item.biasScore.toFixed(2)}</span>
+                    </div>
+                  </td>
+                  <td className="px-5 sm:px-8 py-4 sm:py-5">
+                    <span className="inline-flex items-center gap-1.5 sm:gap-2 text-[7px] sm:text-[8px] font-black text-[#fdf8f5] uppercase tracking-[0.2em] italic border border-[#fdf8f5]/10 px-2 py-1 rounded-none bg-[#fdf8f5]/[0.03]">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#fdf8f5] animate-pulse shadow-[0_0_8px_rgba(253,248,245,0.8)]" />
+                      Analyzed
+                    </span>
+                  </td>
+                </tr>
+              )) : (
+                <tr>
+                  <td colSpan="5" className="px-5 sm:px-8 py-8 sm:py-12 text-center">
+                    <p className="text-[10px] font-black text-[#8d7b68] uppercase tracking-[0.3em] italic opacity-50">No analyses yet — submit an article to begin</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
+    </div>
+  );
+}

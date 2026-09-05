@@ -78,6 +78,7 @@ def analyze_bias(article: dict) -> dict:
 
     # Check if text has any relevant named entities for BEAD filtering
     text_has_entities = has_named_entities(full_text)
+    entities = extract_entities(full_text)
 
     for chunk in chunks:
         # 1. Linguistic Bias (Scaled by neutrality)
@@ -139,6 +140,34 @@ def analyze_bias(article: dict) -> dict:
     print("FINAL ENTITIES:", entities)
     print("EXPLANATION:", explanation)
 
+    # Generate Indicators
+    indicators = []
+    if final_linguistic > 0.4:
+        indicators.append("Subjective Vocabulary")
+    elif final_linguistic < 0.2:
+        indicators.append("Attributed Sourcing")
+    
+    if final_framing > 0.4:
+        indicators.append("Selective Framing")
+    elif final_framing <= 0.3:
+        indicators.append("Balanced Perspective")
+
+    if text_has_entities:
+        indicators.append("Entity Mention Verified")
+    if neutrality_dampener < 0.6:
+        indicators.append("Factual Reporting Style")
+
+    if not indicators:
+        indicators = ["Standard Reportage", "Neutral Lexicon"]
+
+    # Generate Logic Trace Explanation
+    explanation = [
+        f"Linguistic bias evaluated at {(final_linguistic*100):.1f}% based on tone, wording, and emotional density.",
+        f"Framing model scored at {(final_framing*100):.1f}%, measuring structural angle and viewpoint divergence.",
+        f"Entity analysis (BEAD) computed at {(final_entity*100):.1f}% across {len(entities.get('persons', []))} identified persons and {len(entities.get('organizations', []))} organizations.",
+        f"Final calibrated score of {score_data['score']}/100 categorized as '{score_data['level']}'."
+    ]
+
     return {
         "headline": headline,
         "bias_score": score_data["score"],
@@ -146,6 +175,9 @@ def analyze_bias(article: dict) -> dict:
         "linguistic_bias": final_linguistic,
         "framing_bias": final_framing,
         "entity_bias": final_entity,
+        "indicators": indicators,
+        "entities": entities,
+        "explanation": explanation,
         "bias_visual": generate_bias_bar(score_data["score"]),
         "source": article.get("source", ""),
         "entities": {

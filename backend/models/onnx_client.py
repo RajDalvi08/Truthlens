@@ -185,7 +185,7 @@ class ONNXClient:
     zero-PyTorch tokenization, and strict single-thread memory limits.
     """
 
-    def __init__(self, max_cached_sessions: int = 3) -> None:
+    def __init__(self, max_cached_sessions: int = 1) -> None:
         self.max_cached_sessions = max_cached_sessions
         self._sessions: OrderedDict[str, Any] = OrderedDict()
         self._tokenizers: dict[str, Any] = {}
@@ -199,11 +199,21 @@ class ONNXClient:
         import onnxruntime as ort
 
         opts = ort.SessionOptions()
-        # Restrict threads to keep CPU thread pool allocation small (<30MB)
+
+        # Keep CPU/thread memory extremely low for Render 512 MB instances
         opts.intra_op_num_threads = 1
         opts.inter_op_num_threads = 1
         opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
-        opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+
+        # Avoid aggressive graph optimization memory overhead
+        opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_BASIC
+
+        # Reduce ONNX Runtime CPU memory arena retention
+        opts.enable_cpu_mem_arena = False
+
+        # Disable memory-pattern allocation for lower peak memory
+        opts.enable_mem_pattern = False
+
         return opts
 
     def _get_session(self, onnx_path: Path) -> Any:
@@ -282,7 +292,16 @@ class ONNXClient:
                 feed[inp_name] = np.ascontiguousarray(val)
 
         # Execute ONNX Runtime inference
-        outputs = session.run(None, feed)
+        try:
+            outputs = session.run(None, feed)
+        finally:
+            if self._evict_after_inference:
+                with self._lock:
+                    path_str = str(onnx_path.resolve())
+                    self._sessions.pop(path_str, None)
+                del session
+                gc.collect()
+
         logits = outputs[0]  # shape (batch_size, num_classes)
         if logits.ndim == 1:
             logits = np.expand_dims(logits, axis=0)
@@ -295,14 +314,6 @@ class ONNXClient:
         pred_idx = int(np.argmax(probs[0]))
         pred_score = float(probs[0][pred_idx])
         pred_label = id2label.get(str(pred_idx), f"LABEL_{pred_idx}")
-
-        # Immediate memory eviction if configured for hyper-constrained environments
-        if self._evict_after_inference:
-            with self._lock:
-                path_str = str(onnx_path.resolve())
-                if path_str in self._sessions:
-                    del self._sessions[path_str]
-            gc.collect()
 
         return pred_label, pred_score
 

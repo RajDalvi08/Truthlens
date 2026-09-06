@@ -191,6 +191,7 @@ class ONNXClient:
         self._tokenizers: dict[str, Any] = {}
         self._id2labels: dict[str, dict[str, str]] = {}
         self._lock = threading.Lock()
+        self._inference_lock = threading.Lock()
         self._evict_after_inference = (
             os.getenv("TRUTHLENS_ONNX_EVICT_AFTER_INFERENCE", "true").strip().lower() in ("true", "1", "yes")
         )
@@ -268,54 +269,55 @@ class ONNXClient:
         if not text or not text.strip():
             return "LABEL_0", 0.0
 
-        onnx_path, tokenizer_source, id2label = resolve_model_path(model_id)
-        session = self._get_session(onnx_path)
-        tokenizer = self._get_tokenizer(tokenizer_source)
+        with self._inference_lock:
+            onnx_path, tokenizer_source, id2label = resolve_model_path(model_id)
+            session = self._get_session(onnx_path)
+            tokenizer = self._get_tokenizer(tokenizer_source)
 
-        # Pure NumPy tokenization (zero-torch)
-        encoded = tokenizer(
-            text,
-            truncation=True,
-            max_length=512,
-            return_tensors="np",
-        )
+            # Pure NumPy tokenization (zero-torch)
+            encoded = tokenizer(
+                text,
+                truncation=True,
+                max_length=512,
+                return_tensors="np",
+            )
 
-        # Match feed inputs precisely with session expectations
-        session_inputs = [inp.name for inp in session.get_inputs()]
-        feed: dict[str, np.ndarray] = {}
-        for inp_name in session_inputs:
-            if inp_name in encoded:
-                val = encoded[inp_name]
-                # Ensure int64 numpy array
-                if val.dtype != np.int64:
-                    val = val.astype(np.int64)
-                feed[inp_name] = np.ascontiguousarray(val)
+            # Match feed inputs precisely with session expectations
+            session_inputs = [inp.name for inp in session.get_inputs()]
+            feed: dict[str, np.ndarray] = {}
+            for inp_name in session_inputs:
+                if inp_name in encoded:
+                    val = encoded[inp_name]
+                    # Ensure int64 numpy array
+                    if val.dtype != np.int64:
+                        val = val.astype(np.int64)
+                    feed[inp_name] = np.ascontiguousarray(val)
 
-        # Execute ONNX Runtime inference
-        try:
-            outputs = session.run(None, feed)
-        finally:
-            if self._evict_after_inference:
-                with self._lock:
-                    path_str = str(onnx_path.resolve())
-                    self._sessions.pop(path_str, None)
-                del session
-                gc.collect()
+            # Execute ONNX Runtime inference
+            try:
+                outputs = session.run(None, feed)
+            finally:
+                if self._evict_after_inference:
+                    with self._lock:
+                        path_str = str(onnx_path.resolve())
+                        self._sessions.pop(path_str, None)
+                    del session
+                    gc.collect()
 
-        logits = outputs[0]  # shape (batch_size, num_classes)
-        if logits.ndim == 1:
-            logits = np.expand_dims(logits, axis=0)
+            logits = outputs[0]  # shape (batch_size, num_classes)
+            if logits.ndim == 1:
+                logits = np.expand_dims(logits, axis=0)
 
-        # Numerically stable softmax
-        shifted = logits - np.max(logits, axis=-1, keepdims=True)
-        exp_scores = np.exp(shifted)
-        probs = exp_scores / np.sum(exp_scores, axis=-1, keepdims=True)
+            # Numerically stable softmax
+            shifted = logits - np.max(logits, axis=-1, keepdims=True)
+            exp_scores = np.exp(shifted)
+            probs = exp_scores / np.sum(exp_scores, axis=-1, keepdims=True)
 
-        pred_idx = int(np.argmax(probs[0]))
-        pred_score = float(probs[0][pred_idx])
-        pred_label = id2label.get(str(pred_idx), f"LABEL_{pred_idx}")
+            pred_idx = int(np.argmax(probs[0]))
+            pred_score = float(probs[0][pred_idx])
+            pred_label = id2label.get(str(pred_idx), f"LABEL_{pred_idx}")
 
-        return pred_label, pred_score
+            return pred_label, pred_score
 
 
 # Global client singleton

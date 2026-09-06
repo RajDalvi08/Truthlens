@@ -278,7 +278,7 @@ class ONNXClient:
             encoded = tokenizer(
                 text,
                 truncation=True,
-                max_length=512,
+                max_length=256,
                 return_tensors="np",
             )
 
@@ -293,9 +293,23 @@ class ONNXClient:
                         val = val.astype(np.int64)
                     feed[inp_name] = np.ascontiguousarray(val)
 
-            # Execute ONNX Runtime inference
+            # Execute ONNX Runtime inference and post-process while serialized.
             try:
                 outputs = session.run(None, feed)
+                logits = outputs[0]  # shape (batch_size, num_classes)
+                if logits.ndim == 1:
+                    logits = np.expand_dims(logits, axis=0)
+
+                # Numerically stable softmax
+                shifted = logits - np.max(logits, axis=-1, keepdims=True)
+                exp_scores = np.exp(shifted)
+                probs = exp_scores / np.sum(exp_scores, axis=-1, keepdims=True)
+
+                pred_idx = int(np.argmax(probs[0]))
+                pred_score = float(probs[0][pred_idx])
+                pred_label = id2label.get(str(pred_idx), f"LABEL_{pred_idx}")
+
+                return pred_label, pred_score
             finally:
                 if self._evict_after_inference:
                     with self._lock:
@@ -303,21 +317,6 @@ class ONNXClient:
                         self._sessions.pop(path_str, None)
                     del session
                     gc.collect()
-
-            logits = outputs[0]  # shape (batch_size, num_classes)
-            if logits.ndim == 1:
-                logits = np.expand_dims(logits, axis=0)
-
-            # Numerically stable softmax
-            shifted = logits - np.max(logits, axis=-1, keepdims=True)
-            exp_scores = np.exp(shifted)
-            probs = exp_scores / np.sum(exp_scores, axis=-1, keepdims=True)
-
-            pred_idx = int(np.argmax(probs[0]))
-            pred_score = float(probs[0][pred_idx])
-            pred_label = id2label.get(str(pred_idx), f"LABEL_{pred_idx}")
-
-            return pred_label, pred_score
 
 
 # Global client singleton

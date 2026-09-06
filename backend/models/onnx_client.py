@@ -192,7 +192,7 @@ class ONNXClient:
         self._id2labels: dict[str, dict[str, str]] = {}
         self._lock = threading.Lock()
         self._evict_after_inference = (
-            os.getenv("TRUTHLENS_ONNX_EVICT_AFTER_INFERENCE", "false").strip().lower() in ("true", "1", "yes")
+            os.getenv("TRUTHLENS_ONNX_EVICT_AFTER_INFERENCE", "true").strip().lower() in ("true", "1", "yes")
         )
 
     def _get_session_options(self) -> Any:
